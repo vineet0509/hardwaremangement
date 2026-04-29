@@ -7,14 +7,15 @@ use App\Models\Scopes\ShopScope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 
 #[ScopedBy([ShopScope::class])]
-class Supplier extends Model
+class SupplierTransaction extends Model
 {
     protected $fillable = [
         'shop_id',
-        'name',
-        'phone',
-        'email',
-        'address'
+        'supplier_id',
+        'type',
+        'amount',
+        'transaction_date',
+        'notes'
     ];
 
     protected static function booted()
@@ -26,18 +27,8 @@ class Supplier extends Model
         });
     }
 
-    public function transactions()
+    public function supplier()
     {
-        return $this->hasMany(SupplierTransaction::class);
-    }
-
-    public function products()
-    {
-        return $this->hasMany(Product::class);
-    }
-
-    public function shop()
-    {
-        return $this->belongsTo(Shop::class);
+        return $this->belongsTo(Supplier::class);
     }
 }

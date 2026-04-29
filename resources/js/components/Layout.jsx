@@ -47,6 +47,15 @@ const Layout = ({ children }) => {
     api.get('/me').then(res => setUser(res.data)).catch(console.error);
   }, []);
 
+  const handleLogout = () => {
+    if(confirm("Are you sure you want to log out?")) {
+       api.post('/logout').catch(console.error).finally(() => {
+          localStorage.removeItem('auth_token');
+          window.location.href = '/login';
+       });
+    }
+  };
+
   const allNavItems = [...navItems];
   if (user?.is_super_admin) {
     allNavItems.push({ name: 'Super Admin', path: '/super-admin', icon: Shield });
@@ -122,6 +131,41 @@ const Layout = ({ children }) => {
             </NavLink>
           ))}
         </nav>
+
+        <div style={{ marginTop: 'auto', padding: '20px', borderTop: '1px solid rgba(255,255,255,0.08)' }} className="mobile-profile-footer">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+            <div style={{ width: 36, height: 36, borderRadius: '50%', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+              {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{ color: 'white', fontSize: '0.9rem', fontWeight: 600 }}>{user?.name || 'Admin User'}</span>
+              <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>{user?.is_super_admin ? 'Super Admin' : 'Shop Manager'}</span>
+            </div>
+          </div>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <NavLink 
+              to="/settings" 
+              onClick={() => setIsMobileMenuOpen(false)}
+              style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#94a3b8', textDecoration: 'none', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.05)' }}
+            >
+              <SettingsIcon size={16} /> Settings
+            </NavLink>
+            <button 
+              onClick={() => {
+                if(confirm("Are you sure you want to log out?")) {
+                   api.post('/logout').catch(console.error).finally(() => {
+                      localStorage.removeItem('auth_token');
+                      window.location.href = '/login';
+                   });
+                }
+              }}
+              style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#ef4444', background: 'rgba(239, 68, 68, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
+            >
+              <LogOut size={16} /> Logout
+            </button>
+          </div>
+        </div>
       </aside>
 
       {/* Main Content Area */}

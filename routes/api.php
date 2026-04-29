@@ -59,6 +59,8 @@ Route::get('/salary-records',                           [StaffController::class,
     
     // Suppliers
     Route::apiResource('suppliers', SupplierController::class);
+    Route::get('/suppliers/{supplier}/transactions', [SupplierController::class, 'transactions']);
+    Route::post('/suppliers/{supplier}/transactions', [SupplierController::class, 'storeTransaction']);
 
     // Reports
     Route::get('/reports/sales',        [ReportController::class, 'salesReport']);

@@ -638,3 +638,14 @@ tr:hover td { background: var(--surface-hover); }
     font-size: 0.85rem;
   }
 }
+
+.mobile-profile-footer {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .mobile-profile-footer {
+    display: flex !important;
+    flex-direction: column;
+  }
+}
