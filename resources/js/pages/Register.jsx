@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import api from '../utils/api';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, User, UserPlus, Package, Phone, Store, ShieldCheck, BadgeCheck } from 'lucide-react';
+import { Mail, Lock, User, UserPlus, Package, Phone, Store, ShieldCheck, BadgeCheck, Languages, Shield } from 'lucide-react';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -128,6 +128,45 @@ const Register = () => {
             By continuing, you agree to our <Link to="/terms" style={{ color: 'inherit', textDecoration: 'underline' }}>Terms of Service</Link> and <Link to="/privacy-policy" style={{ color: 'inherit', textDecoration: 'underline' }}>Privacy Policy</Link>.
           </p>
         </form>
+      </div>
+
+      {/* Language and Footer links for Register Page */}
+      <div style={{ marginTop: 0, marginBottom: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--surface)', padding: '8px 16px', borderRadius: 20, boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}>
+          <Languages size={18} color="var(--primary)" />
+          <select 
+            style={{ border: 'none', outline: 'none', background: 'transparent', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)' }}
+            onChange={(e) => {
+              const lang = e.target.value;
+              if(lang === 'en' || !lang) {
+                  document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                  document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+              } else {
+                  document.cookie = `googtrans=/en/${lang}; path=/;`;
+                  document.cookie = `googtrans=/en/${lang}; domain=${window.location.hostname}; path=/;`;
+              }
+              window.location.reload();
+            }}
+            defaultValue={document.cookie.split('; ').find(row => row.startsWith('googtrans='))?.split('=')[1]?.replace('/en/', '') || 'en'}
+          >
+            <option value="en">English (US)</option>
+            <option value="hi">हिंदी (Hindi)</option>
+            <option value="bn">বাংলা (Bengali)</option>
+            <option value="mr">मराठी (Marathi)</option>
+            <option value="te">తెలుగు (Telugu)</option>
+            <option value="ta">தமிழ் (Tamil)</option>
+            <option value="gu">ગુજરાતી (Gujarati)</option>
+            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+            <option value="ur">اردو (Urdu)</option>
+            <option value="ml">മലയാളം (Malayalam)</option>
+            <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+          </select>
+        </div>
+        
+        <div style={{ display: 'flex', gap: 20, fontSize: '0.85rem' }}>
+          <Link to="/privacy-policy" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}><Shield size={14} /> Privacy Policy</Link>
+          <a href="#" onClick={(e) => { e.preventDefault(); alert("Hardware Shop Manager SaaS v2.0\nSupport: support@hardwareshop.com"); }} style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Help & Support</a>
+        </div>
       </div>
     </div>
   );
