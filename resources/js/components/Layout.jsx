@@ -405,8 +405,8 @@ const Layout = ({ children }) => {
             </div>
           )}
           {children}
-
-          {location.pathname !== '/billing' && (
+          
+          {!['/billing', '/quotations/create'].includes(location.pathname) && (
             <footer style={{ 
               marginTop: 40, 
               padding: '20px 0', 
