@@ -507,7 +507,7 @@ tr:hover td { background: var(--surface-hover); }
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 992px) {
   /* Layout Changes */
   .app-container { flex-direction: column; height: 100vh; overflow: hidden; }
   
@@ -629,7 +629,7 @@ tr:hover td { background: var(--surface-hover); }
   .table-container { overflow-x: auto; }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 992px) {
   .hide-on-mobile {
     display: none !important;
   }
@@ -666,7 +666,7 @@ tr:hover td { background: var(--surface-hover); }
   flex-shrink: 0;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 992px) {
   .mobile-profile-footer {
     display: flex !important;
     flex-direction: column;

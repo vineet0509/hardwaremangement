@@ -58,7 +58,7 @@ const Layout = ({ children }) => {
   };
 
   const allNavItems = [...navItems];
-  if (user?.is_super_admin) {
+  if (user && (user.is_super_admin === true || user.is_super_admin == 1)) {
     allNavItems.push({ name: 'Super Admin', path: '/super-admin', icon: Shield });
   }
 
@@ -202,6 +202,20 @@ const Layout = ({ children }) => {
           </div>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {(user?.is_super_admin === true || user?.is_super_admin == 1) && (
+              <button 
+                onClick={() => { setIsMobileMenuOpen(false); navigate('/super-admin'); }}
+                style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(79, 70, 229, 0.4)', border: '1px solid var(--primary)', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left', fontWeight: 600 }}
+              >
+                <Shield size={16} /> Super Admin Dashboard
+              </button>
+            )}
+            <button 
+              onClick={() => { setIsMobileMenuOpen(false); navigate('/settings'); }}
+              style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(255, 255, 255, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
+            >
+              <SettingsIcon size={16} /> Settings
+            </button>
             <button 
               onClick={() => {
                 if(confirm("Are you sure you want to log out?")) {
@@ -312,6 +326,14 @@ const Layout = ({ children }) => {
                    background: 'var(--surface)', border: '1px solid var(--border)', 
                    borderRadius: 12, boxShadow: '0 10px 25px rgba(0,0,0,0.1)', overflow: 'hidden', zIndex: 100 
                  }}>
+                   {(user?.is_super_admin === true || user?.is_super_admin == 1) && (
+                     <button 
+                       onClick={() => navigate('/super-admin')} 
+                       style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'rgba(79, 70, 229, 0.1)', border: 'none', borderBottom: '1px solid var(--border)', cursor: 'pointer', color: 'var(--primary)', fontSize: '0.9rem', fontWeight: 600 }}
+                     >
+                       <Shield size={16} /> Super Admin
+                     </button>
+                   )}
                    <button 
                      onClick={() => navigate('/settings')} 
                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.9rem' }}
