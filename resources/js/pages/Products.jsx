@@ -20,15 +20,21 @@ const Products = () => {
 
   const [stockModal, setStockModal] = useState({ show: false, type: 'add', product: null });
   const [stockQty, setStockQty] = useState('');
+  const [stockPrice, setStockPrice] = useState('');
 
   const handleStockUpdate = (e) => {
     e.preventDefault();
     if (!stockQty || stockQty <= 0) return;
     const url = `/products/${stockModal.product.id}/${stockModal.type}-stock`;
-    api.post(url, { quantity: parseInt(stockQty), reason: 'Manual Adjustment' })
+    api.post(url, { 
+      quantity: parseInt(stockQty), 
+      price: stockPrice ? parseFloat(stockPrice) : null,
+      reason: stockModal.type === 'add' ? 'Stock Restock' : 'Manual Adjustment' 
+    })
       .then(() => {
         setStockModal({ show: false, type: 'add', product: null });
         setStockQty('');
+        setStockPrice('');
         fetchData();
       })
       .catch(err => alert(err.response?.data?.message || 'Error updating stock'));
@@ -210,7 +216,10 @@ const Products = () => {
                       <Edit2 size={16} />
                     </button>
                     <button className="btn btn-outline" style={{ padding: '6px 10px' }} title="Add Stock"
-                      onClick={() => setStockModal({ show: true, type: 'add', product: p })}>
+                      onClick={() => {
+                        setStockModal({ show: true, type: 'add', product: p });
+                        setStockPrice(p.purchase_price);
+                      }}>
                       <ArrowUpCircle size={16} color="var(--success)" />
                     </button>
                     <button className="btn btn-outline" style={{ padding: '6px 10px' }} title="Remove Stock"
@@ -310,6 +319,13 @@ const Products = () => {
                   <input type="number" className="form-control" required min="1"
                     value={stockQty} onChange={e => setStockQty(e.target.value)} />
                 </div>
+                {stockModal.type === 'add' && (
+                  <div className="form-group" style={{ marginTop: 16 }}>
+                    <label className="form-label">Purchase Price (Per {stockModal.product?.unit})</label>
+                    <input type="number" step="0.01" className="form-control" required
+                      value={stockPrice} onChange={e => setStockPrice(e.target.value)} />
+                  </div>
+                )}
                 <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                   Current Stock: <strong style={{ color: 'var(--text-main)' }}>{stockModal.product?.quantity} {stockModal.product?.unit}</strong>
                 </p>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\StockTransaction;
+use App\Models\SupplierTransaction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -67,6 +68,17 @@ class ProductController extends Controller
                     'reference'  => 'Initial Stock',
                 ]);
             }
+
+            if ($product->quantity > 0 && $product->supplier_id) {
+                SupplierTransaction::create([
+                    'shop_id' => $product->shop_id,
+                    'supplier_id' => $product->supplier_id,
+                    'type' => 'purchase',
+                    'amount' => $product->quantity * $product->purchase_price,
+                    'transaction_date' => now(),
+                    'notes' => "Initial stock for product: {$product->name}"
+                ]);
+            }
             return $product;
         });
 
@@ -125,6 +137,18 @@ class ProductController extends Controller
                 'reference'  => $data['reference'] ?? null,
                 'notes'      => $data['notes'] ?? null,
             ]);
+
+            if ($product->supplier_id) {
+                $buyPrice = $data['price'] ?? $product->purchase_price;
+                SupplierTransaction::create([
+                    'shop_id' => $product->shop_id,
+                    'supplier_id' => $product->supplier_id,
+                    'type' => 'purchase',
+                    'amount' => $data['quantity'] * $buyPrice,
+                    'transaction_date' => now(),
+                    'notes' => "Stock added: {$product->name} (Qty: {$data['quantity']})"
+                ]);
+            }
         });
 
         return response()->json($product->fresh());

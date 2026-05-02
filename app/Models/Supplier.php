@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Scopes\ShopScope;
-use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use App\Traits\BelongsToShop;
 
-#[ScopedBy([ShopScope::class])]
 class Supplier extends Model
 {
+    use BelongsToShop;
+
     protected $fillable = [
         'shop_id',
         'name',
@@ -16,15 +16,6 @@ class Supplier extends Model
         'email',
         'address'
     ];
-
-    protected static function booted()
-    {
-        static::creating(function ($model) {
-            if (auth()->check() && !isset($model->shop_id)) {
-                $model->shop_id = auth()->user()->shop_id;
-            }
-        });
-    }
 
     public function transactions()
     {
