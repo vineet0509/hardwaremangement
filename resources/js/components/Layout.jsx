@@ -185,12 +185,12 @@ const Layout = ({ children }) => {
             </NavLink>
           ))}
 
-          <div style={{ margin: '12px 0', borderTop: '1px solid rgba(255,255,255,0.08)' }}></div>
+          <div className="hide-on-mobile" style={{ margin: '12px 0', borderTop: '1px solid rgba(255,255,255,0.08)' }}></div>
 
           <NavLink 
             to="/settings" 
             onClick={() => setIsMobileMenuOpen(false)}
-            className={`nav-item ${location.pathname === '/settings' ? 'active' : ''}`}
+            className={`nav-item hide-on-mobile ${location.pathname === '/settings' ? 'active' : ''}`}
           >
             <SettingsIcon size={20} /> Settings
           </NavLink>
@@ -198,7 +198,7 @@ const Layout = ({ children }) => {
           <NavLink 
             to="/privacy-policy" 
             onClick={() => setIsMobileMenuOpen(false)}
-            className={`nav-item ${location.pathname === '/privacy-policy' ? 'active' : ''}`}
+            className={`nav-item hide-on-mobile ${location.pathname === '/privacy-policy' ? 'active' : ''}`}
           >
             <Shield size={20} /> Privacy Policy
           </NavLink>

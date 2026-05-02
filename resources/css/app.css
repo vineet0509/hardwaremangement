@@ -608,7 +608,10 @@ tr:hover td { background: var(--surface-hover); }
   h3 { font-size: 1.1rem !important; }
   .topbar { height: 60px; padding: 0 16px; }
   .content-area { padding: 16px; }
+  .mobile-profile-footer { display: block !important; }
 }
+
+.mobile-profile-footer { display: none; }
 
 @media (max-width: 480px) {
   h1, .responsive-h1 { font-size: 1.4rem !important; }
