@@ -6,10 +6,26 @@ const SuperAdmin = () => {
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedShopUsers, setSelectedShopUsers] = useState(null);
+  const [activeTab, setActiveTab] = useState('shops');
+  const [loginLogs, setLoginLogs] = useState([]);
+  const [logsPagination, setLogsPagination] = useState({ current: 1, last: 1 });
 
   useEffect(() => {
     fetchShops();
+    fetchLogs(1);
   }, []);
+
+  const fetchLogs = (page = 1) => {
+    api.get(`/super-admin/login-logs?page=${page}`)
+      .then(res => {
+        setLoginLogs(res.data.data || res.data);
+        setLogsPagination({
+          current: res.data.current_page || 1,
+          last: res.data.last_page || 1
+        });
+      })
+      .catch(console.error);
+  };
 
   const fetchShops = () => {
     api.get('/super-admin/shops')
@@ -62,12 +78,36 @@ const SuperAdmin = () => {
         </div>
       </div>
 
+      <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
+        <button 
+          onClick={() => setActiveTab('shops')} 
+          style={{ 
+            padding: '10px 20px', borderRadius: 8, border: '1px solid var(--border)', 
+            background: activeTab === 'shops' ? 'var(--primary)' : 'var(--surface)', 
+            color: activeTab === 'shops' ? 'white' : 'var(--text-main)', cursor: 'pointer', fontWeight: 600 
+          }}
+        >
+          Registered Shops
+        </button>
+        <button 
+          onClick={() => setActiveTab('logs')} 
+          style={{ 
+            padding: '10px 20px', borderRadius: 8, border: '1px solid var(--border)', 
+            background: activeTab === 'logs' ? 'var(--primary)' : 'var(--surface)', 
+            color: activeTab === 'logs' ? 'white' : 'var(--text-main)', cursor: 'pointer', fontWeight: 600 
+          }}
+        >
+          User Login Logs
+        </button>
+      </div>
+
       <div style={{ display: 'flex', gap: 24, flexDirection: 'column' }}>
-        <div className="stat-card" style={{ overflowX: 'auto' }}>
-          <h3 style={{ borderBottom: '1px solid var(--border)', paddingBottom: 12, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Store size={20} color="var(--primary)" />
-            Registered Shops ({shops.length})
-          </h3>
+        {activeTab === 'shops' ? (
+          <div className="stat-card" style={{ overflowX: 'auto' }}>
+            <h3 style={{ borderBottom: '1px solid var(--border)', paddingBottom: 12, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Store size={20} color="var(--primary)" />
+              Registered Shops ({shops.length})
+            </h3>
           
           <div className="table-responsive"><table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
@@ -160,6 +200,68 @@ const SuperAdmin = () => {
             </div>
           )}
         </div>
+        ) : (
+          <div className="stat-card" style={{ overflowX: 'auto' }}>
+            <h3 style={{ borderBottom: '1px solid var(--border)', paddingBottom: 12, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+              User Login Logs
+            </h3>
+
+            <div className="table-responsive">
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <thead>
+                  <tr style={{ borderBottom: '2px solid var(--border)', color: 'var(--text-muted)' }}>
+                    <th style={{ padding: '12px 16px' }}>User</th>
+                    <th style={{ padding: '12px 16px' }}>Shop</th>
+                    <th style={{ padding: '12px 16px' }}>IP Address</th>
+                    <th style={{ padding: '12px 16px' }}>User Agent</th>
+                    <th style={{ padding: '12px 16px' }}>Login Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loginLogs.map(log => (
+                    <tr key={log.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                      <td style={{ padding: '16px' }}>{log.user?.name || 'Unknown User'} ({log.user?.email || 'N/A'})</td>
+                      <td style={{ padding: '16px' }}>{log.shop?.name || 'Unknown Shop'}</td>
+                      <td style={{ padding: '16px' }}>{log.ip_address}</td>
+                      <td style={{ padding: '16px', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={log.user_agent}>
+                        {log.user_agent}
+                      </td>
+                      <td style={{ padding: '16px' }}>{new Date(log.login_at).toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {loginLogs.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '32px', color: 'var(--text-muted)' }}>
+                No login logs recorded.
+              </div>
+            )}
+
+            {logsPagination.last > 1 && (
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 16 }}>
+                <button 
+                  className="btn btn-secondary" 
+                  disabled={logsPagination.current === 1} 
+                  onClick={() => fetchLogs(logsPagination.current - 1)}
+                >
+                  Previous
+                </button>
+                <span style={{ alignSelf: 'center', fontSize: '0.9rem' }}>
+                  Page {logsPagination.current} of {logsPagination.last}
+                </span>
+                <button 
+                  className="btn btn-secondary" 
+                  disabled={logsPagination.current === logsPagination.last} 
+                  onClick={() => fetchLogs(logsPagination.current + 1)}
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Users Modal or Detail Box */}
         {selectedShopUsers && (

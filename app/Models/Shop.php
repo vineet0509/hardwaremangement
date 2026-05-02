@@ -8,6 +8,7 @@ class Shop extends Model
 {
     protected $fillable = [
         'name',
+        'gst_number',
         'domain',
         'is_active',
         'trial_ends_at'

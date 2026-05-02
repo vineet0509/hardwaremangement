@@ -288,18 +288,25 @@ tr:hover td { background: var(--surface-hover); }
   width: 100%;
   padding: 12px 16px;
   background: #f8fafc;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  color: #0f172a;
-  font-size: 1rem;
-  transition: all 0.2s ease;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  color: #1e293b;
+  font-size: 0.95rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
 }
-.form-control:focus { 
-  outline: none; 
-  border-color: var(--primary); 
-  background: #ffffff; 
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15); 
+
+.form-control:hover {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+  transform: translateY(-1px);
 }
 
 /* Flex utilities */

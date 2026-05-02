@@ -13,9 +13,11 @@ class SettingsController extends Controller
     public function index(): JsonResponse
     {
         $settings = Setting::first();
+        $shop = auth()->user()->shop;
+
         if (!$settings) {
             $settings = Setting::create([
-                'company_name' => 'Hardware Manager',
+                'company_name' => $shop->name ?? 'Hardware Manager',
                 'subscription_plan' => 'full_time',
             ]);
         }
@@ -29,6 +31,7 @@ class SettingsController extends Controller
 
         $data = $settings->toArray();
         $data['is_expired'] = $isExpired;
+        $data['gst_number'] = $shop->gst_number ?? '';
         
         return response()->json($data);
     }
@@ -36,12 +39,16 @@ class SettingsController extends Controller
     public function update(Request $request): JsonResponse
     {
         $settings = Setting::first();
+        $shop = auth()->user()->shop;
         
-        $data = $request->validate([
+        $request->validate([
             'company_name' => 'required|string|max:255',
             'company_phone'=> 'nullable|string|max:50',
             'company_address' => 'nullable|string',
+            'gst_number' => 'nullable|string|max:20',
         ]);
+
+        $data = $request->only(['company_name', 'company_phone', 'company_address']);
 
         if ($settings) {
             $settings->update($data);
@@ -49,6 +56,13 @@ class SettingsController extends Controller
             $settings = Setting::create($data);
         }
 
-        return response()->json($settings);
+        if ($shop) {
+            $shop->update(['gst_number' => $request->gst_number]);
+        }
+
+        $response = $settings->toArray();
+        $response['gst_number'] = $shop->gst_number;
+
+        return response()->json($response);
     }
 }

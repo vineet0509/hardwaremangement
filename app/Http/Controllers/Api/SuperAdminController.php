@@ -51,6 +51,19 @@ class SuperAdminController extends Controller
             'shop' => $shop
         ]);
     }
+
+    public function loginLogs(Request $request)
+    {
+        if (!$request->user()->is_super_admin) {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+
+        $logs = \App\Models\LoginLog::with(['user', 'shop'])
+            ->orderBy('login_at', 'desc')
+            ->paginate(50);
+
+        return response()->json($logs);
+    }
     
     public function extendPlan(Request $request, Shop $shop)
     {

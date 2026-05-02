@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, User, UserPlus, Package } from 'lucide-react';
-import '../../css/login.css';
+import { Mail, Lock, User, UserPlus, Package, Phone, Store, ShieldCheck, BadgeCheck } from 'lucide-react';
 
 const Register = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    mobile: '',
     password: '',
     password_confirmation: '',
-    shop_name: ''
+    shop_name: '',
+    gst_number: ''
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -27,7 +28,6 @@ const Register = () => {
     setLoading(true);
     setError(null);
     
-    // Using simple fetch to bypass Axios interceptors during auth creation
     fetch('/api/register', {
         method: 'POST',
         headers: {
@@ -53,126 +53,88 @@ const Register = () => {
 
   return (
     <div className="login-container">
-      <div className="login-bg-shape1"></div>
-      <div className="login-bg-shape2"></div>
-      
-      <div className="login-card" style={{ marginTop: '20px', marginBottom: '20px' }}>
-        <div className="login-header">
-          <div className="login-logo">
-            <Package size={32} strokeWidth={2.5} />
+      <div className="login-card" style={{ maxWidth: 500, padding: '40px', background: 'var(--surface)', borderRadius: 20, marginTop: 40, marginBottom: 40, boxShadow: '0 20px 25px -5px rgba(0,0,0,0.05), 0 10px 10px -5px rgba(0,0,0,0.02)' }}>
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+          <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 64, height: 64, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: 'white', boxShadow: '0 10px 15px -3px rgba(79, 70, 229, 0.3)' }}>
+             <Package size={36} strokeWidth={2.5} />
           </div>
-          <h1 className="login-title">Create Account</h1>
-          <p className="login-subtitle">Join us to manage your hardware store.</p>
-          <div style={{ display: 'inline-block', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--primary)', padding: '6px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold', marginTop: '8px' }}>
-            🎉 Includes a 30-Day Free Trial
-          </div>
+           <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#111827', marginBottom: 8, letterSpacing: '-0.02em' }}>Register Store</h2>
+           <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Start managing your hardware business today.</p>
+           
+           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#ecfdf5', color: '#059669', padding: '6px 14px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold', marginTop: '16px', border: '1px solid #d1fae5' }}>
+             <BadgeCheck size={16} /> 30-Day Free Trial Included
+           </div>
         </div>
 
-        <form onSubmit={handleRegister} className="login-form">
-          {error && <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', padding: '12px 16px', borderRadius: 8, fontSize: '0.85rem', marginBottom: 20, textAlign: 'center' }}>{error}</div>}
+        <form onSubmit={handleRegister}>
+          {error && <div style={{ background: 'rgba(239, 68, 68, 0.08)', color: 'var(--danger)', padding: '12px 16px', borderRadius: 10, fontSize: '0.85rem', marginBottom: 24, textAlign: 'center', border: '1px solid rgba(239, 68, 68, 0.2)' }}>{error}</div>}
 
-          <div className="form-group">
-            <label className="form-label">Shop / Hardware Business Name</label>
-            <div className="login-input-wrapper">
-              <Package className="login-input-icon" size={20} />
-              <input 
-                type="text" 
-                name="shop_name"
-                className="form-control" 
-                placeholder="Ex: Sharma Hardware" 
-                required
-                value={formData.shop_name}
-                onChange={handleChange}
-              />
-            </div>
+          {/* Section: Shop Details */}
+          <div style={{ marginBottom: 24 }}>
+             <h4 style={{ fontSize: '0.8rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Store size={14} /> Store Information
+             </h4>
+             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <input 
+                  type="text" 
+                  name="shop_name" 
+                  className="form-control" 
+                  placeholder="Official Shop Name (Ex: Apex Hardware)" 
+                  required 
+                  value={formData.shop_name} 
+                  onChange={handleChange} 
+                />
+                <input 
+                  type="text" 
+                  name="gst_number" 
+                  className="form-control" 
+                  placeholder="GST Number (Optional)" 
+                  value={formData.gst_number} 
+                  onChange={handleChange} 
+                />
+             </div>
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Your Full Name</label>
-            <div className="login-input-wrapper">
-              <User className="login-input-icon" size={20} />
-              <input 
-                type="text" 
-                name="name"
-                className="form-control" 
-                placeholder="John Doe" 
-                required
-                value={formData.name}
-                onChange={handleChange}
-              />
-            </div>
+          {/* Section: Personal Info */}
+          <div style={{ marginBottom: 24 }}>
+             <h4 style={{ fontSize: '0.8rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <User size={14} /> Owner Details
+             </h4>
+             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <input type="text" name="name" className="form-control" placeholder="Your Full Name" required value={formData.name} onChange={handleChange} />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                   <input type="email" name="email" className="form-control" placeholder="Email Address" required value={formData.email} onChange={handleChange} />
+                   <input type="text" name="mobile" className="form-control" placeholder="Mobile Number" required value={formData.mobile} onChange={handleChange} />
+                </div>
+             </div>
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Email Address</label>
-            <div className="login-input-wrapper">
-              <Mail className="login-input-icon" size={20} />
-              <input 
-                type="email" 
-                name="email"
-                className="form-control" 
-                placeholder="admin@hardwareshop.com" 
-                required
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
+          {/* Section: Security */}
+          <div style={{ marginBottom: 32 }}>
+             <h4 style={{ fontSize: '0.8rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <ShieldCheck size={14} /> Account Security
+             </h4>
+             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <input type="password" name="password" className="form-control" placeholder="Password" required minLength={8} value={formData.password} onChange={handleChange} />
+                <input type="password" name="password_confirmation" className="form-control" placeholder="Confirm" required minLength={8} value={formData.password_confirmation} onChange={handleChange} />
+             </div>
+             <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 8 }}>Use 8 or more characters with letters and numbers.</p>
           </div>
 
-          <div className="form-group">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-              <label className="form-label" style={{ margin: 0 }}>Password</label>
-              <a href="#" onClick={(e) => { e.preventDefault(); alert("To reset your password, please contact the Software Administrator or use your registered recovery phone number."); }} style={{ fontSize: '0.75rem', color: 'var(--primary)', textDecoration: 'none' }}>Forgot Password?</a>
-            </div>
-            <div className="login-input-wrapper">
-              <Lock className="login-input-icon" size={20} />
-              <input 
-                type="password" 
-                name="password"
-                className="form-control" 
-                placeholder="••••••••" 
-                required
-                minLength={8}
-                value={formData.password}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Confirm Password</label>
-            <div className="login-input-wrapper">
-              <Lock className="login-input-icon" size={20} />
-              <input 
-                type="password" 
-                name="password_confirmation"
-                className="form-control" 
-                placeholder="••••••••" 
-                required
-                minLength={8}
-                value={formData.password_confirmation}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          <button type="submit" disabled={loading} className="login-btn" style={{ marginTop: '30px' }}>
-            {loading ? 'Creating Shop...' : <>Register Store <UserPlus size={20} /></>}
+          <button type="submit" disabled={loading} className="btn btn-primary" style={{ width: '100%', padding: '16px', fontSize: '1.05rem', fontWeight: 700, borderRadius: 12, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8 }}>
+            {loading ? 'Setting up your shop...' : <>Register Business <UserPlus size={20} /></>}
           </button>
 
-          <div style={{ textAlign: 'center', marginTop: '24px', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+          <div style={{ textAlign: 'center', marginTop: '28px', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
             Already have an account?{' '}
-            <Link to="/login" className="forgot-password">
-              Sign In
+            <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none' }}>
+              Sign In Here
             </Link>
           </div>
           
-          <div style={{ textAlign: 'center', marginTop: '16px', fontSize: '0.8rem' }}>
-            By registering, you agree to our{' '}
-            <Link to="/privacy-policy" style={{ color: 'var(--text-muted)', textDecoration: 'underline' }}>
-              Privacy Policy
-            </Link>
-          </div>
+          <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '0.7rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
+            By continuing, you agree to our <Link to="/terms" style={{ color: 'inherit', textDecoration: 'underline' }}>Terms of Service</Link> and <Link to="/privacy-policy" style={{ color: 'inherit', textDecoration: 'underline' }}>Privacy Policy</Link>.
+          </p>
         </form>
       </div>
     </div>

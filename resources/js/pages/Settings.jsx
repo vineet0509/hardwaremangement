@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
 import { Settings as SettingsIcon, AlertTriangle, Save, CheckCircle } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 const Settings = () => {
   const [formData, setFormData] = useState({
-    company_name: '', company_phone: '', company_address: '', 
+    company_name: '', company_phone: '', company_address: '', gst_number: '',
     subscription_plan: 'full_time', subscription_expires_at: ''
   });
   const [passwordData, setPasswordData] = useState({
@@ -19,11 +20,12 @@ const Settings = () => {
           company_name: res.data.company_name || '',
           company_phone: res.data.company_phone || '',
           company_address: res.data.company_address || '',
+          gst_number: res.data.gst_number || '',
           subscription_plan: res.data.subscription_plan || 'full_time',
           subscription_expires_at: res.data.subscription_expires_at ? res.data.subscription_expires_at.split('T')[0] : ''
         });
       })
-      .catch(err => alert(err.response?.data?.message || 'Error fetching settings'))
+      .catch(err => Swal.fire('Error', err.response?.data?.message || 'Error fetching settings', 'error'))
       .finally(() => setLoading(false));
   }, []);
 
@@ -31,24 +33,25 @@ const Settings = () => {
     e.preventDefault();
     api.post('/settings', formData)
       .then(res => {
-        alert('Settings saved successfully!');
-        window.location.reload(); // Quick refresh to update the sidebar dynamic company name
+        Swal.fire('Success', 'Settings saved successfully!', 'success').then(() => {
+           window.location.reload(); // Quick refresh to update the sidebar dynamic company name
+        });
       })
-      .catch(err => alert(err.response?.data?.message || 'Error saving settings'));
+      .catch(err => Swal.fire('Error', err.response?.data?.message || 'Error saving settings', 'error'));
   };
 
 
   const handlePasswordChange = (e) => {
     e.preventDefault();
     if(passwordData.new_password !== passwordData.new_password_confirmation) {
-      return alert("New passwords do not match!");
+      return Swal.fire('Warning', "New passwords do not match!", 'warning');
     }
     api.post('/user/password', passwordData)
       .then(res => {
-        alert(res.data.message || 'Password updated successfully!');
+        Swal.fire('Success', res.data.message || 'Password updated successfully!', 'success');
         setPasswordData({ current_password: '', new_password: '', new_password_confirmation: '' });
       })
-      .catch(err => alert(err.response?.data?.message || 'Error updating password'));
+      .catch(err => Swal.fire('Error', err.response?.data?.message || 'Error updating password', 'error'));
   };
 
   if (loading) return <div>Loading settings...</div>;
@@ -74,6 +77,11 @@ const Settings = () => {
               <label className="form-label">Contact Phone</label>
               <input type="text" className="form-control"
                 value={formData.company_phone} onChange={e => setFormData({...formData, company_phone: e.target.value})} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">GST Number (Optional)</label>
+              <input type="text" className="form-control"
+                value={formData.gst_number} onChange={e => setFormData({...formData, gst_number: e.target.value})} />
             </div>
             <div className="form-group">
               <label className="form-label">Business Address</label>

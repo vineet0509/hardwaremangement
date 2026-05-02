@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingCart, Users, FileText, Receipt, LogOut, Settings as SettingsIcon, Banknote, Languages, Lock, Shield, Menu, X, Truck, AlertTriangle, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, Users, FileText, Receipt, LogOut, Settings as SettingsIcon, Banknote, Languages, Lock, Shield, Menu, X, Truck, AlertTriangle, Sun, Moon, ClipboardList } from 'lucide-react';
 import api from '../utils/api';
 
 const Layout = ({ children }) => {
@@ -12,6 +12,7 @@ const Layout = ({ children }) => {
     { name: 'Products & Stock', path: '/products', icon: Package },
     { name: 'Suppliers', path: '/suppliers', icon: Truck },
     { name: 'Point of Sale (Billing)', path: '/billing', icon: ShoppingCart },
+    { name: 'Quotations', path: '/quotations', icon: ClipboardList },
     { name: 'Customers', path: '/customers', icon: Users },
     { name: 'Bill History', path: '/bills', icon: Receipt },
     { name: 'Staff Advances', path: '/advances', icon: Banknote },

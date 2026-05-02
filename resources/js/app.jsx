@@ -14,6 +14,8 @@ import Settings from './pages/Settings';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import SuperAdmin from './pages/SuperAdmin';
+import QuotationsList from './pages/QuotationsList';
+import QuotationCreate from './pages/QuotationCreate';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Suppliers from './pages/Suppliers';
 import AboutUs from './pages/AboutUs';
@@ -51,6 +53,8 @@ function App() {
         <Route path="/settings" element={<ProtectedRoute><Layout><Settings /></Layout></ProtectedRoute>} />
         <Route path="/suppliers" element={<ProtectedRoute><Layout><Suppliers /></Layout></ProtectedRoute>} />
         <Route path="/super-admin" element={<ProtectedRoute><Layout><SuperAdmin /></Layout></ProtectedRoute>} />
+        <Route path="/quotations" element={<ProtectedRoute><Layout><QuotationsList /></Layout></ProtectedRoute>} />
+        <Route path="/quotations/create" element={<ProtectedRoute><Layout><QuotationCreate /></Layout></ProtectedRoute>} />
         
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>

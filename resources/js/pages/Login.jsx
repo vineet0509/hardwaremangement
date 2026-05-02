@@ -4,7 +4,7 @@ import api from '../utils/api';
 import { Package, Lock, Mail } from 'lucide-react';
 
 const Login = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ login: '', password: '' });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -29,13 +29,13 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: 'var(--surface-hover)' }}>
-      <div className="login-card" style={{ width: 400, padding: '40px', background: 'var(--surface)', borderRadius: 16, boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)' }}>
+    <div className="login-container">
+      <div className="login-card" style={{ width: 400, padding: '40px', background: 'var(--surface)', borderRadius: 16 }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 60, height: 60, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: 'white', boxShadow: '0 4px 10px rgba(16, 185, 129, 0.4)' }}>
+          <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 60, height: 60, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: 'white' }}>
              <Package size={32} strokeWidth={2.5} />
           </div>
-           <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary)', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.02em' }}>Hardware Pro</h2>
+           <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary)', marginBottom: 4 }}>Hardware Pro</h2>
            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Management Dashboard Login</p>
         </div>
 
@@ -43,9 +43,9 @@ const Login = () => {
 
         <form onSubmit={handleLogin}>
            <div className="form-group" style={{ marginBottom: 16 }}>
-             <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Mail size={16} /> Email Address</label>
-             <input type="email" required className="form-control" style={{ padding: '12px' }}
-                value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+             <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Mail size={16} /> Email or Mobile Number</label>
+             <input type="text" required className="form-control"
+                value={formData.login} onChange={e => setFormData({...formData, login: e.target.value})} />
            </div>
            
            <div className="form-group" style={{ marginBottom: 24 }}>
@@ -53,7 +53,7 @@ const Login = () => {
                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6, margin: 0 }}><Lock size={16} /> Password</label>
                <a href="#" onClick={(e) => { e.preventDefault(); alert("To reset your password, please contact the Software Administrator or use your registered recovery phone number."); }} style={{ fontSize: '0.75rem', color: 'var(--primary)', textDecoration: 'none' }}>Forgot Password?</a>
              </div>
-             <input type="password" required className="form-control" style={{ padding: '12px' }}
+             <input type="password" required className="form-control"
                 value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} />
            </div>
 
@@ -65,12 +65,6 @@ const Login = () => {
              Need a new SaaS installation?{' '}
              <Link to="/register" style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}>
                Start your 30-Day Free Trial
-             </Link>
-           </div>
-           
-           <div style={{ textAlign: 'center', marginTop: '16px', fontSize: '0.8rem' }}>
-             <Link to="/privacy-policy" style={{ color: 'var(--text-muted)', textDecoration: 'underline' }}>
-               Privacy Policy
              </Link>
            </div>
         </form>

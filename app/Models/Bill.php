@@ -14,7 +14,7 @@ class Bill extends Model
         'bill_number', 'customer_name', 'customer_phone', 'customer_address',
         'subtotal', 'discount', 'tax', 'total',
         'paid_amount', 'due_amount',
-        'payment_method', 'status', 'notes',
+        'payment_method', 'status', 'notes', 'is_gst',
     ];
 
     protected $casts = [

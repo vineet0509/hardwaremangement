@@ -17,13 +17,16 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'mobile' => 'nullable|string|max:15|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'shop_name' => 'required|string|max:255'
+            'shop_name' => 'required|string|max:255',
+            'gst_number' => 'nullable|string|max:20'
         ]);
 
         // 1. Create the unique Shop (Multi-tenant partition)
         $shop = Shop::create([
             'name' => $request->shop_name,
+            'gst_number' => $request->gst_number,
             'is_active' => true,
             'trial_ends_at' => now()->addDays(30),
         ]);
@@ -41,6 +44,7 @@ class AuthController extends Controller
         $user = User::withoutGlobalScopes()->create([
             'name' => $request->name,
             'email' => $request->email,
+            'mobile' => $request->mobile,
             'password' => Hash::make($request->password),
             'shop_id' => $shop->id,
         ]);
@@ -58,20 +62,35 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'login' => 'required|string', // This will be email or mobile
             'password' => 'required',
         ]);
 
         // Extremely critical: We must explicitly bypass the Global Shop Scope here.
-        // Otherwise, unauthenticated requests default to 'shop_id = 1' and block users
-        // from any other newly registered shops from being found!
-        $user = User::withoutGlobalScopes()->where('email', $request->email)->first();
+        // Check both email and mobile
+        $user = User::withoutGlobalScopes()
+            ->where(function($query) use ($request) {
+                $query->where('email', $request->login)
+                      ->orWhere('mobile', $request->login);
+            })
+            ->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Invalid email or password.'], 401);
+            return response()->json(['message' => 'Invalid login credentials.'], 401);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
+
+        \App\Models\LoginLog::create([
+            'user_id' => $user->id,
+            'shop_id' => $user->shop_id,
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'login_at' => now(),
+        ]);
+
+        $logMessage = "[" . now()->toDateTimeString() . "] User ID: " . $user->id . " | Name: " . $user->name . " | Shop ID: " . $user->shop_id . " | IP: " . $request->ip() . " | Agent: " . $request->userAgent() . PHP_EOL;
+        \Illuminate\Support\Facades\File::append(storage_path('logs/user_logins.log'), $logMessage);
 
         return response()->json([
             'user' => $user,

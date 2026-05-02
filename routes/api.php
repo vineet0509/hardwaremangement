@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\BillController;
+use App\Http\Controllers\Api\QuotationController;
 use App\Http\Controllers\Api\StaffController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\SettingsController;
@@ -44,6 +45,7 @@ Route::get('/advances', [BillController::class, 'advancesList']);
 Route::post('/advances', [BillController::class, 'storeAdvance']);
 Route::post('/bills/{bill}/repay', [BillController::class, 'repay']);
 Route::apiResource('bills', BillController::class);
+Route::apiResource('quotations', QuotationController::class);
 
 // Staff
 Route::apiResource('staff', StaffController::class);
@@ -71,4 +73,5 @@ Route::get('/salary-records',                           [StaffController::class,
     Route::get('/super-admin/shops', [SuperAdminController::class, 'index']);
     Route::post('/super-admin/shops/{shop}/toggle-status', [SuperAdminController::class, 'toggleStatus']);
     Route::post('/super-admin/shops/{shop}/extend-plan', [SuperAdminController::class, 'extendPlan']);
+    Route::get('/super-admin/login-logs', [SuperAdminController::class, 'loginLogs']);
 });
