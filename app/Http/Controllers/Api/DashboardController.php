@@ -36,7 +36,7 @@ class DashboardController extends Controller
         $pendingAdvances = AdvancePayment::where('status', 'pending')->sum('amount');
 
         // Monthly sales chart (last 6 months)
-        $monthlySales = Bill::selectRaw('MONTH(created_at) as month, YEAR(created_at) as year, SUM(total) as total')
+        $monthlySales = Bill::selectRaw('strftime("%m", created_at) as month, strftime("%Y", created_at) as year, SUM(total) as total')
             ->where('created_at', '>=', now()->subMonths(6))
             ->groupBy('year', 'month')
             ->orderBy('year')->orderBy('month')
