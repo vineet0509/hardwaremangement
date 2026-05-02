@@ -13,7 +13,7 @@ const Advances = () => {
     staff_id: '', 
     amount: '', 
     reason: '', 
-    advance_date: new Date().toISOString().split('T')[0] 
+    advance_date: new Date().toISOString().slice(0, 16) 
   });
 
   const fetchAdvances = () => {
@@ -44,7 +44,7 @@ const Advances = () => {
       .then(res => {
         alert('Advance recorded successfully!');
         setShowModal(false);
-        setFormData({ staff_id: '', amount: '', reason: '', advance_date: new Date().toISOString().split('T')[0] });
+        setFormData({ staff_id: '', amount: '', reason: '', advance_date: new Date().toISOString().slice(0, 16) });
         fetchAdvances();
       })
       .catch(err => alert(err.response?.data?.message || 'Error processing advance.'));
@@ -111,7 +111,7 @@ const Advances = () => {
             ) : filteredAdvances.map(a => (
               <tr key={a.id}>
                 <td>
-                  <div style={{ fontWeight: 600 }}>{new Date(a.advance_date).toLocaleDateString()}</div>
+                  <div style={{ fontWeight: 600 }}>{new Date(a.advance_date).toLocaleString()}</div>
                 </td>
                 <td>
                   <div style={{ fontWeight: 600, color: 'var(--primary)' }}>{a.staff?.name || 'Unknown'}</div>
@@ -157,7 +157,7 @@ const Advances = () => {
               <form onSubmit={handleSubmit}>
                 <div className="form-group" style={{ marginBottom: 16 }}>
                   <label className="form-label"><Calendar size={14} style={{ marginRight: 6 }}/>Advance Date</label>
-                  <input type="date" className="form-control" value={formData.advance_date} onChange={e => setFormData({...formData, advance_date: e.target.value})} required />
+                  <input type="datetime-local" className="form-control" value={formData.advance_date} onChange={e => setFormData({...formData, advance_date: e.target.value})} required />
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 16, marginBottom: 16 }}>
                   <div className="form-group mb-0">

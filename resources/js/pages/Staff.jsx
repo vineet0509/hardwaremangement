@@ -10,11 +10,11 @@ const Staff = () => {
   const [selectedStaff, setSelectedStaff] = useState(null);
 
   const [formData, setFormData] = useState({
-    name: '', phone: '', role: 'Labour', monthly_salary: 0, joining_date: new Date().toISOString().split('T')[0]
+    name: '', phone: '', role: 'Labour', monthly_salary: 0, joining_date: new Date().toISOString().slice(0, 16)
   });
 
   const [advanceData, setAdvanceData] = useState({
-    amount: '', advance_date: new Date().toISOString().split('T')[0], reason: ''
+    amount: '', advance_date: new Date().toISOString().slice(0, 16), reason: ''
   });
 
   const fetchStaff = () => {
@@ -33,7 +33,7 @@ const Staff = () => {
       .then(() => { 
         setShowModal(false); 
         fetchStaff(); 
-        setFormData({ name: '', phone: '', role: 'Labour', monthly_salary: 0, joining_date: new Date().toISOString().split('T')[0] });
+        setFormData({ name: '', phone: '', role: 'Labour', monthly_salary: 0, joining_date: new Date().toISOString().slice(0, 16) });
       })
       .catch(err => alert(err.response?.data?.message || 'Error occurred while saving staff.'));
   };
@@ -44,7 +44,7 @@ const Staff = () => {
       .then(() => { 
         setShowAdvanceModal(false); 
         fetchStaff(); 
-        setAdvanceData({ amount: '', advance_date: new Date().toISOString().split('T')[0], reason: '' });
+        setAdvanceData({ amount: '', advance_date: new Date().toISOString().slice(0, 16), reason: '' });
       })
       .catch(err => alert(err.response?.data?.message || 'Error occurred while saving advance.'));
   };
@@ -58,7 +58,7 @@ const Staff = () => {
         year: new Date().getFullYear(),
         basic_salary: s.monthly_salary,
         paid_amount: s.monthly_salary,
-        payment_date: new Date().toISOString().split('T')[0]
+        payment_date: new Date().toISOString().slice(0, 16)
       }).then(() => {
         alert('Salary paid successfully!');
         fetchStaff();
@@ -135,7 +135,7 @@ const Staff = () => {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Date</label>
-                  <input type="date" className="form-control" required 
+                  <input type="datetime-local" className="form-control" required 
                     value={advanceData.advance_date} onChange={e => setAdvanceData({...advanceData, advance_date: e.target.value})} />
                 </div>
                 <div className="form-group">
@@ -188,7 +188,7 @@ const Staff = () => {
                   </div>
                   <div className="form-group" style={{ flex: 1 }}>
                     <label className="form-label">Joining Date</label>
-                    <input type="date" className="form-control" required value={formData.joining_date} onChange={e => setFormData({...formData, joining_date: e.target.value})} />
+                    <input type="datetime-local" className="form-control" required value={formData.joining_date} onChange={e => setFormData({...formData, joining_date: e.target.value})} />
                   </div>
                 </div>
               </div>

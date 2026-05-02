@@ -127,7 +127,7 @@ const BillsList = () => {
               </div>
               <div style="text-align: right;">
                 <strong>INVOICE NO:</strong> ${bill.bill_number}<br/>
-                <strong>DATE:</strong> ${new Date(bill.created_at).toLocaleDateString()}<br/>
+                <strong>DATE:</strong> ${new Date(bill.created_at).toLocaleString()}<br/>
                 <strong>PAYMENT MODE:</strong> <span style="text-transform: capitalize;">${bill.payment_method}</span>
               </div>
             </div>
@@ -253,7 +253,7 @@ const BillsList = () => {
             ) : bills.map(b => (
               <tr key={b.id}>
                 <td style={{ fontWeight: 600, color: 'var(--primary)' }}>{b.bill_number}</td>
-                <td>{new Date(b.created_at).toLocaleDateString()}</td>
+                <td>{new Date(b.created_at).toLocaleString()}</td>
                 <td>
                   <div style={{ fontWeight: 600 }}>{b.customer_name || 'Walk-in'}</div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{b.customer_phone}</div>

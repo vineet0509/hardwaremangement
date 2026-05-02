@@ -134,7 +134,7 @@ const QuotationCreate = () => {
               </div>
               <div class="bill-info">
                 <h2>ESTIMATE / QUOTATION</h2>
-                <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+                <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
                 <p><strong>Valid For:</strong> 7 Days</p>
               </div>
             </div>

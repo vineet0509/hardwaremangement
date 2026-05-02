@@ -112,7 +112,7 @@ class BillController extends Controller
             'customer_phone' => 'nullable|string',
             'amount'         => 'required|numeric|min:1',
             'method'         => 'required|in:cash,upi,card',
-            'date'           => 'required|date'
+            'date'           => 'required|date_format:Y-m-d H:i:s'
         ]);
 
         $bill = Bill::create([

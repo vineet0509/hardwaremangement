@@ -96,7 +96,7 @@ const QuotationsList = () => {
               </div>
               <div style="text-align: right;">
                 <strong>QUOTATION NO:</strong> ${quote.quotation_number}<br/>
-                <strong>DATE:</strong> ${new Date(quote.created_at).toLocaleDateString()}<br/>
+                <strong>DATE:</strong> ${new Date(quote.created_at).toLocaleString()}<br/>
               </div>
             </div>
 
@@ -188,7 +188,7 @@ const QuotationsList = () => {
             ) : filteredQuotations.map(q => (
               <tr key={q.id}>
                 <td style={{ fontWeight: 600, color: 'var(--blue)' }}>{q.quotation_number}</td>
-                <td>{new Date(q.created_at).toLocaleDateString()}</td>
+                <td>{new Date(q.created_at).toLocaleString()}</td>
                 <td>
                   <div style={{ fontWeight: 600 }}>{q.customer_name || 'Walk-in'}</div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{q.customer_phone}</div>

@@ -157,7 +157,7 @@ const Billing = () => {
               <div class="bill-info">
                 <h2>${isGst ? 'TAX INVOICE' : 'RETAIL INVOICE'}</h2>
                 <p><strong>Bill No:</strong> ${billData.bill_number}</p>
-                <p><strong>Date:</strong> ${new Date(billData.created_at).toLocaleDateString()}</p>
+                <p><strong>Date:</strong> ${new Date(billData.created_at).toLocaleString()}</p>
               </div>
             </div>
 

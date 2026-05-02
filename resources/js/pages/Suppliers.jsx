@@ -20,7 +20,7 @@ const Suppliers = () => {
   const [ledgerFormData, setLedgerFormData] = useState({
     type: 'payment',
     amount: '',
-    transaction_date: new Date().toISOString().split('T')[0],
+    transaction_date: new Date().toISOString().slice(0, 16),
     notes: ''
   });
 
@@ -90,7 +90,7 @@ const Suppliers = () => {
         setLedgerFormData({
           type: 'payment',
           amount: '',
-          transaction_date: new Date().toISOString().split('T')[0],
+          transaction_date: new Date().toISOString().slice(0, 16),
           notes: ''
         });
         fetchLedger(selectedSupplier.id);
@@ -280,7 +280,7 @@ const Suppliers = () => {
                   <div>
                     <label style={{ fontSize: '0.75rem', display: 'block', marginBottom: 4 }}>Date</label>
                     <input 
-                      type="date" 
+                      type="datetime-local" 
                       className="form-control" 
                       style={{ padding: 8 }}
                       required 
@@ -319,7 +319,7 @@ const Suppliers = () => {
                   <tbody>
                     {ledgerTransactions.map(tx => (
                       <tr key={tx.id} style={{ borderBottom: '1px solid var(--border)' }}>
-                        <td style={{ padding: 8 }}>{tx.transaction_date}</td>
+                        <td style={{ padding: 8 }}>{new Date(tx.transaction_date).toLocaleString()}</td>
                         <td style={{ padding: 8 }}>
                           <span style={{
                             fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase',
