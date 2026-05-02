@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
-import { Settings as SettingsIcon, AlertTriangle, Save, CheckCircle } from 'lucide-react';
+import { Settings as SettingsIcon, AlertTriangle, Save, CheckCircle, Languages } from 'lucide-react';
 import Swal from 'sweetalert2';
 
 const Settings = () => {
@@ -153,6 +153,54 @@ const Settings = () => {
               Update Password
             </button>
           </form>
+        </div>
+        {/* Language Settings - Added for mobile accessibility */}
+        <div className="stat-card" style={{ flex: 1, minWidth: '300px' }}>
+          <h3 style={{ borderBottom: '1px solid var(--border)', paddingBottom: 12, marginBottom: 16 }}>Language & Localization</h3>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: 20 }}>
+            Select your preferred system language. This will translate the interface using Google Translate.
+          </p>
+          
+          <div className="form-group">
+            <label className="form-label">System Language</label>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderRadius: '10px', background: 'var(--bg-color)', border: '1px solid var(--border)' }}>
+              <Languages size={20} color="var(--primary)" />
+              <select 
+                className="form-control"
+                style={{ border: 'none', background: 'transparent', padding: 0, height: 'auto', boxShadow: 'none' }}
+                onChange={(e) => {
+                  const lang = e.target.value;
+                  if(lang === 'en' || !lang) {
+                      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+                  } else {
+                      document.cookie = `googtrans=/en/${lang}; path=/;`;
+                      document.cookie = `googtrans=/en/${lang}; domain=${window.location.hostname}; path=/;`;
+                  }
+                  window.location.reload();
+                }}
+                defaultValue={
+                  document.cookie.split('; ').find(row => row.startsWith('googtrans='))?.split('=')[1]?.replace('/en/', '') || 'en'
+                }
+              >
+                <option value="en">English (US)</option>
+                <option value="hi">हिंदी (Hindi)</option>
+                <option value="bn">বাংলা (Bengali)</option>
+                <option value="mr">मराठी (Marathi)</option>
+                <option value="te">తెలుగు (Telugu)</option>
+                <option value="ta">தமிழ் (Tamil)</option>
+                <option value="gu">ગુજરાતી (Gujarati)</option>
+                <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                <option value="ur">اردو (Urdu)</option>
+                <option value="ml">മലയാളം (Malayalam)</option>
+                <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+              </select>
+            </div>
+          </div>
+          <div style={{ marginTop: 12, fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <CheckCircle size={14} color="var(--success)" />
+            Language setting will be applied across the entire app.
+          </div>
         </div>
       </div>
     </div>
