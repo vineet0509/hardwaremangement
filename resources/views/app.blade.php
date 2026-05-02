@@ -41,7 +41,7 @@
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script>
-        window.APP_URL = "{{ config('app.url') }}";
+        window.API_URL = "{{ url('/api') }}";
     </script>
 </head>
 <body>
