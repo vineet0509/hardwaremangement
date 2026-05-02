@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../utils/api';
 import { Package, Lock, Mail } from 'lucide-react';
@@ -14,8 +15,10 @@ const Login = () => {
     setLoading(true);
     setError(null);
     
-    api.post('/login', formData)
-      .then(res => {
+    // Fetch CSRF cookie before login
+    axios.get(`${window.location.origin}/sanctum/csrf-cookie`).then(() => {
+        api.post('/login', formData)
+          .then(res => {
          const token = res.data.access_token;
          localStorage.setItem('auth_token', token);
          // Setup Axios interceptor immediately for this session
@@ -25,7 +28,8 @@ const Login = () => {
       .catch(err => {
          setError(err.response?.data?.message || 'Login failed. Invalid credentials.');
       })
-      .finally(() => setLoading(false));
+          .finally(() => setLoading(false));
+    });
   };
 
   return (

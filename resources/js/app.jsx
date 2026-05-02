@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import axios from 'axios';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
@@ -32,6 +33,11 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
+  useEffect(() => {
+    // Standard CSRF fetch for stateful forms
+    axios.get(`${window.location.origin}/sanctum/csrf-cookie`).catch(console.error);
+  }, []);
+
   return (
     <Router>
       <Routes>

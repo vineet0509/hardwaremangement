@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import api from '../utils/api';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, User, UserPlus, Package, Phone, Store, ShieldCheck, BadgeCheck } from 'lucide-react';
 
@@ -27,28 +29,18 @@ const Register = () => {
     }
     setLoading(true);
     setError(null);
-    
-    fetch('/api/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify(formData)
-    })
-    .then(async res => {
-        const data = await res.json();
-        if(!res.ok) throw new Error(data.message || 'Registration error');
-        return data;
-    })
-    .then(data => {
-        localStorage.setItem('auth_token', data.access_token);
-        window.location.href = '/dashboard';
-    })
-    .catch(err => {
-        setError(err.message);
-    })
-    .finally(() => setLoading(false));
+    // Fetch CSRF cookie before registration
+    axios.get(`${window.location.origin}/sanctum/csrf-cookie`).then(() => {
+        api.post('/register', formData)
+          .then(res => {
+              localStorage.setItem('auth_token', res.data.access_token);
+              window.location.href = '/dashboard';
+          })
+          .catch(err => {
+              setError(err.response?.data?.message || 'Registration error');
+          })
+          .finally(() => setLoading(false));
+    });
   };
 
   return (
