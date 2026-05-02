@@ -22,6 +22,7 @@ const Layout = ({ children }) => {
 
   const [settings, setSettings] = useState(null);
   const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('app_theme') || 'dark');
@@ -45,7 +46,11 @@ const Layout = ({ children }) => {
          }
       }
     }).catch(console.error);
-    api.get('/me').then(res => setUser(res.data)).catch(console.error);
+    
+    api.get('/me')
+      .then(res => setUser(res.data))
+      .catch(console.error)
+      .finally(() => setAuthLoading(false));
   }, []);
 
   const handleLogout = () => {
@@ -57,12 +62,21 @@ const Layout = ({ children }) => {
     }
   };
 
+  if (authLoading) {
+    return (
+      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-color)', gap: 20 }}>
+         <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 60, height: 60, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
+            <Package size={32} className="animate-spin-slow" />
+         </div>
+         <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 500 }}>Restoring secure session...</div>
+      </div>
+    );
+  }
+
   const allNavItems = [...navItems];
   if (user && (user.is_super_admin === true || user.is_super_admin == 1)) {
     allNavItems.push({ name: 'Super Admin', path: '/super-admin', icon: Shield });
   }
-
-
 
   return (
     <div className="app-container">

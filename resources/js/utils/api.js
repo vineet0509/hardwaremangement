@@ -19,9 +19,14 @@ api.interceptors.request.use(config => {
 });
 
 api.interceptors.response.use(response => response, error => {
-  if (error.response && error.response.status === 401 && window.location.pathname !== '/login') {
-      localStorage.removeItem('auth_token');
-      window.location.href = '/login';
+  if (error.response && error.response.status === 401) {
+      const token = localStorage.getItem('auth_token');
+      // Only clear and redirect if we actually had a token (session expired)
+      // and we are not already on the login page
+      if (token && window.location.pathname !== '/login') {
+          localStorage.removeItem('auth_token');
+          window.location.href = '/login?session_expired=1';
+      }
   }
   return Promise.reject(error);
 });

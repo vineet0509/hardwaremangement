@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import api from '../utils/api';
 import { Package, Lock, Mail, Languages, Shield } from 'lucide-react';
 
@@ -9,6 +9,8 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const sessionExpired = new URLSearchParams(location.search).get('session_expired');
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -43,6 +45,12 @@ const Login = () => {
              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary)', marginBottom: 4 }}>Hardware Pro</h2>
              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Management Dashboard Login</p>
           </div>
+
+          {sessionExpired && !error && (
+            <div style={{ background: 'rgba(245, 158, 11, 0.1)', color: 'var(--warning)', padding: '12px 16px', borderRadius: 8, fontSize: '0.85rem', marginBottom: 24, textAlign: 'center', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+               Your session has expired. Please sign in again.
+            </div>
+          )}
 
           {error && <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', padding: '12px 16px', borderRadius: 8, fontSize: '0.85rem', marginBottom: 24, textAlign: 'center' }}>{error}</div>}
 
