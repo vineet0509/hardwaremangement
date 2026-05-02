@@ -145,6 +145,40 @@ const Layout = ({ children }) => {
           </div>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {/* Language Switcher (Mobile) */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#94a3b8', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.05)', marginBottom: 4 }}>
+               <Languages size={16} color="var(--primary)" />
+               <select 
+                 style={{ border: 'none', outline: 'none', background: 'transparent', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 500, color: '#ffffff', width: '100%' }}
+                 onChange={(e) => {
+                    const lang = e.target.value;
+                    if(lang === 'en' || !lang) {
+                        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+                    } else {
+                        document.cookie = `googtrans=/en/${lang}; path=/;`;
+                        document.cookie = `googtrans=/en/${lang}; domain=${window.location.hostname}; path=/;`;
+                    }
+                    window.location.reload();
+                 }}
+                 defaultValue={
+                   document.cookie.split('; ').find(row => row.startsWith('googtrans='))?.split('=')[1]?.replace('/en/', '') || 'en'
+                 }
+               >
+                 <option value="en">English (US)</option>
+                 <option value="hi">हिंदी (Hindi)</option>
+                 <option value="bn">বাংলা (Bengali)</option>
+                 <option value="mr">मराठी (Marathi)</option>
+                 <option value="te">తెలుగు (Telugu)</option>
+                 <option value="ta">தமிழ் (Tamil)</option>
+                 <option value="gu">ગુજરાતી (Gujarati)</option>
+                 <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                 <option value="ur">اردو (Urdu)</option>
+                 <option value="ml">മലയാളം (Malayalam)</option>
+                 <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+               </select>
+            </div>
+
             <NavLink 
               to="/settings" 
               onClick={() => setIsMobileMenuOpen(false)}
@@ -152,6 +186,15 @@ const Layout = ({ children }) => {
             >
               <SettingsIcon size={16} /> Settings
             </NavLink>
+
+            <NavLink 
+              to="/privacy-policy" 
+              onClick={() => setIsMobileMenuOpen(false)}
+              style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#94a3b8', textDecoration: 'none', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.05)' }}
+            >
+              <Shield size={16} /> Privacy Policy
+            </NavLink>
+
             <button 
               onClick={() => {
                 if(confirm("Are you sure you want to log out?")) {
