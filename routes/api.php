@@ -19,6 +19,7 @@ Route::middleware(['auth:sanctum', 'check.subscription', 'domain.tenant'])->grou
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/user/password', [AuthController::class, 'changePassword']);
+    Route::delete('/user', [AuthController::class, 'deleteAccount']);
 
     // Settings
 Route::get('/settings', [SettingsController::class, 'index']);
@@ -73,5 +74,6 @@ Route::get('/salary-records',                           [StaffController::class,
     Route::get('/super-admin/shops', [SuperAdminController::class, 'index']);
     Route::post('/super-admin/shops/{shop}/toggle-status', [SuperAdminController::class, 'toggleStatus']);
     Route::post('/super-admin/shops/{shop}/extend-plan', [SuperAdminController::class, 'extendPlan']);
+    Route::delete('/super-admin/shops/{shop}', [SuperAdminController::class, 'deleteShop']);
     Route::get('/super-admin/login-logs', [SuperAdminController::class, 'loginLogs']);
 });

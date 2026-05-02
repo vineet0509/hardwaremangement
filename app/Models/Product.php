@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\BelongsToShop;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
-    use BelongsToShop;
+    use BelongsToShop, SoftDeletes;
 
     protected $fillable = [
         'category_id', 'supplier_id', 'name', 'sku', 'description',

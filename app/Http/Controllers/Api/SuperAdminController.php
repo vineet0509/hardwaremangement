@@ -95,4 +95,19 @@ class SuperAdminController extends Controller
             'shop' => $shop
         ]);
     }
+
+    public function deleteShop(Request $request, Shop $shop)
+    {
+        if (!$request->user()->is_super_admin) {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+
+        // Soft delete all users associated with this shop
+        $shop->users()->delete();
+        
+        // Soft delete the shop itself
+        $shop->delete();
+
+        return response()->json(['message' => 'Shop and its users deleted successfully.']);
+    }
 }

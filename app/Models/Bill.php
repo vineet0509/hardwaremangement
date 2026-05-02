@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\BelongsToShop;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Bill extends Model
 {
-    use BelongsToShop;
+    use BelongsToShop, SoftDeletes;
 
     protected $fillable = [
         'bill_number', 'customer_name', 'customer_phone', 'customer_address',

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
-import { Plus, Search, AlertTriangle, ArrowUpCircle, ArrowDownCircle, Edit2 } from 'lucide-react';
+import { Plus, Search, AlertTriangle, ArrowUpCircle, ArrowDownCircle, Edit2, Trash2 } from 'lucide-react';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -115,6 +115,14 @@ const Products = () => {
       .catch(err => alert(err.response?.data?.message || 'Error occurred while saving product.'));
   };
 
+  const handleDeleteProduct = (id) => {
+    if(confirm("Are you sure you want to delete this product? It will be soft-deleted.")) {
+      api.delete(`/products/${id}`)
+        .then(() => fetchData())
+        .catch(err => alert(err.response?.data?.message || 'Error deleting product'));
+    }
+  };
+
   const handleCreateCategory = (e) => {
     e.preventDefault();
     if(!newCatName) return;
@@ -225,6 +233,10 @@ const Products = () => {
                     <button className="btn btn-outline" style={{ padding: '6px 10px' }} title="Remove Stock"
                       onClick={() => setStockModal({ show: true, type: 'remove', product: p })}>
                       <ArrowDownCircle size={16} color="var(--danger)" />
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '6px 10px' }} title="Delete Product"
+                      onClick={() => handleDeleteProduct(p.id)}>
+                      <Trash2 size={16} color="var(--danger)" />
                     </button>
                   </div>
                 </td>

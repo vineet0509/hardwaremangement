@@ -14,6 +14,14 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
+
+    if (formData.login.trim().length < 3) {
+      return setError("Invalid email or mobile number.");
+    }
+    if (formData.password.length < 4) {
+      return setError("Password is too short.");
+    }
+
     setLoading(true);
     setError(null);
     

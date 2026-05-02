@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\BelongsToShop;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Staff extends Model
 {
-    use BelongsToShop;
+    use BelongsToShop, SoftDeletes;
 
     protected $fillable = [
         'name', 'phone', 'role', 'address',

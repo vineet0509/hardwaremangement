@@ -54,6 +54,30 @@ const Settings = () => {
       .catch(err => Swal.fire('Error', err.response?.data?.message || 'Error updating password', 'error'));
   };
 
+  const handleDeleteAccount = () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Your account will be deactivated. You can contact support to restore it within 30 days.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Yes, delete my account!',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api.delete('/user')
+          .then(() => {
+            localStorage.removeItem('auth_token');
+            Swal.fire('Deleted!', 'Your account has been soft deleted.', 'success').then(() => {
+               window.location.href = '/login';
+            });
+          })
+          .catch(err => Swal.fire('Error', 'Could not delete account. Try again later.', 'error'));
+      }
+    });
+  };
+
   if (loading) return <div>Loading settings...</div>;
 
   return (
@@ -201,6 +225,21 @@ const Settings = () => {
             <CheckCircle size={14} color="var(--success)" />
             Language setting will be applied across the entire app.
           </div>
+        </div>
+
+        {/* Danger Zone */}
+        <div className="stat-card" style={{ flex: 1, minWidth: '300px', border: '1px solid rgba(239, 68, 68, 0.2)', background: 'rgba(239, 68, 68, 0.05)' }}>
+          <h3 style={{ color: 'var(--danger)', borderBottom: '1px solid rgba(239, 68, 68, 0.1)', paddingBottom: 12, marginBottom: 16 }}>Danger Zone</h3>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: 20 }}>
+            Once you delete your account, you will be logged out immediately. Your data is preserved for 30 days before permanent removal.
+          </p>
+          <button 
+            onClick={handleDeleteAccount}
+            className="btn btn-secondary" 
+            style={{ width: '100%', borderColor: 'var(--danger)', color: 'var(--danger)', background: 'transparent' }}
+          >
+            Delete Account (Soft Delete)
+          </button>
         </div>
       </div>
     </div>

@@ -130,4 +130,17 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Password successfully updated!']);
     }
+
+    public function deleteAccount(Request $request)
+    {
+        $user = $request->user();
+        
+        // Revoke all tokens
+        $user->tokens()->delete();
+        
+        // Soft delete the user
+        $user->delete();
+
+        return response()->json(['message' => 'Account deleted successfully.']);
+    }
 }
