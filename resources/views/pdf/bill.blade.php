@@ -27,7 +27,7 @@
             <h1 style="margin: 0; font-size: 20px;">{{ $settings->company_name ?? 'Hardware Shop' }}</h1>
             <p style="margin: 5px 0;">{{ $settings->company_address ?? '' }}</p>
             <p style="margin: 5px 0;">Phone: {{ $settings->company_phone ?? '' }}</p>
-            @if($shop->gst_number)
+            @if($bill->is_gst && $shop->gst_number)
                 <p style="margin: 5px 0;"><strong>GSTIN: {{ $shop->gst_number }}</strong></p>
             @endif
         </div>

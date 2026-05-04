@@ -152,7 +152,7 @@ const Billing = () => {
                 <h1>${settings.company_name || 'Hardware Shop'}</h1>
                 <p>${settings.company_address || ''}</p>
                 <p>Phone: ${settings.company_phone || ''}</p>
-                ${settings.gst_number ? `<p><strong>GSTIN: ${settings.gst_number}</strong></p>` : ''}
+                ${(isGst && settings.gst_number) ? `<p><strong>GSTIN: ${settings.gst_number}</strong></p>` : ''}
               </div>
               <div class="bill-info">
                 <h2>${isGst ? 'TAX INVOICE' : 'RETAIL INVOICE'}</h2>
@@ -276,7 +276,7 @@ const Billing = () => {
              let itemListStr = res.data.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity}) = Rs.${i.total}`).join('\n') || '';
              
              const shopName = settings.company_name || 'Hardware Shop';
-             const gstStr = settings.gst_number ? `*GSTIN:* ${settings.gst_number}\n` : '';
+             const gstStr = (res.data.is_gst && settings.gst_number) ? `*GSTIN:* ${settings.gst_number}\n` : '';
              const pdfLink = `${window.location.origin}/api/bills/${res.data.id}/pdf?token=${localStorage.getItem('auth_token')}`;
 
              const msgText = `*${shopName} Invoice* 🧾\n${gstStr}-----------------------------------\n*Bill No:* ${res.data.bill_number}\n*Customer:* ${res.data.customer_name || 'Walk-in'}\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Amount:* Rs. ${res.data.total}\n*Amount Paid:* Rs. ${res.data.paid_amount}\n*Balance Due:* Rs. ${res.data.due_amount}\n*Payment Mode:* ${String(res.data.payment_method).toUpperCase()}\n\n*Download PDF Bill:* ${pdfLink}\n\nThank you for shopping with us!`;

@@ -426,8 +426,8 @@ class BillController extends Controller
 
     public function downloadPDF(Bill $bill)
     {
-        $settings = Setting::first();
-        $shop = auth()->user()->shop;
+        $settings = Setting::where('shop_id', $bill->shop_id)->first();
+        $shop = \App\Models\Shop::find($bill->shop_id);
         
         $pdf = Pdf::loadView('pdf.bill', compact('bill', 'settings', 'shop'));
         return $pdf->stream("bill-{$bill->bill_number}.pdf");
