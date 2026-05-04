@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
-import { Search, Receipt, Printer, Trash2, Banknote, X, Edit2, MessageSquare } from 'lucide-react';
+import { Search, Receipt, Printer, Trash2, Banknote, X, Edit2, MessageSquare, FileText } from 'lucide-react';
 
 const BillsList = () => {
   const [bills, setBills] = useState([]);
@@ -69,11 +69,15 @@ const BillsList = () => {
 
     let msgText = '';
     
+    const shopName = settings.company_name || 'Hardware Shop';
+    const gstStr = settings.gst_number ? `*GSTIN:* ${settings.gst_number}\n` : '';
+    const pdfLink = `${window.location.origin}/api/bills/${bill.id}/pdf?token=${localStorage.getItem('auth_token')}`;
+
     if (bill.due_amount > 0) {
-        msgText = `*Payment Reminder* ⏳\n-----------------------------------\nHello ${bill.customer_name},\nThis is a gentle reminder regarding your pending due for *Bill No: ${bill.bill_number}*.\n\n*Total Bill:* Rs. ${bill.total}\n*Amount Paid:* Rs. ${bill.paid_amount}\n*Balance Due:* Rs. ${bill.due_amount}\n\nPlease clear the pending amount at your earliest convenience.\nThank you!`;
+        msgText = `*Payment Reminder* ⏳\n${gstStr}-----------------------------------\nHello ${bill.customer_name},\nThis is a gentle reminder regarding your pending due for *Bill No: ${bill.bill_number}*.\n\n*Total Bill:* Rs. ${bill.total}\n*Amount Paid:* Rs. ${bill.paid_amount}\n*Balance Due:* Rs. ${bill.due_amount}\n\n*View PDF Bill:* ${pdfLink}\n\nPlease clear the pending amount at your earliest convenience.\nThank you!`;
     } else {
         const itemListStr = bill.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity})`).join('\n') || '';
-        msgText = `*Invoice Details* 🧾\n-----------------------------------\nHello ${bill.customer_name},\nHere are the details for *Bill No: ${bill.bill_number}*.\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Amount:* Rs. ${bill.total}\n*Amount Paid:* Rs. ${bill.paid_amount}\n*Balance Due:* Rs. ${bill.due_amount}\n\nThank you for shopping with us!`;
+        msgText = `*${shopName} Invoice* 🧾\n${gstStr}-----------------------------------\nHello ${bill.customer_name},\nHere are the details for *Bill No: ${bill.bill_number}*.\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Amount:* Rs. ${bill.total}\n*Amount Paid:* Rs. ${bill.paid_amount}\n*Balance Due:* Rs. ${bill.due_amount}\n\n*View PDF Bill:* ${pdfLink}\n\nThank you for shopping with us!`;
     }
 
     const msg = encodeURIComponent(msgText);
@@ -116,6 +120,7 @@ const BillsList = () => {
               <h1>${settings.company_name || 'Hardware Shop'}</h1>
               <p>${settings.company_address || ''}</p>
               <p>Ph: ${settings.company_phone || ''}</p>
+              ${settings.gst_number ? `<p><strong>GSTIN: ${settings.gst_number}</strong></p>` : ''}
             </div>
             
             <div class="details">
@@ -161,6 +166,7 @@ const BillsList = () => {
             <div class="totals">
               <div class="row"><span>Subtotal:</span> <span>₹${bill.subtotal}</span></div>
               <div class="row"><span>Discount:</span> <span>₹${bill.discount}</span></div>
+              ${bill.is_gst ? `<div class="row"><span>GST (18%):</span> <span>₹${bill.tax}</span></div>` : ''}
               <div class="row grand-total"><span>Grand Total:</span> <span>₹${bill.total}</span></div>
               <div style="height: 15px;"></div>
               <div class="row" style="color: #10b981;"><span>Amount Paid:</span> <span>₹${bill.paid_amount}</span></div>
@@ -288,6 +294,9 @@ const BillsList = () => {
                     <button className="btn btn-outline" style={{ padding: '6px 10px' }} onClick={() => printBill(b.id)} title="View/Print Invoice">
                       <Printer size={16} color="var(--primary)" />
                     </button>
+                    <a className="btn btn-outline" style={{ padding: '6px 10px', display: 'flex', alignItems: 'center' }} href={`${window.location.origin}/api/bills/${b.id}/pdf?token=${localStorage.getItem('auth_token')}`} target="_blank" rel="noreferrer" title="Download Official PDF">
+                      <FileText size={16} color="var(--primary)" />
+                    </a>
                     {b.customer_phone && (
                       <button className="btn btn-outline" style={{ padding: '6px 10px', borderColor: '#22c55e', color: '#22c55e' }} onClick={() => sendWhatsAppReminder(b)} title={b.due_amount > 0 ? "Send WhatsApp Due Reminder" : "Send WhatsApp Bill Copy"}>
                         <MessageSquare size={16} />

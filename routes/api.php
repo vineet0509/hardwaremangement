@@ -45,6 +45,7 @@ Route::get('/udhar', [BillController::class, 'udharList']);
 Route::get('/advances', [BillController::class, 'advancesList']);
 Route::post('/advances', [BillController::class, 'storeAdvance']);
 Route::post('/bills/{bill}/repay', [BillController::class, 'repay']);
+Route::get('/bills/{bill}/pdf', [BillController::class, 'downloadPDF']);
 Route::apiResource('bills', BillController::class);
 Route::apiResource('quotations', QuotationController::class);
 

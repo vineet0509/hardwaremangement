@@ -10,6 +10,8 @@ use App\Models\StockTransaction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Setting;
 
 class BillController extends Controller
 {
@@ -420,5 +422,14 @@ class BillController extends Controller
         });
 
         return response()->json(['message' => 'Bill deleted and stock restored.']);
+    }
+
+    public function downloadPDF(Bill $bill)
+    {
+        $settings = Setting::first();
+        $shop = auth()->user()->shop;
+        
+        $pdf = Pdf::loadView('pdf.bill', compact('bill', 'settings', 'shop'));
+        return $pdf->stream("bill-{$bill->bill_number}.pdf");
     }
 }

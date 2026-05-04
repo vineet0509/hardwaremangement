@@ -15,7 +15,10 @@ $app = Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'check.subscription' => \App\Http\Middleware\CheckSubscription::class,
             'domain.tenant' => \App\Http\Middleware\DomainTenantMiddleware::class,
+            'token.query' => \App\Http\Middleware\TokenFromQuery::class,
         ]);
+        
+        $middleware->prependToGroup('api', \App\Http\Middleware\TokenFromQuery::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

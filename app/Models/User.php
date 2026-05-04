@@ -15,6 +15,11 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *
