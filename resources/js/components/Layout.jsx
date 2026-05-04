@@ -37,6 +37,15 @@ const Layout = ({ children }) => {
   };
 
   useEffect(() => {
+    // Check if session date is valid (expires at 12 AM daily)
+    const loginDate = localStorage.getItem('login_date');
+    if (loginDate && loginDate !== new Date().toDateString()) {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('login_date');
+        window.location.href = '/login?session_expired=1';
+        return;
+    }
+
     api.get('/settings').then(res => {
       setSettings(res.data);
       if (res.data && res.data.domain && window.location.hostname !== res.data.domain) {
@@ -57,6 +66,7 @@ const Layout = ({ children }) => {
     if(confirm("Are you sure you want to log out?")) {
        api.post('/logout').catch(console.error).finally(() => {
           localStorage.removeItem('auth_token');
+          localStorage.removeItem('login_date');
           window.location.href = '/login';
        });
     }
@@ -235,6 +245,7 @@ const Layout = ({ children }) => {
                 if(confirm("Are you sure you want to log out?")) {
                    api.post('/logout').catch(console.error).finally(() => {
                       localStorage.removeItem('auth_token');
+                      localStorage.removeItem('login_date');
                       window.location.href = '/login';
                    });
                 }
@@ -372,6 +383,7 @@ const Layout = ({ children }) => {
                       if(confirm("Are you sure you want to log out?")) {
                          api.post('/logout').catch(console.error).finally(() => {
                             localStorage.removeItem('auth_token');
+                            localStorage.removeItem('login_date');
                             window.location.href = '/login';
                          });
                       }

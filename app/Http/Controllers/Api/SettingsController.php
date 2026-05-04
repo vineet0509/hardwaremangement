@@ -31,7 +31,7 @@ class SettingsController extends Controller
 
         $data = $settings->toArray();
         $data['is_expired'] = $isExpired;
-        $data['gst_number'] = $shop->gst_number ?? '';
+        $data['gst_number'] = $shop?->gst_number ?? '';
         
         return response()->json($data);
     }
@@ -61,7 +61,7 @@ class SettingsController extends Controller
         }
 
         $response = $settings->toArray();
-        $response['gst_number'] = $shop->gst_number;
+        $response['gst_number'] = $shop?->gst_number ?? '';
 
         return response()->json($response);
     }

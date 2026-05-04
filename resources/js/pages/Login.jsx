@@ -31,6 +31,7 @@ const Login = () => {
           .then(res => {
          const token = res.data.access_token;
          localStorage.setItem('auth_token', token);
+         localStorage.setItem('login_date', new Date().toDateString());
          // Setup Axios interceptor immediately for this session
          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
          navigate('/dashboard');
