@@ -8,6 +8,8 @@ const BillsList = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [summary, setSummary] = useState({ total_sale: 0, total_due: 0 });
+  const [settings, setSettings] = useState({});
+  const [whatsappLoading, setWhatsappLoading] = useState(null);
 
   const [showRepayModal, setShowRepayModal] = useState(false);
   const [targetBill, setTargetBill] = useState(null);
@@ -47,6 +49,7 @@ const BillsList = () => {
 
   useEffect(() => {
     api.get('/udhar').then(res => setUdharCustomers(res.data)).catch(console.error);
+    api.get('/settings').then(res => setSettings(res.data)).catch(console.error);
   }, []);
 
   const deleteBill = (id) => {
@@ -71,27 +74,41 @@ const BillsList = () => {
       .catch(err => alert(err.response?.data?.message || 'Error processing repayment.'));
   };
 
-  const sendWhatsAppReminder = (bill) => {
-    if (!bill.customer_phone) return alert('No phone number available for this customer.');
-    
-    let wapn = bill.customer_phone.replace(/[^0-9]/g,'');
-    if (wapn.length === 10) wapn = '91' + wapn;
+  const sendWhatsAppReminder = async (billId) => {
+    try {
+      setWhatsappLoading(billId);
+      const [billRes, settingsRes] = await Promise.all([
+        api.get(`/bills/${billId}`),
+        api.get('/settings')
+      ]);
+      const bill = billRes.data;
+      const settings = settingsRes.data;
 
-    let msgText = '';
-    
-    const shopName = settings.company_name || 'Hardware Shop';
-    const gstStr = (bill.is_gst && settings.gst_number) ? `*GSTIN:* ${settings.gst_number}\n` : '';
-    const pdfLink = `${window.location.origin}/api/bills/${bill.id}/pdf?token=${localStorage.getItem('auth_token')}`;
+      if (!bill.customer_phone) return alert('No phone number available for this customer.');
+      
+      let wapn = bill.customer_phone.replace(/[^0-9]/g,'');
+      if (wapn.length === 10) wapn = '91' + wapn;
 
-    if (bill.due_amount > 0) {
-        msgText = `*Payment Reminder* ⏳\n${gstStr}-----------------------------------\nHello ${bill.customer_name},\nThis is a gentle reminder regarding your pending due for *Bill No: ${bill.bill_number}*.\n\n*Total Bill:* Rs. ${bill.total}\n*Amount Paid:* Rs. ${bill.paid_amount}\n*Balance Due:* Rs. ${bill.due_amount}\n\n*View PDF Bill:* ${pdfLink}\n\nPlease clear the pending amount at your earliest convenience.\nThank you!`;
-    } else {
-        const itemListStr = bill.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity} ${i.unit || ''}) = Rs.${i.total}`).join('\n') || '';
-        msgText = `*${shopName} Invoice* 🧾\n${gstStr}-----------------------------------\nHello ${bill.customer_name},\nHere are the details for *Bill No: ${bill.bill_number}*.\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Amount:* Rs. ${bill.total}\n*Amount Paid:* Rs. ${bill.paid_amount}\n*Balance Due:* Rs. ${bill.due_amount}\n\n*View PDF Bill:* ${pdfLink}\n\nThank you for shopping with us!`;
+      let msgText = '';
+      
+      const shopName = settings.company_name || 'Hardware Shop';
+      const gstStr = (bill.is_gst && settings.gst_number) ? `*GSTIN:* ${settings.gst_number}\n` : '';
+      const pdfLink = `${window.location.origin}/api/bills/${bill.id}/pdf?token=${localStorage.getItem('auth_token')}`;
+
+      if (bill.due_amount > 0) {
+          msgText = `*Payment Reminder* ⏳\n${gstStr}-----------------------------------\nHello ${bill.customer_name},\nThis is a gentle reminder regarding your pending due for *Bill No: ${bill.bill_number}*.\n\n*Total Bill:* Rs. ${bill.total}\n*Amount Paid:* Rs. ${bill.paid_amount}\n*Balance Due:* Rs. ${bill.due_amount}\n\n*View PDF Bill:* ${pdfLink}\n\nPlease clear the pending amount at your earliest convenience.\nThank you!`;
+      } else {
+          const itemListStr = bill.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity} ${i.unit || ''}) = Rs.${i.total}`).join('\n') || '';
+          msgText = `*${shopName} Invoice* 🧾\n${gstStr}-----------------------------------\nHello ${bill.customer_name},\nHere are the details for *Bill No: ${bill.bill_number}*.\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Amount:* Rs. ${bill.total}\n*Amount Paid:* Rs. ${bill.paid_amount}\n*Balance Due:* Rs. ${bill.due_amount}\n\n*View PDF Bill:* ${pdfLink}\n\nThank you for shopping with us!`;
+      }
+
+      const msg = encodeURIComponent(msgText);
+      window.open(`https://wa.me/${wapn}?text=${msg}`, '_blank');
+    } catch (err) {
+      alert('Error: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setWhatsappLoading(null);
     }
-
-    const msg = encodeURIComponent(msgText);
-    window.open(`https://wa.me/${wapn}?text=${msg}`, '_blank');
   };
 
   const printBill = async (id) => {
@@ -376,8 +393,14 @@ const BillsList = () => {
                       <FileText size={16} color="var(--primary)" />
                     </a>
                     {b.customer_phone && (
-                      <button className="btn btn-outline" style={{ padding: '6px 10px', borderColor: '#22c55e', color: '#22c55e' }} onClick={() => sendWhatsAppReminder(b)} title={b.due_amount > 0 ? "Send WhatsApp Due Reminder" : "Send WhatsApp Bill Copy"}>
-                        <MessageSquare size={16} />
+                      <button 
+                        className="btn btn-outline" 
+                        style={{ padding: '6px 10px', borderColor: '#22c55e', color: '#22c55e', opacity: whatsappLoading === b.id ? 0.5 : 1 }} 
+                        onClick={() => sendWhatsAppReminder(b.id)} 
+                        disabled={whatsappLoading === b.id}
+                        title={b.due_amount > 0 ? "Send WhatsApp Due Reminder" : "Send WhatsApp Bill Copy"}
+                      >
+                        {whatsappLoading === b.id ? '...' : <MessageSquare size={16} />}
                       </button>
                     )}
                     <button className="btn btn-outline" style={{ padding: '6px 10px' }} onClick={() => deleteBill(b.id)} title="Delete Bill & Restore Stock">

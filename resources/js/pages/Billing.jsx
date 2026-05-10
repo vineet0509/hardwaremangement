@@ -279,21 +279,24 @@ const Billing = () => {
         }
 
         if (customerInfo.phone) {
-             let wapn = customerInfo.phone.replace(/[^0-9]/g,'');
-             if (wapn.length === 10) wapn = '91' + wapn; // Assume India code if 10 digits
-             
-             let itemListStr = res.data.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity} ${i.unit || ''}) = Rs.${i.total}`).join('\n') || '';
-             
-             const shopName = settings.company_name || 'Hardware Shop';
-             const gstStr = (res.data.is_gst && settings.gst_number) ? `*GSTIN:* ${settings.gst_number}\n` : '';
-             const pdfLink = `${window.location.origin}/api/bills/${res.data.id}/pdf?token=${localStorage.getItem('auth_token')}`;
+             api.get('/settings').then(settingsRes => {
+               const settings = settingsRes.data;
+               let wapn = customerInfo.phone.replace(/[^0-9]/g,'');
+               if (wapn.length === 10) wapn = '91' + wapn; // Assume India code if 10 digits
+               
+               let itemListStr = res.data.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity} ${i.unit || ''}) = Rs.${i.total}`).join('\n') || '';
+               
+               const shopName = settings.company_name || 'Hardware Shop';
+               const gstStr = (res.data.is_gst && settings.gst_number) ? `*GSTIN:* ${settings.gst_number}\n` : '';
+               const pdfLink = `${window.location.origin}/api/bills/${res.data.id}/pdf?token=${localStorage.getItem('auth_token')}`;
 
-             const msgText = `*${shopName} Invoice* 🧾\n${gstStr}-----------------------------------\n*Bill No:* ${res.data.bill_number}\n*Customer:* ${res.data.customer_name || 'Walk-in'}\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Amount:* Rs. ${res.data.total}\n*Amount Paid:* Rs. ${res.data.paid_amount}\n*Balance Due:* Rs. ${res.data.due_amount}\n*Payment Mode:* ${String(res.data.payment_method).toUpperCase()}\n\n*Download PDF Bill:* ${pdfLink}\n\nThank you for shopping with us!`;
+               const msgText = `*${shopName} Invoice* 🧾\n${gstStr}-----------------------------------\n*Bill No:* ${res.data.bill_number}\n*Customer:* ${res.data.customer_name || 'Walk-in'}\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Amount:* Rs. ${res.data.total}\n*Amount Paid:* Rs. ${res.data.paid_amount}\n*Balance Due:* Rs. ${res.data.due_amount}\n*Payment Mode:* ${String(res.data.payment_method).toUpperCase()}\n\n*Download PDF Bill:* ${pdfLink}\n\nThank you for shopping with us!`;
 
-             api.post('/bills/send-whatsapp', {
-               bill_id: res.data.id,
-               phone: wapn,
-               message: msgText
+               api.post('/bills/send-whatsapp', {
+                 bill_id: res.data.id,
+                 phone: wapn,
+                 message: msgText
+               }).catch(console.error);
              }).catch(console.error);
         }
         
