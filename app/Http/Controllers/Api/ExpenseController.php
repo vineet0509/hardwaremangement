@@ -8,9 +8,18 @@ use Illuminate\Http\Request;
 
 class ExpenseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $expenses = Expense::orderBy('expense_date', 'desc')->orderBy('id', 'desc')->get();
+        $query = Expense::query();
+
+        if ($request->date_from) {
+            $query->whereDate('expense_date', '>=', $request->date_from);
+        }
+        if ($request->date_to) {
+            $query->whereDate('expense_date', '<=', $request->date_to);
+        }
+
+        $expenses = $query->orderBy('expense_date', 'desc')->orderBy('id', 'desc')->get();
         return response()->json($expenses);
     }
 

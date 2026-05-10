@@ -252,6 +252,7 @@ class BillController extends Controller
             'paid_amount'      => 'required|numeric|min:0',
             'payment_method'   => 'required|in:cash,card,upi,credit',
             'notes'            => 'nullable|string',
+            'is_gst'           => 'nullable|boolean',
         ]);
 
         if (!empty($data['customer_phone']) && !empty($data['customer_name'])) {
@@ -281,6 +282,8 @@ class BillController extends Controller
                 $itemsData[] = [
                     'product_id'   => $product->id,
                     'product_name' => $product->name,
+                    'description'  => $product->description,
+                    'unit'         => $product->unit,
                     'price'        => $item['price'],
                     'quantity'     => $item['quantity'],
                     'discount'     => $itemDiscount,
@@ -323,10 +326,12 @@ class BillController extends Controller
                 'payment_method' => $data['payment_method'],
                 'status'         => $status,
                 'notes'          => $data['notes'] ?? null,
+                'is_gst'         => $data['is_gst'] ?? false,
             ]);
 
             foreach ($itemsData as $item) {
                 $item['bill_id'] = $bill->id;
+                $item['shop_id'] = $bill->shop_id;
                 BillItem::create($item);
             }
 
@@ -362,6 +367,7 @@ class BillController extends Controller
             'paid_amount'      => 'required|numeric|min:0',
             'payment_method'   => 'required|in:cash,upi,card,credit',
             'notes'            => 'nullable|string',
+            'is_gst'           => 'nullable|boolean',
         ]);
 
         if (!empty($data['customer_phone']) && !empty($data['customer_name'])) {
@@ -399,6 +405,8 @@ class BillController extends Controller
                     'bill_id'      => $bill->id,
                     'product_id'   => $product->id,
                     'product_name' => $product->name,
+                    'description'  => $product->description,
+                    'unit'         => $product->unit,
                     'price'        => $item['price'],
                     'quantity'     => $item['quantity'],
                     'discount'     => $itemDiscount,
@@ -429,9 +437,13 @@ class BillController extends Controller
                 'payment_method' => $data['payment_method'],
                 'status'         => $status,
                 'notes'          => $data['notes'] ?? null,
+                'is_gst'         => $data['is_gst'] ?? false,
             ]);
 
-            BillItem::insert($itemsData);
+            foreach ($itemsData as $item) {
+                $item['shop_id'] = $bill->shop_id;
+                BillItem::create($item);
+            }
 
             return $bill;
         });
@@ -533,10 +545,11 @@ class BillController extends Controller
 
     public function downloadPDF(Bill $bill)
     {
+        $bill->load('items');
         $settings = Setting::where('shop_id', $bill->shop_id)->first();
         $shop = \App\Models\Shop::find($bill->shop_id);
         
         $pdf = Pdf::loadView('pdf.bill', compact('bill', 'settings', 'shop'));
-        return $pdf->stream("bill-{$bill->bill_number}.pdf");
+        return $pdf->download("bill-{$bill->bill_number}.pdf");
     }
 }

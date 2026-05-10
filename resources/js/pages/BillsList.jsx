@@ -86,7 +86,7 @@ const BillsList = () => {
     if (bill.due_amount > 0) {
         msgText = `*Payment Reminder* ⏳\n${gstStr}-----------------------------------\nHello ${bill.customer_name},\nThis is a gentle reminder regarding your pending due for *Bill No: ${bill.bill_number}*.\n\n*Total Bill:* Rs. ${bill.total}\n*Amount Paid:* Rs. ${bill.paid_amount}\n*Balance Due:* Rs. ${bill.due_amount}\n\n*View PDF Bill:* ${pdfLink}\n\nPlease clear the pending amount at your earliest convenience.\nThank you!`;
     } else {
-        const itemListStr = bill.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity})`).join('\n') || '';
+        const itemListStr = bill.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity} ${i.unit || ''}) = Rs.${i.total}`).join('\n') || '';
         msgText = `*${shopName} Invoice* 🧾\n${gstStr}-----------------------------------\nHello ${bill.customer_name},\nHere are the details for *Bill No: ${bill.bill_number}*.\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Amount:* Rs. ${bill.total}\n*Amount Paid:* Rs. ${bill.paid_amount}\n*Balance Due:* Rs. ${bill.due_amount}\n\n*View PDF Bill:* ${pdfLink}\n\nThank you for shopping with us!`;
     }
 
@@ -147,7 +147,7 @@ const BillsList = () => {
               </div>
             </div>
 
-            <div className="table-responsive"><table>
+            <div class="table-responsive"><table>
               <thead>
                 <tr>
                   <th>Product Item</th>
@@ -162,9 +162,9 @@ const BillsList = () => {
                   <tr>
                     <td>
                        <div style="font-weight: 600;">${item.product_name}</div>
-                       ${item.product && item.product.description ? `<div style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">${item.product.description}</div>` : ''}
+                       ${item.description ? `<div style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">${item.description}</div>` : ''}
                     </td>
-                    <td style="text-align: center;">${item.quantity}</td>
+                    <td style="text-align: center;">${item.quantity} ${item.unit || ''}</td>
                     <td class="text-right">₹${item.price}</td>
                     <td class="text-right">₹${item.discount}</td>
                     <td class="text-right font-weight-bold">₹${item.total}</td>
@@ -176,7 +176,10 @@ const BillsList = () => {
             <div class="totals">
               <div class="row"><span>Subtotal:</span> <span>₹${bill.subtotal}</span></div>
               <div class="row"><span>Discount:</span> <span>₹${bill.discount}</span></div>
-              ${bill.is_gst ? `<div class="row"><span>GST (18%):</span> <span>₹${bill.tax}</span></div>` : ''}
+              ${bill.is_gst ? `
+                <div class="row"><span>CGST (9%):</span> <span>₹${(bill.tax / 2).toFixed(2)}</span></div>
+                <div class="row"><span>SGST (9%):</span> <span>₹${(bill.tax / 2).toFixed(2)}</span></div>
+              ` : ''}
               <div class="row grand-total"><span>Grand Total:</span> <span>₹${bill.total}</span></div>
               <div style="height: 15px;"></div>
               <div class="row" style="color: #10b981;"><span>Amount Paid:</span> <span>₹${bill.paid_amount}</span></div>

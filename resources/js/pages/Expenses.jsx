@@ -12,14 +12,21 @@ const Expenses = () => {
     amount: '',
     description: ''
   });
+  
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
 
   useEffect(() => {
     fetchExpenses();
-  }, []);
+  }, [dateFrom, dateTo]);
 
   const fetchExpenses = () => {
     setLoading(true);
-    api.get('/expenses')
+    let url = '/expenses?';
+    if (dateFrom) url += `date_from=${dateFrom}&`;
+    if (dateTo) url += `date_to=${dateTo}&`;
+    
+    api.get(url)
       .then(res => {
         setExpenses(res.data);
         setLoading(false);
@@ -71,6 +78,24 @@ const Expenses = () => {
     });
   };
 
+  const setQuickDate = (type) => {
+    const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
+    
+    if (type === 'today') {
+      setDateFrom(todayStr);
+      setDateTo(todayStr);
+    } else if (type === 'this_month') {
+      const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+      const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      setDateFrom(firstDay.toISOString().split('T')[0]);
+      setDateTo(lastDay.toISOString().split('T')[0]);
+    } else if (type === 'all') {
+      setDateFrom('');
+      setDateTo('');
+    }
+  };
+
   if (loading) return <div style={{ padding: 20 }}>Loading Expenses...</div>;
 
   const totalExpenses = expenses.reduce((sum, exp) => sum + parseFloat(exp.amount), 0);
@@ -85,6 +110,38 @@ const Expenses = () => {
         <button className="btn btn-primary" onClick={handleOpenModal} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <Plus size={18} /> Add Expense
         </button>
+      </div>
+
+      <div className="stat-card" style={{ marginBottom: 24, padding: 20 }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: 16 }}>
+           <button className="btn btn-outline" style={{ padding: '4px 12px', fontSize: '0.8rem' }} onClick={() => setQuickDate('today')}>Today</button>
+           <button className="btn btn-outline" style={{ padding: '4px 12px', fontSize: '0.8rem' }} onClick={() => setQuickDate('this_month')}>This Month</button>
+           <button className="btn btn-outline" style={{ padding: '4px 12px', fontSize: '0.8rem' }} onClick={() => setQuickDate('all')}>All Time</button>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 20, alignItems: 'flex-end' }}>
+          
+          <div className="form-group" style={{ margin: 0 }}>
+            <label className="form-label" style={{ marginBottom: 8, display: 'block', fontWeight: 600 }}>From Date</label>
+            <input 
+              type="date" 
+              className="form-control" 
+              value={dateFrom} 
+              onChange={(e) => setDateFrom(e.target.value)} 
+              style={{ fontSize: '0.9rem' }}
+            />
+          </div>
+
+          <div className="form-group" style={{ margin: 0 }}>
+            <label className="form-label" style={{ marginBottom: 8, display: 'block', fontWeight: 600 }}>To Date</label>
+            <input 
+              type="date" 
+              className="form-control" 
+              value={dateTo} 
+              onChange={(e) => setDateTo(e.target.value)} 
+              style={{ fontSize: '0.9rem' }}
+            />
+          </div>
+        </div>
       </div>
 
       <div style={{ background: 'var(--surface)', padding: 20, borderRadius: 12, border: '1px solid var(--border)', marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

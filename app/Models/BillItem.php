@@ -11,8 +11,8 @@ class BillItem extends Model
     use BelongsToShop;
 
     protected $fillable = [
-        'bill_id', 'product_id', 'product_name',
-        'price', 'quantity', 'discount', 'total',
+        'bill_id', 'product_id', 'product_name', 'description',
+        'price', 'quantity', 'unit', 'discount', 'total', 'shop_id',
     ];
 
     protected $casts = [

@@ -41,7 +41,7 @@ const QuotationsList = () => {
     let wapn = quotation.customer_phone.replace(/[^0-9]/g,'');
     if (wapn.length === 10) wapn = '91' + wapn;
 
-    const itemListStr = quotation.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity})`).join('\n') || '';
+    const itemListStr = quotation.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity} ${i.unit || ''})`).join('\n') || '';
     const msgText = `*Quotation Details* 📝\n-----------------------------------\nHello ${quotation.customer_name},\nHere are the details for *Quotation No: ${quotation.quotation_number}*.\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Estimate:* Rs. ${quotation.total}\n\nThis is an estimate. Please contact us for more details.`;
 
     const msg = encodeURIComponent(msgText);
@@ -100,7 +100,7 @@ const QuotationsList = () => {
               </div>
             </div>
 
-            <div className="table-responsive"><table>
+            <div class="table-responsive"><table>
               <thead>
                 <tr>
                   <th>Product Item</th>
@@ -114,8 +114,9 @@ const QuotationsList = () => {
                   <tr>
                     <td>
                        <div style="font-weight: 600;">${item.product_name}</div>
+                       ${item.description ? `<div style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">${item.description}</div>` : ''}
                     </td>
-                    <td style="text-align: center;">${item.quantity}</td>
+                    <td style="text-align: center;">${item.quantity} ${item.unit || ''}</td>
                     <td class="text-right">₹${item.price}</td>
                     <td class="text-right font-weight-bold">₹${item.total}</td>
                   </tr>

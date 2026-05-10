@@ -27,6 +27,6 @@ $app = Application::configure(basePath: dirname(__DIR__))
     ->create();
 
 // ✅ ADD THIS LINE (VERY IMPORTANT)
-$app->usePublicPath(__DIR__.'/..');
+$app->usePublicPath(realpath(__DIR__.'/..'));
 
 return $app;

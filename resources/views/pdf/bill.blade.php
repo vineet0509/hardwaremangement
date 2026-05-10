@@ -58,8 +58,13 @@
         <tbody>
             @foreach($bill->items as $item)
                 <tr>
-                    <td>{{ $item->product_name }}</td>
-                    <td class="text-right">{{ $item->quantity }}</td>
+                    <td>
+                        <strong>{{ $item->product_name }}</strong>
+                        @if($item->description)
+                            <br><small style="color: #666;">{{ $item->description }}</small>
+                        @endif
+                    </td>
+                    <td class="text-right">{{ $item->quantity }} {{ $item->unit }}</td>
                     <td class="text-right">₹{{ number_format($item->price, 2) }}</td>
                     <td class="text-right">₹{{ number_format($item->total, 2) }}</td>
                 </tr>
@@ -79,8 +84,12 @@
             </tr>
             @if($bill->is_gst)
                 <tr>
-                    <td>GST (18%):</td>
-                    <td class="text-right">₹{{ number_format($bill->tax, 2) }}</td>
+                    <td>CGST (9%):</td>
+                    <td class="text-right">₹{{ number_format($bill->tax / 2, 2) }}</td>
+                </tr>
+                <tr>
+                    <td>SGST (9%):</td>
+                    <td class="text-right">₹{{ number_format($bill->tax / 2, 2) }}</td>
                 </tr>
             @endif
             <tr class="total-row">

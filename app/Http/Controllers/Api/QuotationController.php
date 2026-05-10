@@ -73,6 +73,8 @@ class QuotationController extends Controller
                 $quotation->items()->create([
                     'product_id' => $product->id,
                     'product_name' => $product->name,
+                    'description' => $product->description,
+                    'unit' => $product->unit,
                     'price' => $item['price'],
                     'quantity' => $item['quantity'],
                     'total' => $item['price'] * $item['quantity'],
@@ -141,6 +143,8 @@ class QuotationController extends Controller
                 $quotation->items()->create([
                     'product_id' => $product->id,
                     'product_name' => $product->name,
+                    'description' => $product->description,
+                    'unit' => $product->unit,
                     'price' => $item['price'],
                     'quantity' => $item['quantity'],
                     'total' => $item['price'] * $item['quantity'],

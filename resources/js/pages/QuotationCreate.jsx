@@ -58,10 +58,11 @@ const QuotationCreate = () => {
         setNotes(q.notes || '');
         setCart(q.items.map(i => ({
            product_id: i.product_id,
-           name: i.product_name,
-           price: i.price,
-           quantity: i.quantity,
-           stock: 9999 // unlimited stock assumption for quotations
+            name: i.product_name,
+            unit: i.unit,
+            price: i.price,
+            quantity: i.quantity,
+            stock: 9999 // unlimited stock assumption for quotations
         })));
       }).catch(err => Swal.fire('Error', 'Failed to load quotation for editing.', 'error'));
     }
@@ -73,7 +74,7 @@ const QuotationCreate = () => {
       if (existing) {
         return prev.map(item => item.product_id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
       }
-      return [...prev, { product_id: product.id, name: product.name, price: product.selling_price, quantity: 1, stock: product.quantity }];
+      return [...prev, { product_id: product.id, name: product.name, unit: product.unit, price: product.selling_price, quantity: 1, stock: product.quantity }];
     });
   };
 
@@ -161,7 +162,7 @@ const QuotationCreate = () => {
                 ${cart.map(item => `
                   <tr>
                     <td>${item.name}</td>
-                    <td class="text-right">${item.quantity}</td>
+                    <td class="text-right">${item.quantity} ${item.unit || ''}</td>
                     <td class="text-right">₹${item.price}</td>
                     <td class="text-right">₹${(item.price * item.quantity).toFixed(2)}</td>
                   </tr>
@@ -213,7 +214,7 @@ const QuotationCreate = () => {
       tax: tax,
       is_gst: isGst,
       notes: notes,
-      items: cart.map(i => ({ product_id: i.product_id, quantity: i.quantity, price: parseFloat(i.price) || 0 }))
+      items: cart.map(i => ({ product_id: i.product_id, quantity: i.quantity, price: parseFloat(i.price) || 0, unit: i.unit }))
     };
 
     const action = editQuotationId ? api.put(`/quotations/${editQuotationId}`, payload) : api.post('/quotations', payload);
@@ -228,7 +229,7 @@ const QuotationCreate = () => {
              let wapn = customerInfo.phone.replace(/[^0-9]/g,'');
              if (wapn.length === 10) wapn = '91' + wapn;
              
-             let itemListStr = res.data.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity}) = Rs.${i.total}`).join('\n') || '';
+             let itemListStr = res.data.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity} ${i.unit || ''}) = Rs.${i.total}`).join('\n') || '';
              
              const msgText = `*Hardware Shop Quotation* 📝\n-----------------------------------\n*Quotation No:* ${res.data.quotation_number}\n*Customer:* ${res.data.customer_name || 'Walk-in'}\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Amount:* Rs. ${res.data.total}\n\nThis is an estimate and subject to change. Thank you!`;
 
@@ -386,7 +387,7 @@ const QuotationCreate = () => {
               <div key={item.product_id} className="cart-item">
                 <div className="cart-item-info">
                   <div className="cart-item-title">{item.name}</div>
-                  <div className="cart-item-price">₹{item.price} x {item.quantity}  = <span style={{color: 'var(--text-main)', fontWeight: 600}}>₹{item.price * item.quantity}</span></div>
+                  <div className="cart-item-price">₹{item.price} x {item.quantity} ${item.unit || ''} = <span style={{color: 'var(--text-main)', fontWeight: 600}}>₹{item.price * item.quantity}</span></div>
                 </div>
                 <div className="cart-item-controls">
                   <button onClick={() => updateQuantity(item.product_id, item.quantity - 1)}>-</button>

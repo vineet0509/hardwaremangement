@@ -10,8 +10,10 @@ class QuotationItem extends Model
         'quotation_id',
         'product_id',
         'product_name',
+        'description',
         'price',
         'quantity',
+        'unit',
         'total'
     ];
 

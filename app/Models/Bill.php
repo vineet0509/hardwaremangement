@@ -25,6 +25,7 @@ class Bill extends Model
         'total'       => 'float',
         'paid_amount' => 'float',
         'due_amount'  => 'float',
+        'is_gst'      => 'boolean',
     ];
 
     public function items(): HasMany

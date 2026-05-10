@@ -67,6 +67,8 @@ const Billing = () => {
         setCart(b.items.map(i => ({
            product_id: i.product_id,
            name: i.product_name || i.product?.name,
+           description: i.description,
+           unit: i.unit,
            price: i.price,
            quantity: i.quantity,
            stock: (i.product?.quantity || 0) + i.quantity
@@ -83,7 +85,7 @@ const Billing = () => {
         if (existing.quantity >= product.quantity) return prev;
         return prev.map(item => item.product_id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
       }
-      return [...prev, { product_id: product.id, name: product.name, price: product.selling_price, quantity: 1, stock: product.quantity }];
+      return [...prev, { product_id: product.id, name: product.name, description: product.description, unit: product.unit, price: product.selling_price, quantity: 1, stock: product.quantity }];
     });
   };
 
@@ -186,8 +188,11 @@ const Billing = () => {
               <tbody>
                 ${billData.items.map(item => `
                   <tr>
-                    <td>${item.product_name}</td>
-                    <td class="text-right">${item.quantity}</td>
+                    <td>
+                      <strong>${item.product_name}</strong>
+                      ${item.description ? `<br><small style="color: #666;">${item.description}</small>` : ''}
+                    </td>
+                    <td class="text-right">${item.quantity} ${item.unit || ''}</td>
                     <td class="text-right">₹${item.price}</td>
                     <td class="text-right">₹${(item.price * item.quantity).toFixed(2)}</td>
                   </tr>
@@ -206,8 +211,12 @@ const Billing = () => {
               </tr>
               ${isGst ? `
                 <tr>
-                  <td>GST (18%):</td>
-                  <td class="text-right">₹${billData.tax}</td>
+                  <td>CGST (9%):</td>
+                  <td class="text-right">₹${(billData.tax / 2).toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td>SGST (9%):</td>
+                  <td class="text-right">₹${(billData.tax / 2).toFixed(2)}</td>
                 </tr>
               ` : ''}
               <tr class="total-row">
@@ -273,7 +282,7 @@ const Billing = () => {
              let wapn = customerInfo.phone.replace(/[^0-9]/g,'');
              if (wapn.length === 10) wapn = '91' + wapn; // Assume India code if 10 digits
              
-             let itemListStr = res.data.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity}) = Rs.${i.total}`).join('\n') || '';
+             let itemListStr = res.data.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity} ${i.unit || ''}) = Rs.${i.total}`).join('\n') || '';
              
              const shopName = settings.company_name || 'Hardware Shop';
              const gstStr = (res.data.is_gst && settings.gst_number) ? `*GSTIN:* ${settings.gst_number}\n` : '';
@@ -509,10 +518,16 @@ const Billing = () => {
                 </div>
               </div>
               {isGstBill && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, color: 'var(--primary)', fontSize: '1.15rem' }}>
-                  <span style={{ fontWeight: 600 }}>Tax (GST 18%)</span>
-                  <span style={{ fontWeight: 700 }}>₹{tax.toFixed(2)}</span>
-                </div>
+                <>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, color: 'var(--primary)', fontSize: '1rem' }}>
+                    <span style={{ fontWeight: 600 }}>CGST (9%)</span>
+                    <span style={{ fontWeight: 700 }}>₹{(tax / 2).toFixed(2)}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, color: 'var(--primary)', fontSize: '1.15rem' }}>
+                    <span style={{ fontWeight: 600 }}>SGST (9%)</span>
+                    <span style={{ fontWeight: 700 }}>₹{(tax / 2).toFixed(2)}</span>
+                  </div>
+                </>
               )}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 16, borderTop: '2px dashed #cbd5e1', paddingTop: 16 }}>
                 <span style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-main)' }}>Grand Total</span>
