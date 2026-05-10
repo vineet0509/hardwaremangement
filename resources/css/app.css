@@ -40,17 +40,15 @@ html {
 }
 
 body, input, button, select, textarea {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Roboto', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Inter specific feature settings for better readability */
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
 body {
   background-color: var(--bg-color);
   color: var(--text-main);
-  font-size: 1rem;
+  font-size: 1.05rem;
   line-height: 1.5;
   letter-spacing: -0.015em;
   overflow-x: hidden;

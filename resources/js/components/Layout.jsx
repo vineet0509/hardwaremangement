@@ -243,24 +243,45 @@ const Layout = ({ children }) => {
           </div>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-             <button 
-                onClick={toggleTheme} 
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  cursor: 'pointer', 
-                  color: 'var(--text-muted)', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  padding: 8,
-                  borderRadius: '50%',
-                  marginRight: 8
-                }}
-                title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-              >
-                {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-              </button>
+                <button 
+                  onClick={toggleTheme} 
+                  style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    cursor: 'pointer', 
+                    color: 'var(--text-muted)', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    padding: 8,
+                    borderRadius: '50%',
+                    marginRight: 8
+                  }}
+                  title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+                >
+                  {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                </button>
+
+                <button 
+                   onClick={() => navigate('/privacy-policy')}
+                   className="hide-on-mobile"
+                   style={{ 
+                     background: 'none', 
+                     border: 'none', 
+                     cursor: 'pointer', 
+                     color: 'var(--text-muted)', 
+                     display: 'flex', 
+                     alignItems: 'center', 
+                     gap: 6,
+                     padding: '8px 12px',
+                     borderRadius: 8,
+                     fontSize: '0.9rem',
+                     fontWeight: 600,
+                     marginRight: 12
+                   }}
+                >
+                  <Shield size={18} /> Privacy
+                </button>
 
               <div className="hide-on-mobile" style={{ position: 'relative' }}>
                <div 
