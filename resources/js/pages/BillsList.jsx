@@ -7,6 +7,7 @@ const BillsList = () => {
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [summary, setSummary] = useState({ total_sale: 0, total_due: 0 });
 
   const [showRepayModal, setShowRepayModal] = useState(false);
   const [targetBill, setTargetBill] = useState(null);
@@ -26,7 +27,15 @@ const BillsList = () => {
     if (dateFrom) url += `&date_from=${dateFrom}`;
     if (dateTo) url += `&date_to=${dateTo}`;
     api.get(url)
-      .then(res => setBills(res.data.data || res.data))
+      .then(res => {
+        setBills(res.data.data || res.data);
+        if (res.data.summary_total_sale !== undefined) {
+          setSummary({
+            total_sale: res.data.summary_total_sale,
+            total_due: res.data.summary_total_due
+          });
+        }
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   };
@@ -189,51 +198,90 @@ const BillsList = () => {
     }
   };
 
+  const handleExport = () => {
+    let url = `/api/bills/export?token=${localStorage.getItem('auth_token')}&search=${search}`;
+    if (customerFilter) url += `&customer=${encodeURIComponent(customerFilter)}`;
+    if (dateFrom) url += `&date_from=${dateFrom}`;
+    if (dateTo) url += `&date_to=${dateTo}`;
+    window.open(url, '_blank');
+  };
+
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center" style={{ marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
-        <div style={{ display: 'flex', gap: 12, flex: 2, minWidth: 300 }}>
-          <div className="form-control" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', flex: 1 }}>
-            <Search size={18} color="var(--text-muted)" />
+      <div className="stat-card" style={{ marginBottom: 24, padding: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 20, alignItems: 'flex-end' }}>
+          
+          <div className="form-group" style={{ margin: 0 }}>
+            <label className="form-label" style={{ marginBottom: 8, display: 'block', fontWeight: 600 }}>Search Bills</label>
+            <div className="form-control" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px' }}>
+              <Search size={16} color="var(--text-muted)" />
+              <input 
+                type="text" 
+                placeholder="Bill No / Name..." 
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                style={{ background: 'transparent', border: 'none', color: 'inherit', outline: 'none', width: '100%', fontSize: '0.9rem' }}
+              />
+            </div>
+          </div>
+
+          <div className="form-group" style={{ margin: 0 }}>
+            <label className="form-label" style={{ marginBottom: 8, display: 'block', fontWeight: 600 }}>Filter Customer</label>
+            <select 
+              className="form-control" 
+              value={customerFilter} 
+              onChange={(e) => setCustomerFilter(e.target.value)}
+              style={{ fontSize: '0.9rem' }}
+            >
+              <option value="">All Customers</option>
+              {udharCustomers.map((c, i) => (
+                <option key={i} value={c.customer_name}>{c.customer_name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group" style={{ margin: 0 }}>
+            <label className="form-label" style={{ marginBottom: 8, display: 'block', fontWeight: 600 }}>From Date</label>
             <input 
-              type="text" 
-              placeholder="Search by Bill No or Customer Name..." 
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              style={{ background: 'transparent', border: 'none', color: 'inherit', outline: 'none', width: '100%' }}
+              type="date" 
+              className="form-control" 
+              value={dateFrom} 
+              onChange={(e) => setDateFrom(e.target.value)} 
+              style={{ fontSize: '0.9rem' }}
             />
           </div>
-          <select 
-            className="form-control" 
-            value={customerFilter} 
-            onChange={(e) => setCustomerFilter(e.target.value)}
-            style={{ padding: '8px 16px', maxWidth: 200 }}
-          >
-            <option value="">All Customers</option>
-            {udharCustomers.map((c, i) => (
-              <option key={i} value={c.customer_name}>{c.customer_name}</option>
-            ))}
-          </select>
-        </div>
-        
-        <div style={{ display: 'flex', gap: 12, flex: 1, minWidth: 300, justifyContent: 'flex-end' }}>
-          <input 
-            type="date" 
-            className="form-control" 
-            value={dateFrom} 
-            onChange={(e) => setDateFrom(e.target.value)} 
-            style={{ padding: '8px 16px', maxWidth: 150 }}
-            title="Start Date"
-          />
-          <span style={{ display: 'flex', alignItems: 'center', color: 'var(--text-muted)' }}>to</span>
-          <input 
-            type="date" 
-            className="form-control" 
-            value={dateTo} 
-            onChange={(e) => setDateTo(e.target.value)} 
-            style={{ padding: '8px 16px', maxWidth: 150 }}
-            title="End Date"
-          />
+
+          <div className="form-group" style={{ margin: 0 }}>
+            <label className="form-label" style={{ marginBottom: 8, display: 'block', fontWeight: 600 }}>To Date</label>
+            <input 
+              type="date" 
+              className="form-control" 
+              value={dateTo} 
+              onChange={(e) => setDateTo(e.target.value)} 
+              style={{ fontSize: '0.9rem' }}
+            />
+          </div>
+
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button 
+              className="btn btn-outline" 
+              style={{ 
+                flex: 1,
+                padding: '10px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                gap: 8, 
+                borderColor: 'var(--success)', 
+                color: 'var(--success)', 
+                fontWeight: 600,
+                background: 'rgba(16, 185, 129, 0.05)'
+              }}
+              onClick={handleExport}
+            >
+              <FileText size={18} /> Export Excel
+            </button>
+          </div>
         </div>
       </div>
 
@@ -311,6 +359,11 @@ const BillsList = () => {
             ))}
           </tbody>
         </table></div>
+        
+        <div style={{ padding: '16px', background: 'var(--surface)', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'flex-end', gap: '24px', fontWeight: 'bold' }}>
+           <div style={{ fontSize: '1.1rem' }}>Total Sale: <span style={{ color: 'var(--primary)' }}>₹{Number(summary.total_sale).toFixed(2)}</span></div>
+           <div style={{ fontSize: '1.1rem' }}>Total Due: <span style={{ color: 'var(--danger)' }}>₹{Number(summary.total_due).toFixed(2)}</span></div>
+        </div>
       </div>
 
       {showRepayModal && (

@@ -160,7 +160,75 @@ class BillController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        return response()->json($query->latest()->paginate(20));
+        $totalsQuery = clone $query;
+        $summaryTotalSale = $totalsQuery->sum('total');
+        $summaryTotalDue = $totalsQuery->where('due_amount', '>', 0)->sum('due_amount');
+
+        $paginated = $query->latest()->paginate(20);
+        $response = $paginated->toArray();
+        $response['summary_total_sale'] = $summaryTotalSale;
+        $response['summary_total_due'] = $summaryTotalDue;
+
+        return response()->json($response);
+    }
+
+    public function exportCSV(Request $request)
+    {
+        $query = Bill::query();
+
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('bill_number', 'like', "%{$request->search}%")
+                  ->orWhere('customer_name', 'like', "%{$request->search}%");
+            });
+        }
+        if ($request->filled('customer')) {
+            $query->where('customer_name', $request->customer);
+        }
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $bills = $query->latest()->get();
+
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=bills_history.csv",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['Bill Number', 'Customer Name', 'Phone', 'Date', 'Total', 'Paid', 'Due', 'Payment Method', 'Status'];
+
+        $callback = function() use($bills, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($bills as $bill) {
+                fputcsv($file, [
+                    $bill->bill_number,
+                    $bill->customer_name,
+                    $bill->customer_phone,
+                    $bill->created_at->format('Y-m-d H:i'),
+                    $bill->total,
+                    $bill->paid_amount,
+                    $bill->due_amount,
+                    strtoupper($bill->payment_method),
+                    strtoupper($bill->status),
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     public function store(Request $request): JsonResponse
@@ -170,7 +238,12 @@ class BillController extends Controller
             'customer_phone'   => 'required|string|max:20',
             'customer_address' => 'required|string',
             'items'            => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.product_id' => [
+                'required',
+                \Illuminate\Validation\Rule::exists('products', 'id')->where(function ($query) {
+                    return $query->where('shop_id', auth()->user()->shop_id);
+                }),
+            ],
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.price'    => 'required|numeric|min:0',
             'items.*.discount' => 'nullable|numeric|min:0',
@@ -275,7 +348,12 @@ class BillController extends Controller
             'customer_phone'   => 'required|string|max:20',
             'customer_address' => 'required|string',
             'items'            => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.product_id' => [
+                'required',
+                \Illuminate\Validation\Rule::exists('products', 'id')->where(function ($query) {
+                    return $query->where('shop_id', auth()->user()->shop_id);
+                }),
+            ],
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.price'    => 'required|numeric|min:0',
             'items.*.discount' => 'nullable|numeric|min:0',

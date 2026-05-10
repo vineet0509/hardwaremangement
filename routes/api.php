@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\SuperAdminController;
 use App\Http\Controllers\Api\SupplierController;
+use App\Http\Controllers\Api\ExpenseController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -21,9 +22,10 @@ Route::middleware(['auth:sanctum', 'check.subscription', 'domain.tenant'])->grou
     Route::post('/user/password', [AuthController::class, 'changePassword']);
     Route::delete('/user', [AuthController::class, 'deleteAccount']);
 
-    // Settings
+// Settings
 Route::get('/settings', [SettingsController::class, 'index']);
 Route::post('/settings', [SettingsController::class, 'update']);
+Route::post('/subscription-request', [SettingsController::class, 'submitSubscriptionRequest']);
 
 // Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index']);
@@ -46,6 +48,7 @@ Route::get('/advances', [BillController::class, 'advancesList']);
 Route::post('/advances', [BillController::class, 'storeAdvance']);
 Route::post('/bills/{bill}/repay', [BillController::class, 'repay']);
 Route::get('/bills/{bill}/pdf', [BillController::class, 'downloadPDF']);
+Route::get('/bills/export', [BillController::class, 'exportCSV']);
 Route::apiResource('bills', BillController::class);
 Route::apiResource('quotations', QuotationController::class);
 
@@ -66,6 +69,9 @@ Route::get('/salary-records',                           [StaffController::class,
     Route::get('/suppliers/{supplier}/transactions', [SupplierController::class, 'transactions']);
     Route::post('/suppliers/{supplier}/transactions', [SupplierController::class, 'storeTransaction']);
 
+    // Expenses
+    Route::apiResource('expenses', ExpenseController::class)->except(['show', 'update']);
+
     // Reports
     Route::get('/reports/sales',        [ReportController::class, 'salesReport']);
     Route::get('/reports/stock',        [ReportController::class, 'stockReport']);
@@ -77,4 +83,8 @@ Route::get('/salary-records',                           [StaffController::class,
     Route::post('/super-admin/shops/{shop}/extend-plan', [SuperAdminController::class, 'extendPlan']);
     Route::delete('/super-admin/shops/{shop}', [SuperAdminController::class, 'deleteShop']);
     Route::get('/super-admin/login-logs', [SuperAdminController::class, 'loginLogs']);
+    
+    Route::get('/super-admin/subscription-requests', [SuperAdminController::class, 'subscriptionRequests']);
+    Route::post('/super-admin/subscription-requests/{id}/approve', [SuperAdminController::class, 'approveSubscriptionRequest']);
+    Route::post('/super-admin/subscription-requests/{id}/reject', [SuperAdminController::class, 'rejectSubscriptionRequest']);
 });

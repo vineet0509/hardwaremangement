@@ -23,7 +23,12 @@ class QuotationController extends Controller
             'customer_address' => 'nullable|string',
             'discount' => 'numeric|min:0',
             'items' => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.product_id' => [
+                'required',
+                \Illuminate\Validation\Rule::exists('products', 'id')->where(function ($query) {
+                    return $query->where('shop_id', auth()->user()->shop_id);
+                }),
+            ],
             'items.*.quantity' => 'required|numeric|min:0.1',
             'items.*.price' => 'required|numeric|min:0'
         ]);
@@ -96,7 +101,12 @@ class QuotationController extends Controller
             'customer_address' => 'nullable|string',
             'discount' => 'numeric|min:0',
             'items' => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.product_id' => [
+                'required',
+                \Illuminate\Validation\Rule::exists('products', 'id')->where(function ($query) {
+                    return $query->where('shop_id', auth()->user()->shop_id);
+                }),
+            ],
             'items.*.quantity' => 'required|numeric|min:0.1',
             'items.*.price' => 'required|numeric|min:0'
         ]);

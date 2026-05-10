@@ -6,14 +6,14 @@ import Swal from 'sweetalert2';
 const Settings = () => {
   const [formData, setFormData] = useState({
     company_name: '', company_phone: '', company_address: '', gst_number: '',
-    subscription_plan: 'full_time', subscription_expires_at: ''
+    subscription_plan: 'full_time', subscription_expires_at: '', latest_request: null
   });
   const [passwordData, setPasswordData] = useState({
     current_password: '', new_password: '', new_password_confirmation: ''
   });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchSettings = () => {
     api.get('/settings')
       .then(res => {
         setFormData({
@@ -22,11 +22,16 @@ const Settings = () => {
           company_address: res.data.company_address || '',
           gst_number: res.data.gst_number || '',
           subscription_plan: res.data.subscription_plan || 'full_time',
-          subscription_expires_at: res.data.subscription_expires_at ? res.data.subscription_expires_at.split('T')[0] : ''
+          subscription_expires_at: res.data.subscription_expires_at ? res.data.subscription_expires_at.split('T')[0] : '',
+          latest_request: res.data.latest_request
         });
       })
       .catch(err => Swal.fire('Error', err.response?.data?.message || 'Error fetching settings', 'error'))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchSettings();
   }, []);
 
   const handleSave = (e) => {
@@ -34,10 +39,21 @@ const Settings = () => {
     api.post('/settings', formData)
       .then(res => {
         Swal.fire('Success', 'Settings saved successfully!', 'success').then(() => {
-           window.location.reload(); // Quick refresh to update the sidebar dynamic company name
+           window.location.reload(); 
         });
       })
       .catch(err => Swal.fire('Error', err.response?.data?.message || 'Error saving settings', 'error'));
+  };
+
+  const handleSubscriptionRequest = (e) => {
+    e.preventDefault();
+    const planType = e.target.plan_type.value;
+    api.post('/subscription-request', { plan_type: planType })
+      .then(res => {
+        Swal.fire('Success', res.data.message || 'Request sent!', 'success');
+        fetchSettings();
+      })
+      .catch(err => Swal.fire('Error', err.response?.data?.message || 'Failed to submit request', 'error'));
   };
 
 
@@ -123,10 +139,10 @@ const Settings = () => {
         <div className="stat-card" style={{ flex: 1, minWidth: '300px', backgroundColor: 'var(--surface-hover)' }}>
            <h3 style={{ borderBottom: '1px solid var(--border)', paddingBottom: 12, marginBottom: 16 }}>Subscription Model</h3>
            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: 24 }}>
-             Your current active subscription and plan details. Contact your administrator to extend your trial or renew your plan.
+             Your current active subscription and plan details.
            </p>
 
-            <div style={{ marginTop: 16, padding: 16, background: 'rgba(0,0,0,0.15)', borderRadius: 8 }}>
+            <div style={{ marginTop: 16, padding: 16, background: 'rgba(0,0,0,0.15)', borderRadius: 8, marginBottom: 24 }}>
               {formData.subscription_plan === 'full_time' ? (
                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--success)' }}>
                    <CheckCircle size={20} />
@@ -151,6 +167,37 @@ const Settings = () => {
                  </div>
               )}
             </div>
+
+            {formData.subscription_plan !== 'full_time' && (
+               <div style={{ marginTop: 24, padding: 16, border: '1px solid var(--border)', borderRadius: 8 }}>
+                 <h4 style={{ marginBottom: 12, fontSize: '0.95rem' }}>Renew or Upgrade Plan</h4>
+                 
+                 {formData.latest_request && formData.latest_request.status === 'pending' ? (
+                   <div style={{ marginBottom: 16, padding: 12, background: 'rgba(245, 158, 11, 0.1)', borderRadius: 8, border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                     <div style={{ color: 'var(--warning)', fontWeight: 600, fontSize: '0.85rem', marginBottom: 4 }}>REQUEST PENDING</div>
+                     <div style={{ fontSize: '0.9rem' }}>You requested the <strong style={{ textTransform: 'capitalize' }}>{formData.latest_request.plan_type}</strong> plan.</div>
+                     <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 4 }}>Requested on {new Date(formData.latest_request.created_at).toLocaleDateString()}</div>
+                   </div>
+                 ) : formData.latest_request && formData.latest_request.status === 'rejected' && (
+                    <div style={{ marginBottom: 16, padding: 12, background: 'rgba(239, 68, 68, 0.1)', borderRadius: 8, border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                      <div style={{ color: 'var(--danger)', fontWeight: 600, fontSize: '0.85rem', marginBottom: 4 }}>REQUEST REJECTED</div>
+                      <div style={{ fontSize: '0.9rem' }}>Your previous request was not approved. You can submit a new one.</div>
+                    </div>
+                 )}
+
+                 <form onSubmit={handleSubscriptionRequest}>
+                   <div className="form-group">
+                     <select name="plan_type" className="form-control" required style={{ marginBottom: 12 }} defaultValue={formData.latest_request?.status === 'pending' ? formData.latest_request.plan_type : 'monthly'}>
+                       <option value="monthly">Monthly Plan - ₹499/month</option>
+                       <option value="yearly">Yearly Plan - ₹4999/year (with ₹999/year full support)</option>
+                     </select>
+                   </div>
+                   <button type="submit" className="btn btn-primary" style={{ width: '100%', background: 'var(--success)', border: 'none' }}>
+                     {formData.latest_request?.status === 'pending' ? 'Change Requested Plan' : 'Submit Renewal Request'}
+                   </button>
+                 </form>
+               </div>
+            )}
         </div>
 
         {/* Change Password Settings */}

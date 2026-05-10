@@ -8,12 +8,20 @@ const SuperAdmin = () => {
   const [selectedShopUsers, setSelectedShopUsers] = useState(null);
   const [activeTab, setActiveTab] = useState('shops');
   const [loginLogs, setLoginLogs] = useState([]);
+  const [subscriptionRequests, setSubscriptionRequests] = useState([]);
   const [logsPagination, setLogsPagination] = useState({ current: 1, last: 1 });
 
   useEffect(() => {
     fetchShops();
     fetchLogs(1);
+    fetchSubscriptionRequests();
   }, []);
+
+  const fetchSubscriptionRequests = () => {
+    api.get('/super-admin/subscription-requests')
+      .then(res => setSubscriptionRequests(res.data))
+      .catch(console.error);
+  };
 
   const fetchLogs = (page = 1) => {
     api.get(`/super-admin/login-logs?page=${page}`)
@@ -60,6 +68,29 @@ const SuperAdmin = () => {
     }
   };
 
+  const handleApproveRequest = (id) => {
+    if(confirm("Are you sure you want to approve this subscription? This will extend the shop's plan.")) {
+      api.post(`/super-admin/subscription-requests/${id}/approve`)
+        .then(res => {
+          alert(res.data.message);
+          fetchSubscriptionRequests();
+          fetchShops();
+        })
+        .catch(err => alert(err.response?.data?.message || 'Error approving request'));
+    }
+  };
+
+  const handleRejectRequest = (id) => {
+    if(confirm("Reject this request?")) {
+      api.post(`/super-admin/subscription-requests/${id}/reject`)
+        .then(res => {
+          alert(res.data.message);
+          fetchSubscriptionRequests();
+        })
+        .catch(err => alert(err.response?.data?.message || 'Error rejecting request'));
+    }
+  };
+
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
@@ -88,6 +119,21 @@ const SuperAdmin = () => {
           }}
         >
           Registered Shops
+        </button>
+        <button 
+          onClick={() => setActiveTab('requests')} 
+          style={{ 
+            padding: '10px 20px', borderRadius: 8, border: '1px solid var(--border)', 
+            background: activeTab === 'requests' ? 'var(--primary)' : 'var(--surface)', 
+            color: activeTab === 'requests' ? 'white' : 'var(--text-main)', cursor: 'pointer', fontWeight: 600,
+            display: 'flex', alignItems: 'center', gap: 8
+          }}
+        >
+          Plan Requests {subscriptionRequests.filter(r => r.status === 'pending').length > 0 && (
+            <span style={{ background: '#ef4444', color: 'white', padding: '2px 6px', borderRadius: '50%', fontSize: '0.75rem' }}>
+              {subscriptionRequests.filter(r => r.status === 'pending').length}
+            </span>
+          )}
         </button>
         <button 
           onClick={() => setActiveTab('logs')} 
@@ -200,6 +246,70 @@ const SuperAdmin = () => {
             </div>
           )}
         </div>
+        ) : activeTab === 'requests' ? (
+          <div className="stat-card" style={{ overflowX: 'auto' }}>
+            <h3 style={{ borderBottom: '1px solid var(--border)', paddingBottom: 12, marginBottom: 16 }}>
+              Subscription & Renewal Requests
+            </h3>
+            <div className="table-responsive">
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <thead>
+                  <tr style={{ borderBottom: '2px solid var(--border)', color: 'var(--text-muted)' }}>
+                    <th style={{ padding: '12px 16px' }}>Shop</th>
+                    <th style={{ padding: '12px 16px' }}>Plan Type</th>
+                    <th style={{ padding: '12px 16px' }}>Amount</th>
+                    <th style={{ padding: '12px 16px' }}>Status</th>
+                    <th style={{ padding: '12px 16px' }}>Date</th>
+                    <th style={{ padding: '12px 16px', textAlign: 'center' }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {subscriptionRequests.map(request => (
+                    <tr key={request.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                      <td style={{ padding: '16px' }}>{request.shop?.name}</td>
+                      <td style={{ padding: '16px', textTransform: 'capitalize' }}>{request.plan_type}</td>
+                      <td style={{ padding: '16px' }}>₹{request.amount}</td>
+                      <td style={{ padding: '16px' }}>
+                        <span style={{ 
+                          padding: '4px 8px', borderRadius: 8, fontSize: '0.85rem',
+                          background: request.status === 'approved' ? 'rgba(16, 185, 129, 0.15)' : request.status === 'rejected' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                          color: request.status === 'approved' ? 'var(--success)' : request.status === 'rejected' ? 'var(--danger)' : 'var(--warning)'
+                        }}>
+                          {request.status.toUpperCase()}
+                        </span>
+                      </td>
+                      <td style={{ padding: '16px' }}>{new Date(request.created_at).toLocaleDateString()}</td>
+                      <td style={{ padding: '16px', textAlign: 'center' }}>
+                        {request.status === 'pending' && (
+                          <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
+                            <button 
+                              className="btn btn-primary" 
+                              style={{ padding: '6px 12px', fontSize: '0.85rem', background: 'var(--success)', border: 'none' }}
+                              onClick={() => handleApproveRequest(request.id)}
+                            >
+                              Approve
+                            </button>
+                            <button 
+                              className="btn btn-danger" 
+                              style={{ padding: '6px 12px', fontSize: '0.85rem' }}
+                              onClick={() => handleRejectRequest(request.id)}
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                  {subscriptionRequests.length === 0 && (
+                    <tr>
+                      <td colSpan="6" style={{ textAlign: 'center', padding: '32px', color: 'var(--text-muted)' }}>No requests found.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         ) : (
           <div className="stat-card" style={{ overflowX: 'auto' }}>
             <h3 style={{ borderBottom: '1px solid var(--border)', paddingBottom: 12, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>

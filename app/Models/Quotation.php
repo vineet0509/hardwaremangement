@@ -3,14 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BelongsToShop;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Scopes\ShopScope;
-use Illuminate\Database\Eloquent\Attributes\ScopedBy;
-
-#[ScopedBy([ShopScope::class])]
 class Quotation extends Model
 {
-    use SoftDeletes;
+    use BelongsToShop, SoftDeletes;
     protected $fillable = [
         'shop_id',
         'quotation_number',
@@ -25,14 +22,7 @@ class Quotation extends Model
         'is_gst'
     ];
 
-    protected static function booted()
-    {
-        static::creating(function ($model) {
-            if (auth()->check() && !isset($model->shop_id)) {
-                $model->shop_id = auth()->user()->shop_id;
-            }
-        });
-    }
+
 
     public function items()
     {

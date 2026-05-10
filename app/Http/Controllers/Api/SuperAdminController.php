@@ -110,4 +110,75 @@ class SuperAdminController extends Controller
 
         return response()->json(['message' => 'Shop and its users deleted successfully.']);
     }
+
+    public function subscriptionRequests(Request $request)
+    {
+        if (!$request->user()->is_super_admin) {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+
+        $requests = \App\Models\SubscriptionRequest::withoutGlobalScopes()
+            ->with('shop')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return response()->json($requests);
+    }
+
+    public function approveSubscriptionRequest(Request $request, $id)
+    {
+        if (!$request->user()->is_super_admin) {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+
+        $subscriptionRequest = \App\Models\SubscriptionRequest::withoutGlobalScopes()->find($id);
+        
+        if (!$subscriptionRequest) {
+            return response()->json(['message' => 'Request not found.'], 404);
+        }
+
+        if ($subscriptionRequest->status !== 'pending') {
+            return response()->json(['message' => 'Request already processed.'], 400);
+        }
+
+        $subscriptionRequest->status = 'approved';
+        $subscriptionRequest->save();
+
+        $shop = $subscriptionRequest->shop;
+        
+        $days = $subscriptionRequest->plan_type === 'yearly' ? 365 : 30;
+
+        $baseDate = $shop->trial_ends_at && \Carbon\Carbon::parse($shop->trial_ends_at)->isFuture() 
+                    ? \Carbon\Carbon::parse($shop->trial_ends_at) 
+                    : now();
+        
+        $shop->trial_ends_at = $baseDate->addDays($days);
+        $shop->save();
+
+        $setting = Setting::withoutGlobalScopes()->where('shop_id', $shop->id)->first();
+        if ($setting) {
+            $setting->subscription_plan = $subscriptionRequest->plan_type;
+            $setting->subscription_expires_at = $shop->trial_ends_at;
+            $setting->save();
+        }
+
+        return response()->json(['message' => 'Subscription approved and plan extended.']);
+    }
+
+    public function rejectSubscriptionRequest(Request $request, $id)
+    {
+        if (!$request->user()->is_super_admin) {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+
+        $subscriptionRequest = \App\Models\SubscriptionRequest::withoutGlobalScopes()->find($id);
+
+        if (!$subscriptionRequest) {
+            return response()->json(['message' => 'Request not found.'], 404);
+        }
+
+        $subscriptionRequest->status = 'rejected';
+        $subscriptionRequest->save();
+
+        return response()->json(['message' => 'Subscription request rejected.']);
+    }
 }

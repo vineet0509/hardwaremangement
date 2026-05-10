@@ -15,6 +15,7 @@ const Layout = ({ children }) => {
     { name: 'Quotations', path: '/quotations', icon: ClipboardList },
     { name: 'Customers', path: '/customers', icon: Users },
     { name: 'Bill History', path: '/bills', icon: Receipt },
+    { name: 'Other Expenses', path: '/expenses', icon: Banknote },
     { name: 'Staff Advances', path: '/advances', icon: Banknote },
     { name: 'Staff Management', path: '/staff', icon: Users },
     { name: 'Reports', path: '/reports', icon: FileText },
@@ -144,45 +145,6 @@ const Layout = ({ children }) => {
         </div>
         
         <nav className="nav-links">
-          {/* Mobile Language Switcher at the top of sidebar for better visibility */}
-          <div className="sidebar-language-section" style={{ padding: '0 16px 12px 16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderRadius: '12px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
-               <Languages size={20} color="var(--primary)" />
-               <div style={{ flex: 1 }}>
-                 <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 2 }}>System Language</div>
-                 <select 
-                   style={{ border: 'none', outline: 'none', background: 'transparent', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, color: '#ffffff', width: '100%', padding: 0 }}
-                   onChange={(e) => {
-                      const lang = e.target.value;
-                      if(lang === 'en' || !lang) {
-                          document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                          document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
-                      } else {
-                          document.cookie = `googtrans=/en/${lang}; path=/;`;
-                          document.cookie = `googtrans=/en/${lang}; domain=${window.location.hostname}; path=/;`;
-                      }
-                      window.location.reload();
-                   }}
-                   defaultValue={
-                     document.cookie.split('; ').find(row => row.startsWith('googtrans='))?.split('=')[1]?.replace('/en/', '') || 'en'
-                   }
-                 >
-                   <option value="en">English (US)</option>
-                   <option value="hi">हिंदी (Hindi)</option>
-                   <option value="bn">বাংলা (Bengali)</option>
-                   <option value="mr">मराठी (Marathi)</option>
-                   <option value="te">తెలుగు (Telugu)</option>
-                   <option value="ta">தமிழ் (Tamil)</option>
-                   <option value="gu">ગુજરાતી (Gujarati)</option>
-                   <option value="kn">ಕನ್ನಡ (Kannada)</option>
-                   <option value="ur">اردو (Urdu)</option>
-                   <option value="ml">മലയാളം (Malayalam)</option>
-                   <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
-                 </select>
-               </div>
-            </div>
-          </div>
-
           {allNavItems.map((item) => (
             <NavLink
               key={item.path}
@@ -275,42 +237,6 @@ const Layout = ({ children }) => {
           </div>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-             
-             <div className="custom-language-select hide-on-mobile" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--surface)' }}>
-               <Languages size={18} color="var(--primary)" />
-               <select 
-                 style={{ border: 'none', outline: 'none', background: 'transparent', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text)' }}
-                 onChange={(e) => {
-                    const lang = e.target.value;
-                    if(lang === 'en' || !lang) {
-                        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
-                    } else {
-                        document.cookie = `googtrans=/en/${lang}; path=/;`;
-                        document.cookie = `googtrans=/en/${lang}; domain=${window.location.hostname}; path=/;`;
-                    }
-                    window.location.reload();
-                 }}
-                 defaultValue={
-                   document.cookie.split('; ').find(row => row.startsWith('googtrans='))?.split('=')[1]?.replace('/en/', '') || 'en'
-                 }
-               >
-                 <option value="en">English (US)</option>
-                 <option value="hi">हिंदी (Hindi)</option>
-                 <option value="bn">বাংলা (Bengali)</option>
-                 <option value="mr">मराठी (Marathi)</option>
-                 <option value="te">తెలుగు (Telugu)</option>
-                 <option value="ta">தமிழ் (Tamil)</option>
-                 <option value="gu">ગુજરાતી (Gujarati)</option>
-                 <option value="kn">ಕನ್ನಡ (Kannada)</option>
-                 <option value="ur">اردو (Urdu)</option>
-                 <option value="ml">മലയാളം (Malayalam)</option>
-                 <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
-               </select>
-             </div>
-             
-             <div id="google_translate_element"></div>
-
              <button 
                 onClick={toggleTheme} 
                 style={{ 
@@ -413,8 +339,49 @@ const Layout = ({ children }) => {
               gap: 10
             }}>
               <AlertTriangle size={20} />
-              Action Restricted Mode: This trial/subscription has expired. Data can only be reviewed. Contact the administrator to resume actions.
+              <div style={{ flex: 1 }}>Action Restricted Mode: This trial/subscription has expired. Data can only be reviewed.</div>
+              <button onClick={() => navigate('/settings')} className="btn btn-primary" style={{ padding: '6px 12px', fontSize: '0.85rem' }}>Renew Plan</button>
             </div>
+          )}
+          
+          {settings && !settings.is_expired && settings.trial_days_remaining !== undefined && settings.subscription_plan !== 'full_time' && (
+            (settings.subscription_plan === 'monthly' || settings.subscription_plan === 'yearly') ? (
+              settings.trial_days_remaining <= 15 && (
+                <div style={{ 
+                  background: 'rgba(245, 158, 11, 0.15)', 
+                  color: 'var(--warning)', 
+                  padding: '12px 20px', 
+                  borderRadius: 8, 
+                  marginBottom: 24, 
+                  fontWeight: 600, 
+                  border: '1px solid rgba(245, 158, 11, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10
+                }}>
+                  <AlertTriangle size={20} />
+                  <div style={{ flex: 1 }}>Subscription Renewal: Your {settings.subscription_plan} plan will expire in {settings.trial_days_remaining} days.</div>
+                  <button onClick={() => navigate('/settings')} className="btn" style={{ background: 'var(--warning)', color: '#fff', padding: '6px 12px', fontSize: '0.85rem', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>Renew Now</button>
+                </div>
+              )
+            ) : (
+              <div style={{ 
+                background: 'rgba(245, 158, 11, 0.15)', 
+                color: 'var(--warning)', 
+                padding: '12px 20px', 
+                borderRadius: 8, 
+                marginBottom: 24, 
+                fontWeight: 600, 
+                border: '1px solid rgba(245, 158, 11, 0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10
+              }}>
+                <AlertTriangle size={20} />
+                <div style={{ flex: 1 }}>Demo Plan: You have {settings.trial_days_remaining} days remaining on your trial.</div>
+                <button onClick={() => navigate('/settings')} className="btn" style={{ background: 'var(--warning)', color: '#fff', padding: '6px 12px', fontSize: '0.85rem', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>Renew Now</button>
+              </div>
+            )
           )}
           {children}
           

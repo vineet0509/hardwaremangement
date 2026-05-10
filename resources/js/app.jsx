@@ -19,6 +19,7 @@ import QuotationsList from './pages/QuotationsList';
 import QuotationCreate from './pages/QuotationCreate';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Suppliers from './pages/Suppliers';
+import Expenses from './pages/Expenses';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
 import api from './utils/api';
@@ -58,6 +59,7 @@ function App() {
         <Route path="/reports" element={<ProtectedRoute><Layout><Reports /></Layout></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Layout><Settings /></Layout></ProtectedRoute>} />
         <Route path="/suppliers" element={<ProtectedRoute><Layout><Suppliers /></Layout></ProtectedRoute>} />
+        <Route path="/expenses" element={<ProtectedRoute><Layout><Expenses /></Layout></ProtectedRoute>} />
         <Route path="/super-admin" element={<ProtectedRoute><Layout><SuperAdmin /></Layout></ProtectedRoute>} />
         <Route path="/quotations" element={<ProtectedRoute><Layout><QuotationsList /></Layout></ProtectedRoute>} />
         <Route path="/quotations/create" element={<ProtectedRoute><Layout><QuotationCreate /></Layout></ProtectedRoute>} />

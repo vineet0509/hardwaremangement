@@ -39,7 +39,8 @@ const Dashboard = () => {
   const statCards = [
     { title: "Today's Revenue", value: `₹${data.today_sales}`, icon: IndianRupee, color: "var(--primary)" },
     { title: "Est. Gross Profit", value: `₹${data.today_profit}`, icon: TrendingUp, color: "var(--success)" },
-    { title: "Pending Dues (Credit)", value: `₹${data.pending_dues?.reduce((a,b)=>a+b.due_amount, 0) || 0}`, icon: Clock, color: "var(--warning)" },
+    { title: "Total Due (Customers)", value: `₹${data.total_customer_due || 0}`, icon: Clock, color: "var(--warning)" },
+    { title: "Total Given (Supplier)", value: `₹${data.total_given_to_supplier || 0}`, icon: Users, color: "var(--primary)" },
     { title: "Low Stock Items", value: data.low_stock_count, icon: AlertCircle, color: "var(--danger)" },
   ];
 

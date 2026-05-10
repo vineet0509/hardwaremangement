@@ -95,6 +95,9 @@ class DashboardController extends Controller
             ->limit(4)
             ->get();
 
+        $totalCustomerDue = Bill::where('due_amount', '>', 0)->sum('due_amount');
+        $totalGivenToSupplier = \App\Models\SupplierTransaction::where('type', 'payment')->sum('amount');
+
         return response()->json([
             'today_sales'      => $todaySales,
             'today_profit'     => round($todayProfit, 2),
@@ -113,6 +116,8 @@ class DashboardController extends Controller
             'top_products'     => $topProducts,
             'top_categories'   => $topCategories,
             'recent_bills'     => $recentBills,
+            'total_customer_due'=> round($totalCustomerDue, 2),
+            'total_given_to_supplier'=> round($totalGivenToSupplier, 2),
         ]);
     }
 }
