@@ -35,10 +35,10 @@ class ApiLoggerMiddleware
             'status' => $response->getStatusCode(),
         ];
 
-        // Include response body specifically for Login attempts
-        if ($request->is('api/login')) {
-            $logData['response'] = json_decode($response->getContent(), true);
-        }
+        // Include response body for all requests
+        $responseContent = $response->getContent();
+        $decodedResponse = json_decode($responseContent, true);
+        $logData['response'] = $decodedResponse ?: $responseContent;
 
         $logLine = json_encode($logData) . PHP_EOL;
 
