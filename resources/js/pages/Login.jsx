@@ -129,6 +129,9 @@ const Login = () => {
             <Link to="/privacy-policy" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}><Shield size={14} /> Privacy Policy</Link>
             <a href="#" onClick={(e) => { e.preventDefault(); alert("Hardware Shop Manager SaaS v2.0\nSupport: support@hardwareshop.com"); }} style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Help & Support</a>
           </div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', opacity: 0.8, marginTop: 8 }}>
+            Powered by <span style={{ fontWeight: 600, color: 'var(--primary)' }}>Hardware Management Solutions</span>
+          </div>
         </div>
       </div>
     </div>

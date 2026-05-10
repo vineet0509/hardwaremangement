@@ -421,14 +421,19 @@ const Layout = ({ children }) => {
               color: 'var(--text-muted)',
               fontSize: '0.85rem',
               display: 'flex',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-              gap: 24
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 12
             }}>
-              <span>&copy; {new Date().getFullYear()} Hardware Shop Manager</span>
-              <a href="/privacy-policy" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); navigate('/privacy-policy'); }}>Privacy Policy</a>
-              <a href="/about-us" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); navigate('/about-us'); }}>About Us</a>
-              <a href="/contact-us" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); navigate('/contact-us'); }}>Contact Us</a>
+              <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 24 }}>
+                <span>&copy; {new Date().getFullYear()} Hardware Shop Manager</span>
+                <a href="/privacy-policy" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); navigate('/privacy-policy'); }}>Privacy Policy</a>
+                <a href="/about-us" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); navigate('/about-us'); }}>About Us</a>
+                <a href="/contact-us" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); navigate('/contact-us'); }}>Contact Us</a>
+              </div>
+              <div style={{ fontSize: '0.75rem', opacity: 0.8, marginTop: 4 }}>
+                Powered by <span style={{ fontWeight: 600, color: 'var(--primary)' }}>Hardware Management Solutions</span>
+              </div>
             </footer>
           )}
         </div>
