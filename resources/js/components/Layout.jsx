@@ -157,12 +157,12 @@ const Layout = ({ children }) => {
             </NavLink>
           ))}
 
-          <div className="hide-on-mobile" style={{ margin: '12px 0', borderTop: '1px solid rgba(255,255,255,0.08)' }}></div>
+          <div style={{ margin: '12px 0', borderTop: '1px solid rgba(255,255,255,0.08)' }}></div>
 
           <NavLink 
             to="/settings" 
             onClick={() => setIsMobileMenuOpen(false)}
-            className={`nav-item hide-on-mobile ${location.pathname === '/settings' ? 'active' : ''}`}
+            className={`nav-item ${location.pathname === '/settings' ? 'active' : ''}`}
           >
             <SettingsIcon size={20} /> Settings
           </NavLink>
@@ -170,7 +170,7 @@ const Layout = ({ children }) => {
           <NavLink 
             to="/privacy-policy" 
             onClick={() => setIsMobileMenuOpen(false)}
-            className={`nav-item hide-on-mobile ${location.pathname === '/privacy-policy' ? 'active' : ''}`}
+            className={`nav-item ${location.pathname === '/privacy-policy' ? 'active' : ''}`}
           >
             <Shield size={20} /> Privacy Policy
           </NavLink>
@@ -201,6 +201,12 @@ const Layout = ({ children }) => {
               style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(255, 255, 255, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
             >
               <SettingsIcon size={16} /> Settings
+            </button>
+            <button 
+              onClick={() => { setIsMobileMenuOpen(false); navigate('/privacy-policy'); }}
+              style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(255, 255, 255, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
+            >
+              <Shield size={16} /> Privacy Policy
             </button>
             <button 
               onClick={() => {

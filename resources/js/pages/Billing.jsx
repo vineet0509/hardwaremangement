@@ -281,8 +281,11 @@ const Billing = () => {
 
              const msgText = `*${shopName} Invoice* 🧾\n${gstStr}-----------------------------------\n*Bill No:* ${res.data.bill_number}\n*Customer:* ${res.data.customer_name || 'Walk-in'}\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Amount:* Rs. ${res.data.total}\n*Amount Paid:* Rs. ${res.data.paid_amount}\n*Balance Due:* Rs. ${res.data.due_amount}\n*Payment Mode:* ${String(res.data.payment_method).toUpperCase()}\n\n*Download PDF Bill:* ${pdfLink}\n\nThank you for shopping with us!`;
 
-             const msg = encodeURIComponent(msgText);
-             window.open(`https://wa.me/${wapn}?text=${msg}`, '_blank');
+             api.post('/bills/send-whatsapp', {
+               bill_id: res.data.id,
+               phone: wapn,
+               message: msgText
+             }).catch(console.error);
         }
         
         handlePrint(res.data);

@@ -300,10 +300,23 @@ const Products = () => {
                   <div className="form-group" style={{ flex: 1 }}>
                     <label className="form-label">Unit</label>
                     <select className="form-control" value={formData.unit} onChange={e => setFormData({...formData, unit: e.target.value})}>
-                      <option value="piece">Piece(s)</option>
-                      <option value="kg">Kilogram(s)</option>
-                      <option value="meter">Meter(s)</option>
-                      <option value="box">Box(es)</option>
+                      <optgroup label="Construction">
+                        <option value="CFT">CFT (Cubic Feet)</option>
+                        <option value="Brass">Brass</option>
+                        <option value="MT">MT (Metric Ton)</option>
+                        <option value="Bag">Bag(s)</option>
+                        <option value="KG">Kilogram(s)</option>
+                        <option value="RFT">RFT (Running Feet)</option>
+                        <option value="SQFT">SQFT (Square Feet)</option>
+                      </optgroup>
+                      <optgroup label="General">
+                        <option value="piece">Piece(s)</option>
+                        <option value="nos">Numbers (NOS)</option>
+                        <option value="box">Box(es)</option>
+                        <option value="bundle">Bundle(s)</option>
+                        <option value="meter">Meter(s)</option>
+                        <option value="liter">Liter(s)</option>
+                      </optgroup>
                     </select>
                   </div>
                 </div>

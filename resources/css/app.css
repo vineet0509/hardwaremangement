@@ -149,6 +149,9 @@ body {
   padding: 0 40px;
   z-index: 5;
 }
+.user-profile:hover {
+  background: var(--surface-hover);
+}
 
 .content-area {
   flex: 1;

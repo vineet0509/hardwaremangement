@@ -17,8 +17,9 @@ const BillsList = () => {
 
   const [udharCustomers, setUdharCustomers] = useState([]);
   const [customerFilter, setCustomerFilter] = useState('');
-  const [dateFrom, setDateFrom] = useState('');
-  const [dateTo, setDateTo] = useState('');
+  const today = new Date().toISOString().split('T')[0];
+  const [dateFrom, setDateFrom] = useState(today);
+  const [dateTo, setDateTo] = useState(today);
 
   const fetchBills = () => {
     setLoading(true);
@@ -206,9 +207,35 @@ const BillsList = () => {
     window.open(url, '_blank');
   };
 
+  const setQuickDate = (type) => {
+    const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
+    
+    if (type === 'today') {
+      setDateFrom(todayStr);
+      setDateTo(todayStr);
+    } else if (type === 'yesterday') {
+      const yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toISOString().split('T')[0];
+      setDateFrom(yesterdayStr);
+      setDateTo(yesterdayStr);
+    } else if (type === 'this_month') {
+      const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+      const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      setDateFrom(firstDay.toISOString().split('T')[0]);
+      setDateTo(lastDay.toISOString().split('T')[0]);
+    }
+  };
+
   return (
     <div>
       <div className="stat-card" style={{ marginBottom: 24, padding: 20 }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: 16 }}>
+           <button className="btn btn-outline" style={{ padding: '4px 12px', fontSize: '0.8rem' }} onClick={() => setQuickDate('today')}>Today</button>
+           <button className="btn btn-outline" style={{ padding: '4px 12px', fontSize: '0.8rem' }} onClick={() => setQuickDate('yesterday')}>Yesterday</button>
+           <button className="btn btn-outline" style={{ padding: '4px 12px', fontSize: '0.8rem' }} onClick={() => setQuickDate('this_month')}>This Month</button>
+        </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 20, alignItems: 'flex-end' }}>
           
           <div className="form-group" style={{ margin: 0 }}>

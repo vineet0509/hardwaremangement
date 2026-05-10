@@ -483,6 +483,35 @@ class BillController extends Controller
         return response()->json(['message' => 'Repayment processed successfully.']);
     }
 
+    public function sendWhatsApp(Request $request): JsonResponse
+    {
+        $request->validate([
+            'bill_id' => 'required|exists:bills,id',
+            'phone' => 'required|string',
+            'message' => 'required|string',
+        ]);
+
+        $bill = Bill::findOrFail($request->bill_id);
+        
+        // This is a placeholder for your actual WhatsApp API integration.
+        // You can replace this logic with calls to Twilio, Meta Cloud API, or any WhatsApp Gateway.
+        
+        \Log::info("WhatsApp API Call for Bill #{$bill->bill_number} to {$request->phone}");
+        \Log::info("Message: " . $request->message);
+
+        // Integration Example:
+        // Http::post('https://api.whatsapp-provider.com/v1/send', [
+        //     'phone' => $request->phone,
+        //     'body' => $request->message,
+        //     'api_key' => config('services.whatsapp.key')
+        // ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'WhatsApp message has been sent to the processing API.'
+        ]);
+    }
+
     public function destroy(Bill $bill): JsonResponse
     {
         // Restore stock on delete

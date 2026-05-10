@@ -19,6 +19,7 @@ $app = Application::configure(basePath: dirname(__DIR__))
         ]);
         
         $middleware->prependToGroup('api', \App\Http\Middleware\TokenFromQuery::class);
+        $middleware->appendToGroup('api', \App\Http\Middleware\ApiLoggerMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
