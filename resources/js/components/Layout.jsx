@@ -191,6 +191,14 @@ const Layout = ({ children }) => {
             <Shield size={20} /> Privacy Policy
           </NavLink>
 
+          <NavLink 
+            to="/terms" 
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={`nav-item ${location.pathname === '/terms' ? 'active' : ''}`}
+          >
+            <FileText size={20} /> Terms & Conditions
+          </NavLink>
+
           <div style={{ padding: '12px 16px', marginTop: 8 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(255,255,255,0.05)', padding: '10px 14px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.1)' }}>
               <Languages size={18} color="var(--primary)" />
@@ -256,6 +264,12 @@ const Layout = ({ children }) => {
               style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(255, 255, 255, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
             >
               <Shield size={16} /> Privacy Policy
+            </button>
+            <button 
+              onClick={() => { setIsMobileMenuOpen(false); navigate('/terms'); }}
+              style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(255, 255, 255, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
+            >
+              <FileText size={16} /> Terms & Conditions
             </button>
             <button 
               onClick={() => {
@@ -376,9 +390,17 @@ const Layout = ({ children }) => {
                    </button>
                    <button 
                      onClick={() => navigate('/privacy-policy')} 
-                     style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'none', border: 'none', borderBottom: '1px solid var(--border)', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.9rem' }}
+                     style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.9rem' }}
                    >
                      <Shield size={16} /> Privacy Policy
+                    </button>
+                    <button 
+                      onClick={() => navigate('/terms')} 
+                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'none', border: 'none', borderBottom: '1px solid var(--border)', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.9rem' }} 
+                    >
+                      <FileText size={16} /> Terms & Conditions
+                    </button>
+                    <button style={{ display: 'none' }}>
                    </button>
                    <button 
                     onClick={() => {
@@ -477,6 +499,7 @@ const Layout = ({ children }) => {
               <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 24 }}>
                 <span>&copy; {new Date().getFullYear()} Hardware Shop Manager</span>
                 <a href="/privacy-policy" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); navigate('/privacy-policy'); }}>Privacy Policy</a>
+                <a href="/terms" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); navigate('/terms'); }}>Terms & Conditions</a>
                 <a href="/about-us" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); navigate('/about-us'); }}>About Us</a>
                 <a href="/contact-us" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); navigate('/contact-us'); }}>Contact Us</a>
               </div>

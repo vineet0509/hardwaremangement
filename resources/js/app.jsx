@@ -18,6 +18,7 @@ import SuperAdmin from './pages/SuperAdmin';
 import QuotationsList from './pages/QuotationsList';
 import QuotationCreate from './pages/QuotationCreate';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import Terms from './pages/Terms';
 import Suppliers from './pages/Suppliers';
 import Expenses from './pages/Expenses';
 import AboutUs from './pages/AboutUs';
@@ -63,6 +64,7 @@ function App() {
         <Route path="/about-us" element={<ProtectedRoute><Layout><AboutUs /></Layout></ProtectedRoute>} />
         <Route path="/contact-us" element={<ProtectedRoute><Layout><ContactUs /></Layout></ProtectedRoute>} />
         <Route path="/privacy-policy" element={<ProtectedRoute><Layout><PrivacyPolicy /></Layout></ProtectedRoute>} />
+        <Route path="/terms" element={<ProtectedRoute><Layout><Terms /></Layout></ProtectedRoute>} />
         
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>

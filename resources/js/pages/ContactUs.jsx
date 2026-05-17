@@ -32,7 +32,7 @@ const ContactUs = () => {
                 </div>
                 <div>
                   <div style={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase' }}>Call Us</div>
-                  <div style={{ color: 'var(--text-main)', fontWeight: 600 }}>+91 98765 43210</div>
+                  <div style={{ color: 'var(--text-main)', fontWeight: 600 }}>+91 9169704496</div>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -41,7 +41,7 @@ const ContactUs = () => {
                 </div>
                 <div>
                   <div style={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase' }}>Email Us</div>
-                  <div style={{ color: 'var(--text-main)', fontWeight: 600 }}>support@hardwareshop.com</div>
+                  <div style={{ color: 'var(--text-main)', fontWeight: 600 }}>support@vynkra.in</div>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -50,7 +50,7 @@ const ContactUs = () => {
                 </div>
                 <div>
                   <div style={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase' }}>Visit Us</div>
-                  <div style={{ color: 'var(--text-main)', fontWeight: 600 }}>Tech Park, Main Street, Delhi, India</div>
+                  <div style={{ color: 'var(--text-main)', fontWeight: 600 }}>Mishrapur, Gudamba, Lucknow, Uttar Pradesh, India, 226026</div>
                 </div>
               </div>
             </div>

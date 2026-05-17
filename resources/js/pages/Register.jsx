@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import api from '../utils/api';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, User, UserPlus, Package, Phone, Store, ShieldCheck, BadgeCheck, Languages, Shield } from 'lucide-react';
+import { Mail, Lock, User, UserPlus, Package, Phone, Store, ShieldCheck, BadgeCheck, Languages, Shield, FileText } from 'lucide-react';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -166,7 +166,8 @@ const Register = () => {
           
           <div style={{ display: 'flex', gap: 20, fontSize: '0.85rem' }}>
             <Link to="/privacy-policy" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}><Shield size={14} /> Privacy Policy</Link>
-            <a href="#" onClick={(e) => { e.preventDefault(); alert("Hardware Shop Manager SaaS v2.0\nSupport: support@hardwareshop.com"); }} style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Help & Support</a>
+            <Link to="/terms" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}><FileText size={14} /> Terms & Conditions</Link>
+            <a href="#" onClick={(e) => { e.preventDefault(); alert("Hardware Shop Manager SaaS v2.0\nSupport: support@vynkra.in"); }} style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Help & Support</a>
           </div>
         </div>
       </div>
