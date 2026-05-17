@@ -55,7 +55,7 @@ const Register = () => {
              <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Start managing your hardware business today.</p>
              
              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#ecfdf5', color: '#059669', padding: '6px 14px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold', marginTop: '16px', border: '1px solid #d1fae5' }}>
-               <BadgeCheck size={16} /> 30-Day Free Trial Included
+               <BadgeCheck size={16} /> 30-Day Trial Period Included
              </div>
           </div>
 

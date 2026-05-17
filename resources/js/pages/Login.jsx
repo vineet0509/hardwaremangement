@@ -86,7 +86,7 @@ const Login = () => {
              <div style={{ textAlign: 'center', marginTop: '24px', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
                Need a new SaaS installation?{' '}
                <Link to="/register" style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}>
-                 Start your 30-Day Free Trial
+                 Start your 30-Day Trial Period
                </Link>
              </div>
           </form>
