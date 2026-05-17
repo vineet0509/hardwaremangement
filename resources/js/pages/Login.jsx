@@ -131,7 +131,7 @@ const Login = () => {
             <a href="#" onClick={(e) => { e.preventDefault(); alert("Hardware Shop Manager SaaS v2.0\nSupport: support@vynkra.in"); }} style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Help & Support</a>
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', opacity: 0.8, marginTop: 8 }}>
-            Powered by <span style={{ fontWeight: 600, color: 'var(--primary)' }}>Hardware Management Solutions</span>
+            Powered by <span style={{ fontWeight: 600, color: 'var(--primary)' }}>Vynkra Technologies</span>
           </div>
         </div>
       </div>

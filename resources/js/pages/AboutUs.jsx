@@ -61,7 +61,7 @@ const AboutUs = () => {
 
       <div style={{ textAlign: 'center', marginTop: 50, padding: '20px', borderTop: '1px solid var(--border)' }}>
         <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-          Part of the <strong>Hardware Management Solutions</strong> ecosystem.
+          Part of the <strong>Vynkra Technologies</strong> ecosystem.
         </p>
       </div>
     </div>

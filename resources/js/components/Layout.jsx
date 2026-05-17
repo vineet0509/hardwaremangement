@@ -504,7 +504,7 @@ const Layout = ({ children }) => {
                 <a href="/contact-us" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); navigate('/contact-us'); }}>Contact Us</a>
               </div>
               <div style={{ fontSize: '0.75rem', opacity: 0.8, marginTop: 4 }}>
-                Powered by <span style={{ fontWeight: 600, color: 'var(--primary)' }}>Hardware Management Solutions</span>
+                Powered by <span style={{ fontWeight: 600, color: 'var(--primary)' }}>Vynkra Technologies</span>
               </div>
             </footer>
           )}
