@@ -3,24 +3,14 @@ import { Shield, Lock, FileText, Server, EyeOff, ArrowLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom';
 
 const PrivacyPolicy = () => {
-  const navigate = useNavigate();
-
   return (
-    <div className="login-container" style={{ minHeight: '100vh', padding: '20px 15px', overflowY: 'auto' }}>
-      <div className="login-card" style={{ maxWidth: 800, margin: '0 auto', backdropFilter: 'blur(12px)', position: 'relative' }}>
-        
-        <button 
-          onClick={() => navigate(-1)} 
-          className="btn btn-outline" 
-          style={{ marginBottom: 24, display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px' }}
-        >
-          <ArrowLeft size={18} /> Back
-        </button>
-
+    <div className="card" style={{ padding: '40px', maxWidth: '1000px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <Shield size={48} color="var(--primary)" style={{ marginBottom: 16 }} />
+          <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 80, height: 80, borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: 'white', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
+            <Shield size={40} />
+          </div>
           <h1 className="responsive-h1" style={{ fontSize: '2.5rem', color: 'var(--text-main)', marginBottom: 12 }}>Privacy Policy</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>Last updated: April 2026</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>Last updated: May 2026</p>
         </div>
 
         <div style={{ color: 'var(--text-main)', lineHeight: '1.7', fontSize: '1.05rem' }}>
@@ -88,9 +78,7 @@ const PrivacyPolicy = () => {
               By using the Hardware Shop Manager, you agree to the collection and use of information in accordance with this Privacy Policy.
             </p>
           </section>
-
         </div>
-      </div>
     </div>
   );
 };

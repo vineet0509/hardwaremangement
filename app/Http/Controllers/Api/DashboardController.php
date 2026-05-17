@@ -19,11 +19,16 @@ class DashboardController extends Controller
         $thisMonth = now()->month;
         $thisYear  = now()->year;
 
-        // Sales stats
-        $todaySales = Bill::whereDate('created_at', $today)->sum('total');
-        $monthSales = Bill::whereMonth('created_at', $thisMonth)
-            ->whereYear('created_at', $thisYear)->sum('total');
-        $totalBills = Bill::count();
+        // Sales stats consolidated
+        $salesStats = Bill::selectRaw("
+            SUM(CASE WHEN DATE(created_at) = ? THEN total ELSE 0 END) as today_sales,
+            SUM(CASE WHEN MONTH(created_at) = ? AND YEAR(created_at) = ? THEN total ELSE 0 END) as month_sales,
+            COUNT(id) as total_bills
+        ", [$today, $thisMonth, $thisYear])->first();
+
+        $todaySales = $salesStats->today_sales ?? 0;
+        $monthSales = $salesStats->month_sales ?? 0;
+        $totalBills = $salesStats->total_bills ?? 0;
 
         // Stock stats
         $totalProducts  = Product::count();

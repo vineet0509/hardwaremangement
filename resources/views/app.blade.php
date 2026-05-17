@@ -21,25 +21,50 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#4f46e5">
-    <link rel="apple-touch-icon" href="/icon-192x192.png">
+    
+    <!-- PWA Manifest & Icons disabled to prevent the browser from asking the user to install the site as desktop software -->
+    <!-- <link rel="manifest" href="/manifest.json"> -->
+    <!-- <meta name="theme-color" content="#4f46e5"> -->
+    <!-- <link rel="apple-touch-icon" href="/icon-192x192.png"> -->
+    
     @viteReactRefresh
     @vite(['resources/js/app.jsx'])
     <script>
         window.API_URL = "{{ url('/api') }}";
+
+        // Prevent standard beforeinstallprompt event from showing browser install dialogs
+        window.addEventListener('beforeinstallprompt', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Actively unregister any registered service workers to disable PWA desktop install options and avoid caching issues
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js').then(function(registration) {
-                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                }, function(err) {
-                    console.log('ServiceWorker registration failed: ', err);
-                });
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for (let registration of registrations) {
+                    registration.unregister().then(function(success) {
+                        if (success) {
+                            console.log('Existing ServiceWorker successfully unregistered.');
+                        }
+                    });
+                }
+            }).catch(function(err) {
+                console.log('ServiceWorker unregistration failed: ', err);
             });
         }
     </script>
 </head>
 <body>
     <div id="app"></div>
+    <div id="google_translate_element" style="display:none"></div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingCart, Users, FileText, Receipt, LogOut, Settings as SettingsIcon, Banknote, Languages, Lock, Shield, Menu, X, Truck, AlertTriangle, Sun, Moon, ClipboardList } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, Users, FileText, Receipt, LogOut, Settings as SettingsIcon, Banknote, Languages, Lock, Shield, Menu, X, Truck, AlertTriangle, Sun, Moon, ClipboardList, Info, HelpCircle } from 'lucide-react';
 import api from '../utils/api';
 
 const Layout = ({ children }) => {
@@ -168,12 +168,61 @@ const Layout = ({ children }) => {
           </NavLink>
 
           <NavLink 
+            to="/about-us" 
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={`nav-item ${location.pathname === '/about-us' ? 'active' : ''}`}
+          >
+            <Info size={20} /> About Us
+          </NavLink>
+
+          <NavLink 
+            to="/contact-us" 
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={`nav-item ${location.pathname === '/contact-us' ? 'active' : ''}`}
+          >
+            <HelpCircle size={20} /> Contact Us
+          </NavLink>
+
+          <NavLink 
             to="/privacy-policy" 
             onClick={() => setIsMobileMenuOpen(false)}
             className={`nav-item ${location.pathname === '/privacy-policy' ? 'active' : ''}`}
           >
             <Shield size={20} /> Privacy Policy
           </NavLink>
+
+          <div style={{ padding: '12px 16px', marginTop: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(255,255,255,0.05)', padding: '10px 14px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.1)' }}>
+              <Languages size={18} color="var(--primary)" />
+              <select 
+                style={{ border: 'none', outline: 'none', background: 'transparent', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, color: '#fff', width: '100%' }}
+                onChange={(e) => {
+                  const lang = e.target.value;
+                  if(lang === 'en' || !lang) {
+                      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+                  } else {
+                      document.cookie = `googtrans=/en/${lang}; path=/;`;
+                      document.cookie = `googtrans=/en/${lang}; domain=${window.location.hostname}; path=/;`;
+                  }
+                  window.location.reload();
+                }}
+                defaultValue={document.cookie.split('; ').find(row => row.startsWith('googtrans='))?.split('=')[1]?.replace('/en/', '') || 'en'}
+              >
+                <option value="en" style={{color: '#000'}}>English</option>
+                <option value="hi" style={{color: '#000'}}>हिंदी (Hindi)</option>
+                <option value="bn" style={{color: '#000'}}>বাংলা (Bengali)</option>
+                <option value="mr" style={{color: '#000'}}>मराठी (Marathi)</option>
+                <option value="te" style={{color: '#000'}}>తెలుగు (Telugu)</option>
+                <option value="ta" style={{color: '#000'}}>தமிழ் (Tamil)</option>
+                <option value="gu" style={{color: '#000'}}>ગુજરાતી (Gujarati)</option>
+                <option value="kn" style={{color: '#000'}}>ಕನ್ನಡ (Kannada)</option>
+                <option value="ur" style={{color: '#000'}}>اردو (Urdu)</option>
+                <option value="ml" style={{color: '#000'}}>മലയാളം (Malayalam)</option>
+                <option value="pa" style={{color: '#000'}}>ਪੰਜਾਬੀ (Punjabi)</option>
+              </select>
+            </div>
+          </div>
         </nav>
 
         <div style={{ marginTop: 'auto', padding: '20px', borderTop: '1px solid rgba(255,255,255,0.08)' }} className="mobile-profile-footer">
