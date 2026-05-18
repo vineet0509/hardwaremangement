@@ -34,6 +34,7 @@ const Register = () => {
         api.post('/register', formData)
           .then(res => {
               localStorage.setItem('auth_token', res.data.access_token);
+              sessionStorage.setItem('just_registered', 'true');
               window.location.href = '/dashboard';
           })
           .catch(err => {

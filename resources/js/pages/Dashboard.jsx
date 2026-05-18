@@ -10,6 +10,19 @@ const Dashboard = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // Check if the user just completed a new store registration conversion
+    const justRegistered = sessionStorage.getItem('just_registered');
+    if (justRegistered === 'true') {
+      if (window.gtag) {
+        window.gtag('event', 'conversion', {
+          'send_to': 'AW-18169650337/NzGWCO-I2q4cEKG5-9dD',
+          'transaction_id': 'reg_' + new Date().getTime()
+        });
+        console.log('Google Ads Registration Purchase Conversion Event Triggered successfully!');
+      }
+      sessionStorage.removeItem('just_registered');
+    }
+
     api.get('/dashboard')
       .then(res => {
         if (res.data && res.data.today_sales !== undefined) {
