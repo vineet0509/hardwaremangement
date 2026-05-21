@@ -207,10 +207,10 @@ const Landing = () => {
             alignItems: 'center',
             gap: '32px'
           }}>
-            <span onClick={() => scrollToSection('features')} style={{ color: 'var(--text-muted)', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = 'var(--text-muted)'}>Features</span>
-            <span onClick={() => scrollToSection('pricing')} style={{ color: 'var(--text-muted)', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = 'var(--text-muted)'}>Pricing</span>
-            <span onClick={() => scrollToSection('about')} style={{ color: 'var(--text-muted)', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = 'var(--text-muted)'}>About Us</span>
-            <span onClick={() => scrollToSection('contact')} style={{ color: 'var(--text-muted)', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = 'var(--text-muted)'}>Contact</span>
+            <span onClick={() => scrollToSection('features')} style={{ color: '#cbd5e1', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Features</span>
+            <span onClick={() => scrollToSection('pricing')} style={{ color: '#cbd5e1', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Pricing</span>
+            <span onClick={() => scrollToSection('about')} style={{ color: '#cbd5e1', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>About Us</span>
+            <span onClick={() => scrollToSection('contact')} style={{ color: '#cbd5e1', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Contact</span>
           </nav>
 
           {/* Header Action Buttons */}
@@ -377,8 +377,20 @@ const Landing = () => {
                 </button>
                 <button 
                   onClick={() => setShowLoginModal(true)}
-                  className="btn btn-outline" 
-                  style={{ padding: '16px 36px', borderRadius: '12px', fontSize: '1.05rem', fontWeight: 700, background: 'rgba(255, 255, 255, 0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }}
+                  className="btn" 
+                  style={{ 
+                    padding: '16px 36px', 
+                    borderRadius: '12px', 
+                    fontSize: '1.05rem', 
+                    fontWeight: 700, 
+                    background: 'rgba(255, 255, 255, 0.05)', 
+                    color: '#ffffff', 
+                    border: '1px solid rgba(255, 255, 255, 0.25)', 
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease-in-out'
+                  }}
+                  onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)'; e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.5)'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'; e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)'; }}
                 >
                   Sign In Securely
                 </button>
@@ -781,8 +793,21 @@ const Landing = () => {
 
               <button 
                 onClick={() => setShowRegisterModal(true)}
-                className="btn btn-outline" 
-                style={{ width: '100%', padding: '14px', borderRadius: '10px', marginTop: 32, fontWeight: 'bold', cursor: 'pointer' }}
+                className="btn" 
+                style={{ 
+                  width: '100%', 
+                  padding: '14px', 
+                  borderRadius: '10px', 
+                  marginTop: 32, 
+                  fontWeight: 'bold', 
+                  cursor: 'pointer',
+                  background: 'rgba(255, 255, 255, 0.05)', 
+                  color: '#ffffff', 
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
+                  transition: 'all 0.2s ease-in-out'
+                }}
+                onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)'; e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.5)'; }}
+                onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'; e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)'; }}
               >
                 Register Free Trial
               </button>
