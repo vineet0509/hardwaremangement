@@ -205,6 +205,14 @@ h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 12px; color: var(--tex
   box-shadow: var(--shadow-lg); 
 }
 
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+  transition: all 0.3s ease;
+}
+
 .stat-title { color: var(--text-muted); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
 .stat-value { font-size: 2.25rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; }
 .stat-icon {

@@ -125,7 +125,7 @@ const PublicLayout = ({ children }) => {
   };
 
   return (
-    <div style={{ 
+    <div data-theme="dark" style={{ 
       minHeight: '100vh', 
       background: 'radial-gradient(circle at 50% 0%, #0f1626, #07090e)', 
       color: '#cbd5e1',
