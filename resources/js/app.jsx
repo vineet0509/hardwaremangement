@@ -24,6 +24,7 @@ import Suppliers from './pages/Suppliers';
 import Expenses from './pages/Expenses';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
+import PublicLayout from './components/PublicLayout';
 import api from './utils/api';
 import '../css/app.css';
 
@@ -40,22 +41,7 @@ const PublicOrPrivateLayout = ({ children }) => {
   if (token) {
     return <Layout>{children}</Layout>;
   }
-  return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-color)', padding: '40px 20px' }}>
-      <div style={{ maxWidth: '1000px', margin: '0 auto 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 40, height: 40, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold', fontSize: '1.2rem' }}>
-            V
-          </div>
-          <span style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--text-main)' }}>Vynkra Technologies</span>
-        </div>
-        <Link to="/" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.95rem', background: 'rgba(79, 70, 229, 0.1)', padding: '8px 16px', borderRadius: '10px', border: '1px solid rgba(79, 70, 229, 0.2)', transition: 'all 0.2s' }}>
-          ← Back to Home
-        </Link>
-      </div>
-      {children}
-    </div>
-  );
+  return <PublicLayout>{children}</PublicLayout>;
 };
 
 function App() {

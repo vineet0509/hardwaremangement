@@ -691,11 +691,3 @@ tr:hover td { background: var(--surface-hover); }
     max-height: 45vh;
   }
 }
-
-/* Landing Page Grid Responsive Collapser */
-@media (max-width: 992px) {
-  .charts-grid {
-    grid-template-columns: 1fr !important;
-    gap: 24px !important;
-  }
-}

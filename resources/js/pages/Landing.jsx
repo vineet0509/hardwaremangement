@@ -220,14 +220,12 @@ const Landing = () => {
           <nav className="hide-on-mobile" style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '24px'
+            gap: '32px'
           }}>
-            <span onClick={() => scrollToSection('features')} style={{ color: '#cbd5e1', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Features</span>
-            <span onClick={() => scrollToSection('pricing')} style={{ color: '#cbd5e1', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Pricing</span>
-            <Link to="/about-us" style={{ color: '#cbd5e1', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>About Us</Link>
-            <Link to="/contact-us" style={{ color: '#cbd5e1', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Contact Us</Link>
-            <Link to="/terms" style={{ color: '#cbd5e1', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Terms</Link>
-            <Link to="/privacy-policy" style={{ color: '#cbd5e1', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Privacy Policy</Link>
+            <span onClick={() => scrollToSection('features')} style={{ color: '#cbd5e1', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Features</span>
+            <span onClick={() => scrollToSection('pricing')} style={{ color: '#cbd5e1', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Pricing</span>
+            <span onClick={() => scrollToSection('about')} style={{ color: '#cbd5e1', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>About Us</span>
+            <span onClick={() => scrollToSection('contact')} style={{ color: '#cbd5e1', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Contact</span>
           </nav>
 
           {/* Header Action Buttons */}
@@ -289,12 +287,10 @@ const Landing = () => {
             gap: 20,
             boxShadow: '0 20px 25px rgba(0,0,0,0.5)'
           }}>
-            <span onClick={() => { scrollToSection('features'); setMobileMenuOpen(false); }} style={{ color: '#94a3b8', fontWeight: 600, fontSize: '1.1rem', cursor: 'pointer' }}>Features</span>
-            <span onClick={() => { scrollToSection('pricing'); setMobileMenuOpen(false); }} style={{ color: '#94a3b8', fontWeight: 600, fontSize: '1.1rem', cursor: 'pointer' }}>Pricing</span>
-            <Link to="/about-us" onClick={() => setMobileMenuOpen(false)} style={{ color: '#94a3b8', textDecoration: 'none', fontWeight: 600, fontSize: '1.1rem' }}>About Us</Link>
-            <Link to="/contact-us" onClick={() => setMobileMenuOpen(false)} style={{ color: '#94a3b8', textDecoration: 'none', fontWeight: 600, fontSize: '1.1rem' }}>Contact Us</Link>
-            <Link to="/terms" onClick={() => setMobileMenuOpen(false)} style={{ color: '#94a3b8', textDecoration: 'none', fontWeight: 600, fontSize: '1.1rem' }}>Terms & Conditions</Link>
-            <Link to="/privacy-policy" onClick={() => setMobileMenuOpen(false)} style={{ color: '#94a3b8', textDecoration: 'none', fontWeight: 600, fontSize: '1.1rem' }}>Privacy Policy</Link>
+            <span onClick={() => scrollToSection('features')} style={{ color: '#94a3b8', fontWeight: 600, fontSize: '1.1rem' }}>Features</span>
+            <span onClick={() => scrollToSection('pricing')} style={{ color: '#94a3b8', fontWeight: 600, fontSize: '1.1rem' }}>Pricing</span>
+            <span onClick={() => scrollToSection('about')} style={{ color: '#94a3b8', fontWeight: 600, fontSize: '1.1rem' }}>About Us</span>
+            <span onClick={() => scrollToSection('contact')} style={{ color: '#94a3b8', fontWeight: 600, fontSize: '1.1rem' }}>Contact</span>
             
             <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)', margin: '4px 0' }}></div>
             
