@@ -3,6 +3,7 @@ import axios from 'axios';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import Layout from './components/Layout';
+import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
 import Billing from './pages/Billing';
@@ -40,7 +41,7 @@ const PublicOrPrivateLayout = ({ children }) => {
     return <Layout>{children}</Layout>;
   }
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--background)', padding: '40px 20px' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-color)', padding: '40px 20px' }}>
       <div style={{ maxWidth: '1000px', margin: '0 auto 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 40, height: 40, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold', fontSize: '1.2rem' }}>
@@ -48,8 +49,8 @@ const PublicOrPrivateLayout = ({ children }) => {
           </div>
           <span style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--text-main)' }}>Vynkra Technologies</span>
         </div>
-        <Link to="/login" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.95rem', background: 'rgba(79, 70, 229, 0.1)', padding: '8px 16px', borderRadius: '10px', border: '1px solid rgba(79, 70, 229, 0.2)', transition: 'all 0.2s' }}>
-          ← Back to Sign In
+        <Link to="/" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.95rem', background: 'rgba(79, 70, 229, 0.1)', padding: '8px 16px', borderRadius: '10px', border: '1px solid rgba(79, 70, 229, 0.2)', transition: 'all 0.2s' }}>
+          ← Back to Home
         </Link>
       </div>
       {children}
@@ -66,7 +67,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         
@@ -84,8 +85,8 @@ function App() {
         <Route path="/super-admin" element={<ProtectedRoute><Layout><SuperAdmin /></Layout></ProtectedRoute>} />
         <Route path="/quotations" element={<ProtectedRoute><Layout><QuotationsList /></Layout></ProtectedRoute>} />
         <Route path="/quotations/create" element={<ProtectedRoute><Layout><QuotationCreate /></Layout></ProtectedRoute>} />
-        <Route path="/about-us" element={<ProtectedRoute><Layout><AboutUs /></Layout></ProtectedRoute>} />
-        <Route path="/contact-us" element={<ProtectedRoute><Layout><ContactUs /></Layout></ProtectedRoute>} />
+        <Route path="/about-us" element={<PublicOrPrivateLayout><AboutUs /></PublicOrPrivateLayout>} />
+        <Route path="/contact-us" element={<PublicOrPrivateLayout><ContactUs /></PublicOrPrivateLayout>} />
         <Route path="/privacy-policy" element={<PublicOrPrivateLayout><PrivacyPolicy /></PublicOrPrivateLayout>} />
         <Route path="/terms" element={<PublicOrPrivateLayout><Terms /></PublicOrPrivateLayout>} />
         
