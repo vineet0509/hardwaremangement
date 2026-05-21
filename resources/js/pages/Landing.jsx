@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import api from '../utils/api';
 import { 
   Package, 
   ShoppingCart, 
@@ -23,7 +25,12 @@ import {
   ArrowUpRight,
   HelpCircle,
   Menu,
-  X
+  X,
+  User,
+  UserPlus,
+  Store,
+  ShieldCheck as ShieldIcon,
+  BadgeCheck
 } from 'lucide-react';
 
 const Landing = () => {
@@ -32,6 +39,27 @@ const Landing = () => {
   const [activeTab, setActiveTab] = useState('pos');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
+
+  // Modal control states
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+
+  // Form states
+  const [loginData, setLoginData] = useState({ login: '', password: '' });
+  const [loginError, setLoginError] = useState(null);
+  const [loginLoading, setLoginLoading] = useState(false);
+
+  const [registerData, setRegisterData] = useState({
+    name: '',
+    email: '',
+    mobile: '',
+    password: '',
+    password_confirmation: '',
+    shop_name: '',
+    gst_number: ''
+  });
+  const [registerError, setRegisterError] = useState(null);
+  const [registerLoading, setRegisterLoading] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,7 +77,62 @@ const Landing = () => {
     }
   };
 
-  // Mock form state for instant engagement
+  // Login handler
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    if (loginData.login.trim().length < 3) {
+      return setLoginError("Invalid email or mobile number.");
+    }
+    if (loginData.password.length < 4) {
+      return setLoginError("Password is too short.");
+    }
+
+    setLoginLoading(true);
+    setLoginError(null);
+
+    axios.get(`${window.location.origin}/sanctum/csrf-cookie`).then(() => {
+      api.post('/login', loginData)
+        .then(res => {
+          const token = res.data.access_token;
+          localStorage.setItem('auth_token', token);
+          localStorage.setItem('login_date', new Date().toDateString());
+          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          setShowLoginModal(false);
+          window.location.href = '/dashboard';
+        })
+        .catch(err => {
+          setLoginError(err.response?.data?.message || 'Login failed. Invalid credentials.');
+        })
+        .finally(() => setLoginLoading(false));
+    });
+  };
+
+  // Register handler
+  const handleRegisterSubmit = (e) => {
+    e.preventDefault();
+    if (registerData.password !== registerData.password_confirmation) {
+      return setRegisterError("Passwords do not match");
+    }
+
+    setRegisterLoading(true);
+    setRegisterError(null);
+
+    axios.get(`${window.location.origin}/sanctum/csrf-cookie`).then(() => {
+      api.post('/register', registerData)
+        .then(res => {
+          localStorage.setItem('auth_token', res.data.access_token);
+          sessionStorage.setItem('just_registered', 'true');
+          setShowRegisterModal(false);
+          window.location.href = '/dashboard';
+        })
+        .catch(err => {
+          setRegisterError(err.response?.data?.message || 'Registration error. Verify inputs.');
+        })
+        .finally(() => setRegisterLoading(false));
+    });
+  };
+
+  // Contact Form handler
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const handleContactSubmit = (e) => {
     e.preventDefault();
@@ -129,12 +212,21 @@ const Landing = () => {
               </Link>
             ) : (
               <>
-                <Link to="/login" style={{ color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: '0.95rem', padding: '10px 16px', borderRadius: '8px', transition: 'background 0.2s' }} onMouseOver={(e) => e.target.style.background = 'rgba(255,255,255,0.05)'} onMouseOut={(e) => e.target.style.background = 'transparent'}>
+                <button 
+                  onClick={() => { setShowLoginModal(true); setShowRegisterModal(false); }}
+                  style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', padding: '10px 16px', borderRadius: '8px', transition: 'background 0.2s' }} 
+                  onMouseOver={(e) => e.target.style.background = 'rgba(255,255,255,0.05)'} 
+                  onMouseOut={(e) => e.target.style.background = 'transparent'}
+                >
                   Sign In
-                </Link>
-                <Link to="/register" className="btn btn-primary" style={{ padding: '10px 20px', borderRadius: '10px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
+                </button>
+                <button 
+                  onClick={() => { setShowRegisterModal(true); setShowLoginModal(false); }}
+                  className="btn btn-primary" 
+                  style={{ padding: '10px 20px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: 8 }}
+                >
                   Start Free Trial <Sparkles size={16} />
-                </Link>
+                </button>
               </>
             )}
           </div>
@@ -184,12 +276,19 @@ const Landing = () => {
               </Link>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <Link to="/login" onClick={() => setMobileMenuOpen(false)} style={{ color: '#fff', textDecoration: 'none', fontWeight: 600, textAlign: 'center', padding: '12px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}>
+                <button 
+                  onClick={() => { setMobileMenuOpen(false); setShowLoginModal(true); }}
+                  style={{ color: '#fff', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '12px', fontWeight: 600, cursor: 'pointer' }}
+                >
                   Sign In
-                </Link>
-                <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="btn btn-primary" style={{ padding: '14px', borderRadius: '12px', textDecoration: 'none', textAlign: 'center' }}>
+                </button>
+                <button 
+                  onClick={() => { setMobileMenuOpen(false); setShowRegisterModal(true); }}
+                  className="btn btn-primary" 
+                  style={{ padding: '14px', borderRadius: '12px', width: '100%' }}
+                >
                   Start 30-Day Trial
-                </Link>
+                </button>
               </div>
             )}
           </div>
@@ -260,12 +359,20 @@ const Landing = () => {
               </Link>
             ) : (
               <>
-                <Link to="/register" className="btn btn-primary" style={{ padding: '16px 36px', borderRadius: '12px', fontSize: '1.05rem', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <button 
+                  onClick={() => setShowRegisterModal(true)}
+                  className="btn btn-primary" 
+                  style={{ padding: '16px 36px', borderRadius: '12px', fontSize: '1.05rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 10 }}
+                >
                   Start 30-Day Trial Free <ArrowRight size={20} />
-                </Link>
-                <Link to="/login" className="btn btn-outline" style={{ padding: '16px 36px', borderRadius: '12px', fontSize: '1.05rem', fontWeight: 700, textDecoration: 'none', background: 'rgba(255, 255, 255, 0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }}>
+                </button>
+                <button 
+                  onClick={() => setShowLoginModal(true)}
+                  className="btn btn-outline" 
+                  style={{ padding: '16px 36px', borderRadius: '12px', fontSize: '1.05rem', fontWeight: 700, background: 'rgba(255, 255, 255, 0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }}
+                >
                   Sign In Securely
-                </Link>
+                </button>
               </>
             )}
           </div>
@@ -663,9 +770,13 @@ const Landing = () => {
                 </div>
               </div>
 
-              <Link to="/register" className="btn btn-outline" style={{ width: '100%', padding: '14px', borderRadius: '10px', marginTop: 32, textDecoration: 'none', textAlign: 'center', fontWeight: 'bold' }}>
+              <button 
+                onClick={() => setShowRegisterModal(true)}
+                className="btn btn-outline" 
+                style={{ width: '100%', padding: '14px', borderRadius: '10px', marginTop: 32, fontWeight: 'bold', cursor: 'pointer' }}
+              >
                 Register Free Trial
-              </Link>
+              </button>
             </div>
 
             {/* Plan 2: Pro (Standard SaaS) */}
@@ -699,9 +810,13 @@ const Landing = () => {
                 </div>
               </div>
 
-              <Link to="/register" className="btn btn-primary" style={{ width: '100%', padding: '14px', borderRadius: '10px', marginTop: 32, textDecoration: 'none', textAlign: 'center', fontWeight: 'bold' }}>
+              <button 
+                onClick={() => setShowRegisterModal(true)}
+                className="btn btn-primary" 
+                style={{ width: '100%', padding: '14px', borderRadius: '10px', marginTop: 32, fontWeight: 'bold', cursor: 'pointer' }}
+              >
                 Activate Pro Store
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -772,7 +887,7 @@ const Landing = () => {
                   </div>
                   <div>
                     <div style={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase' }}>Head Office Location</div>
-                    <div style={{ color: '#fff', fontWeight: 600 }}>Mishrapur, Gudamba, Lucknow, UP, India, 226026</div>
+                    <div style={{ color: '#fff', fontWeight: 600 }}>Mishrapur, Lucknow, UP, India, 226026</div>
                   </div>
                 </div>
               </div>
@@ -826,7 +941,7 @@ const Landing = () => {
       {/* 8. Footer Section with all other links */}
       <footer style={{
         background: '#0b0f19',
-        borderTop: '1px solid rgba(255,255,255,0.08)',
+        borderTop: '1px solid rgba(255, 255, 255, 0.08)',
         padding: '64px 24px 24px',
         color: 'var(--text-muted)'
       }}>
@@ -908,6 +1023,293 @@ const Landing = () => {
         </div>
       </footer>
 
+      {/* 9. POPUP MODAL: LOGIN FORM */}
+      {showLoginModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(11, 15, 25, 0.75)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 2000,
+          animation: 'fadeIn 0.25s ease-out'
+        }}>
+          <div style={{
+            background: 'var(--surface)',
+            borderRadius: '20px',
+            width: '95%',
+            maxWidth: '440px',
+            border: '1px solid var(--border)',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+            padding: '36px',
+            position: 'relative',
+            animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+            color: 'var(--text-main)'
+          }}>
+            {/* Close Button */}
+            <button 
+              onClick={() => setShowLoginModal(false)}
+              style={{
+                position: 'absolute',
+                top: 20, right: 20,
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid var(--border)',
+                borderRadius: '50%',
+                width: 36, height: 36,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'var(--text-muted)',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+              onMouseOver={(e) => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.background = '#ef4444'; }}
+              onMouseOut={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
+            >
+              <X size={18} />
+            </button>
+
+            {/* Header */}
+            <div style={{ textAlign: 'center', marginBottom: 28 }}>
+              <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 54, height: 54, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', color: 'white', boxShadow: '0 8px 16px rgba(79,70,229,0.2)' }}>
+                <Package size={28} strokeWidth={2.5} />
+              </div>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)', margin: '0 0 4px' }}>Hardware Pro</h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>Management Dashboard Login</p>
+            </div>
+
+            {/* Error alerts */}
+            {loginError && (
+              <div style={{ background: 'rgba(239, 68, 68, 0.08)', color: 'var(--danger)', padding: '10px 14px', borderRadius: '8px', fontSize: '0.825rem', marginBottom: 20, border: '1px solid rgba(239,68,68,0.2)', textAlign: 'center' }}>
+                {loginError}
+              </div>
+            )}
+
+            {/* Form */}
+            <form onSubmit={handleLoginSubmit}>
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: 8, color: 'var(--text-muted)' }}>Email or Mobile Number</label>
+                <input 
+                  type="text" 
+                  required 
+                  className="form-control" 
+                  style={{ background: 'rgba(255,255,255,0.02)' }}
+                  placeholder="Enter email or registered mobile"
+                  value={loginData.login} 
+                  onChange={e => setLoginData({...loginData, login: e.target.value})} 
+                />
+              </div>
+
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                  <label style={{ fontSize: '0.825rem', fontWeight: 600, color: 'var(--text-muted)', margin: 0 }}>Password</label>
+                  <a href="#" onClick={(e) => { e.preventDefault(); alert("To reset password, please get in touch with Vynkra Technologies support team."); }} style={{ fontSize: '0.75rem', color: 'var(--primary)', textDecoration: 'none' }}>Forgot?</a>
+                </div>
+                <input 
+                  type="password" 
+                  required 
+                  className="form-control" 
+                  style={{ background: 'rgba(255,255,255,0.02)' }}
+                  placeholder="••••••••"
+                  value={loginData.password} 
+                  onChange={e => setLoginData({...loginData, password: e.target.value})} 
+                />
+              </div>
+
+              <button type="submit" disabled={loginLoading} className="btn btn-primary" style={{ width: '100%', padding: '14px', fontSize: '1rem', fontWeight: 700, borderRadius: '10px' }}>
+                {loginLoading ? 'Verifying credentials...' : 'Sign In Securely'}
+              </button>
+
+              <div style={{ textAlign: 'center', marginTop: 24, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                Need a new SaaS setup?{' '}
+                <button 
+                  type="button"
+                  onClick={() => { setShowLoginModal(false); setShowRegisterModal(true); }}
+                  style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 700, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+                >
+                  Start 30-Day Free Trial
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 10. POPUP MODAL: REGISTER FORM */}
+      {showRegisterModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(11, 15, 25, 0.75)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 2000,
+          animation: 'fadeIn 0.25s ease-out'
+        }}>
+          <div style={{
+            background: 'var(--surface)',
+            borderRadius: '20px',
+            width: '95%',
+            maxWidth: '520px',
+            border: '1px solid var(--border)',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+            padding: '36px',
+            position: 'relative',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+            color: 'var(--text-main)'
+          }}>
+            {/* Close Button */}
+            <button 
+              onClick={() => setShowRegisterModal(false)}
+              style={{
+                position: 'absolute',
+                top: 20, right: 20,
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid var(--border)',
+                borderRadius: '50%',
+                width: 36, height: 36,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'var(--text-muted)',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                zIndex: 10
+              }}
+              onMouseOver={(e) => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.background = '#ef4444'; }}
+              onMouseOut={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
+            >
+              <X size={18} />
+            </button>
+
+            {/* Header */}
+            <div style={{ textAlign: 'center', marginBottom: 24 }}>
+              <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 54, height: 54, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: 'white', boxShadow: '0 8px 16px rgba(79,70,229,0.2)' }}>
+                <Package size={28} strokeWidth={2.5} />
+              </div>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)', margin: '0 0 4px' }}>Register Store</h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>Start managing your hardware business today.</p>
+              
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold', marginTop: '10px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                <BadgeCheck size={14} /> 30-Day Trial Period Included
+              </div>
+            </div>
+
+            {/* Error alerts */}
+            {registerError && (
+              <div style={{ background: 'rgba(239, 68, 68, 0.08)', color: 'var(--danger)', padding: '10px 14px', borderRadius: '8px', fontSize: '0.825rem', marginBottom: 20, border: '1px solid rgba(239,68,68,0.2)', textAlign: 'center' }}>
+                {registerError}
+              </div>
+            )}
+
+            {/* Form */}
+            <form onSubmit={handleRegisterSubmit}>
+              {/* Section: Shop Details */}
+              <div style={{ marginBottom: 18 }}>
+                <h4 style={{ fontSize: '0.75rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Store size={12} /> Store Information
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    placeholder="Official Shop Name (Ex: Apex Hardware)" 
+                    required 
+                    value={registerData.shop_name} 
+                    onChange={e => setRegisterData({...registerData, shop_name: e.target.value})} 
+                  />
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    placeholder="GST Number (Optional)" 
+                    value={registerData.gst_number} 
+                    onChange={e => setRegisterData({...registerData, gst_number: e.target.value})} 
+                  />
+                </div>
+              </div>
+
+              {/* Section: Personal Info */}
+              <div style={{ marginBottom: 18 }}>
+                <h4 style={{ fontSize: '0.75rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <User size={12} /> Owner Details
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    placeholder="Your Full Name" 
+                    required 
+                    value={registerData.name} 
+                    onChange={e => setRegisterData({...registerData, name: e.target.value})} 
+                  />
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                    <input 
+                      type="email" 
+                      className="form-control" 
+                      placeholder="Email Address" 
+                      required 
+                      value={registerData.email} 
+                      onChange={e => setRegisterData({...registerData, email: e.target.value})} 
+                    />
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      placeholder="Mobile Number" 
+                      required 
+                      value={registerData.mobile} 
+                      onChange={e => setRegisterData({...registerData, mobile: e.target.value})} 
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Section: Security */}
+              <div style={{ marginBottom: 24 }}>
+                <h4 style={{ fontSize: '0.75rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <ShieldCheck size={12} /> Account Security
+                </h4>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  <input 
+                    type="password" 
+                    className="form-control" 
+                    placeholder="Password" 
+                    required 
+                    minLength={8} 
+                    value={registerData.password} 
+                    onChange={e => setRegisterData({...registerData, password: e.target.value})} 
+                  />
+                  <input 
+                    type="password" 
+                    className="form-control" 
+                    placeholder="Confirm Password" 
+                    required 
+                    minLength={8} 
+                    value={registerData.password_confirmation} 
+                    onChange={e => setRegisterData({...registerData, password_confirmation: e.target.value})} 
+                  />
+                </div>
+              </div>
+
+              <button type="submit" disabled={registerLoading} className="btn btn-primary" style={{ width: '100%', padding: '14px', fontSize: '1rem', fontWeight: 700, borderRadius: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8 }}>
+                {registerLoading ? 'Setting up your store...' : <>Register Store <UserPlus size={18} /></>}
+              </button>
+
+              <div style={{ textAlign: 'center', marginTop: 24, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                Already have an account?{' '}
+                <button 
+                  type="button"
+                  onClick={() => { setShowRegisterModal(false); setShowLoginModal(true); }}
+                  style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 700, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+                >
+                  Sign In Here
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
