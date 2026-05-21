@@ -699,3 +699,104 @@ tr:hover td { background: var(--surface-hover); }
     max-height: 45vh;
   }
 }
+
+/* Custom Responsive Grid & Card Classes */
+.responsive-mock-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 24px;
+}
+
+.responsive-showcase-grid {
+  background: rgba(21, 28, 44, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+  display: grid;
+  grid-template-columns: 1.2fr 1.8fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.responsive-showcase-img-container {
+  background: #0b0f19;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 8px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 360px;
+}
+
+/* Media query adjustments for smaller tablets and mobile screens */
+@media (max-width: 992px) {
+  .responsive-mock-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .responsive-showcase-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+    padding: 24px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .responsive-showcase-img-container {
+    min-height: auto !important;
+    aspect-ratio: 16 / 10;
+  }
+  
+  .responsive-gallery-tabs {
+    gap: 8px !important;
+  }
+  
+  .responsive-gallery-tab-btn {
+    padding: 10px 16px !important;
+    font-size: 0.8rem !important;
+    border-radius: 10px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 20px !important;
+    border-radius: 16px !important;
+  }
+  
+  .pricing-card {
+    padding: 24px 16px !important;
+    border-radius: 16px !important;
+  }
+}
+
+/* Extra media query for extremely narrow screens <= 371px */
+@media (max-width: 371px) {
+  .pricing-card {
+    padding: 20px 12px !important;
+  }
+  
+  .responsive-gallery-tab-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    font-size: 0.775rem !important;
+    padding: 8px 12px !important;
+  }
+  
+  /* Squeeze headers a bit to prevent wrapping truncation */
+  h1, .responsive-h1 {
+    font-size: 1.3rem !important;
+  }
+  
+  h2 {
+    font-size: 1.15rem !important;
+  }
+  
+  h3 {
+    font-size: 1.05rem !important;
+  }
+}

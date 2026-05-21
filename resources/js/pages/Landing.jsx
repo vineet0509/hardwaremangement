@@ -486,12 +486,7 @@ const Landing = () => {
               </div>
 
               {/* Bottom Mock Split: POS Billing Preview & Stock Alerts */}
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: '3fr 2fr',
-                gap: 24,
-                flexWrap: 'wrap'
-              }} className="charts-grid">
+              <div className="responsive-mock-grid">
                 
                 {/* Simulated billing cart */}
                 <div style={{ background: '#151c2c', borderRadius: '12px', padding: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
@@ -786,13 +781,7 @@ const Landing = () => {
           </div>
 
           {/* Gallery Tabs Nav */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: 12,
-            flexWrap: 'wrap',
-            marginBottom: 40
-          }}>
+          <div className="responsive-gallery-tabs">
             {[
               { id: 'billing', label: 'POS Billing & Quotation', icon: <ShoppingCart size={18} /> },
               { id: 'product', label: 'Product Creation', icon: <Package size={18} /> },
@@ -804,6 +793,7 @@ const Landing = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
+                  className="responsive-gallery-tab-btn"
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -839,17 +829,7 @@ const Landing = () => {
           </div>
 
           {/* Interactive Tab Showcase Content */}
-          <div style={{
-            background: 'rgba(21, 28, 44, 0.65)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            borderRadius: '24px',
-            padding: '32px',
-            boxShadow: '0 30px 60px rgba(0,0,0,0.3)',
-            display: 'grid',
-            gridTemplateColumns: '1.2fr 1.8fr',
-            gap: 40,
-            alignItems: 'center'
-          }} className="charts-grid">
+          <div className="responsive-showcase-grid">
             
             {/* Left Column: Descriptive Text */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
@@ -907,18 +887,7 @@ const Landing = () => {
             </div>
 
             {/* Right Column: Visual UI Mockup Screenshot */}
-            <div style={{
-              background: '#0b0f19',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '16px',
-              padding: '8px',
-              overflow: 'hidden',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              minHeight: '360px'
-            }}>
+            <div className="responsive-showcase-img-container">
               {activeTab === 'billing' && <img src="/images/billing_quotation.png" alt="POS Billing Terminal UI" style={{ width: '100%', height: 'auto', borderRadius: '12px', objectFit: 'contain' }} />}
               {activeTab === 'product' && <img src="/images/product_creation.png" alt="Product Setup Screen UI" style={{ width: '100%', height: 'auto', borderRadius: '12px', objectFit: 'contain' }} />}
               {activeTab === 'supplier' && <img src="/images/supplier_creation.png" alt="Supplier Accounts Ledger UI" style={{ width: '100%', height: 'auto', borderRadius: '12px', objectFit: 'contain' }} />}
@@ -949,13 +918,13 @@ const Landing = () => {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
             gap: 30,
             maxWidth: '1200px',
             margin: '0 auto'
           }}>
             {/* Plan 1: Trial */}
-            <div style={{
+            <div className="pricing-card" style={{
               background: 'rgba(21, 28, 44, 0.65)',
               border: '1px solid rgba(255, 255, 255, 0.08)',
               borderRadius: '20px',
@@ -1008,7 +977,7 @@ const Landing = () => {
             </div>
 
             {/* Plan 2: Monthly Pro */}
-            <div style={{
+            <div className="pricing-card" style={{
               background: 'rgba(21, 28, 44, 0.65)',
               border: '2px solid var(--primary)',
               borderRadius: '20px',
@@ -1050,7 +1019,7 @@ const Landing = () => {
             </div>
 
             {/* Plan 3: Yearly Enterprise */}
-            <div style={{
+            <div className="pricing-card" style={{
               background: 'rgba(21, 28, 44, 0.65)',
               border: '1px solid rgba(255, 255, 255, 0.08)',
               borderRadius: '20px',
