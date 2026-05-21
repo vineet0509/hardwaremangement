@@ -36,7 +36,7 @@ import {
 const Landing = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('auth_token');
-  const [activeTab, setActiveTab] = useState('pos');
+  const [activeTab, setActiveTab] = useState('billing');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
 
