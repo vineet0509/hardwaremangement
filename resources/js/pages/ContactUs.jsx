@@ -1,14 +1,29 @@
 import React, { useState } from 'react';
 import { Phone, Mail, MapPin, HelpCircle, ArrowLeft, Send } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import api from '../utils/api';
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Thank you for reaching out! We will get back to you soon.");
-    setFormData({ name: '', email: '', message: '' });
+    setLoading(true);
+    setStatus(null);
+    api.post('/contact', formData)
+      .then(res => {
+        setStatus({ success: true, message: res.data.message });
+        setFormData({ name: '', email: '', message: '' });
+      })
+      .catch(err => {
+        setStatus({ 
+          success: false, 
+          message: err.response?.data?.message || 'Failed to send message. Please contact support@vynkra.in.' 
+        });
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -70,8 +85,24 @@ const ContactUs = () => {
                 <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 600, marginBottom: 8 }}>How can we help?</label>
                 <textarea className="form-control" placeholder="Type your message here..." style={{ height: 120, resize: 'none' }} required value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} />
               </div>
-              <button type="submit" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '14px', borderRadius: 12, fontWeight: 600 }}>
-                <Send size={18} /> Send Message
+
+              {status && (
+                <div style={{ 
+                  padding: '12px 16px', 
+                  borderRadius: '8px', 
+                  fontSize: '0.9rem', 
+                  textAlign: 'center', 
+                  background: status.success ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                  color: status.success ? '#10b981' : '#fca5a5',
+                  border: `1px solid ${status.success ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`,
+                  fontWeight: 600
+                }}>
+                  {status.message}
+                </div>
+              )}
+
+              <button type="submit" disabled={loading} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '14px', borderRadius: 12, fontWeight: 600, cursor: 'pointer' }}>
+                <Send size={18} /> {loading ? 'Sending Message...' : 'Send Message'}
               </button>
             </form>
           </div>

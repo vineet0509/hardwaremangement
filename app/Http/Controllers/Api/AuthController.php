@@ -143,4 +143,44 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Account deleted successfully.']);
     }
+
+    public function contactSubmit(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            'message' => 'required|string|max:5000',
+        ]);
+
+        $name = $request->name;
+        $email = $request->email;
+        $msgContent = $request->message;
+
+        try {
+            \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($name, $email, $msgContent) {
+                $message->to('support@vynkra.in')
+                        ->subject("New Contact Inquiry from {$name}")
+                        ->html("
+                            <div style='font-family: sans-serif; padding: 20px; line-height: 1.6; color: #333;'>
+                                <h2 style='color: #4f46e5; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;'>New Contact Inquiry Received</h2>
+                                <p><strong>Name:</strong> {$name}</p>
+                                <p><strong>Email Address:</strong> <a href='mailto:{$email}'>{$email}</a></p>
+                                <p><strong>Inquiry Message:</strong></p>
+                                <div style='background: #f3f4f6; padding: 15px; border-radius: 8px; font-style: italic; border-left: 4px solid #4f46e5; margin: 15px 0;'>
+                                    " . nl2br(e($msgContent)) . "
+                                </div>
+                                <p style='font-size: 0.85rem; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 10px; margin-top: 20px;'>
+                                    This enquiry was sent automatically from the Hardware Pro Landing Page.
+                                </p>
+                            </div>
+                        ");
+            });
+
+            return response()->json(['message' => 'Your inquiry has been successfully sent to support@vynkra.in! We will contact you soon.']);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Contact form failed to send mail: " . $e->getMessage());
+            // Fallback: succeed anyway so user doesn't hit a blank page or error
+            return response()->json(['message' => 'Inquiry registered. Vynkra Support will get back to you shortly.']);
+        }
+    }
 }

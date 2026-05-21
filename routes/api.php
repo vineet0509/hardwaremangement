@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\ExpenseController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/contact', [AuthController::class, 'contactSubmit']);
 
 Route::middleware(['auth:sanctum', 'check.subscription', 'domain.tenant'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);

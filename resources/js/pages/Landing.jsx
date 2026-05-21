@@ -143,10 +143,25 @@ const Landing = () => {
 
   // Contact Form handler
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
+  const [contactLoading, setContactLoading] = useState(false);
+  const [contactStatus, setContactStatus] = useState(null);
+
   const handleContactSubmit = (e) => {
     e.preventDefault();
-    alert("Thank you for your interest! The team at Vynkra Technologies will contact you within 24 hours.");
-    setContactForm({ name: '', email: '', message: '' });
+    setContactLoading(true);
+    setContactStatus(null);
+    api.post('/contact', contactForm)
+      .then(res => {
+        setContactStatus({ success: true, message: res.data.message });
+        setContactForm({ name: '', email: '', message: '' });
+      })
+      .catch(err => {
+        setContactStatus({ 
+          success: false, 
+          message: err.response?.data?.message || 'Failed to send enquiry. Please contact support directly.' 
+        });
+      })
+      .finally(() => setContactLoading(false));
   };
 
   return (
@@ -205,12 +220,14 @@ const Landing = () => {
           <nav className="hide-on-mobile" style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '32px'
+            gap: '24px'
           }}>
-            <span onClick={() => scrollToSection('features')} style={{ color: '#cbd5e1', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Features</span>
-            <span onClick={() => scrollToSection('pricing')} style={{ color: '#cbd5e1', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Pricing</span>
-            <span onClick={() => scrollToSection('about')} style={{ color: '#cbd5e1', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>About Us</span>
-            <span onClick={() => scrollToSection('contact')} style={{ color: '#cbd5e1', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Contact</span>
+            <span onClick={() => scrollToSection('features')} style={{ color: '#cbd5e1', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Features</span>
+            <span onClick={() => scrollToSection('pricing')} style={{ color: '#cbd5e1', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Pricing</span>
+            <Link to="/about-us" style={{ color: '#cbd5e1', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>About Us</Link>
+            <Link to="/contact-us" style={{ color: '#cbd5e1', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Contact Us</Link>
+            <Link to="/terms" style={{ color: '#cbd5e1', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Terms</Link>
+            <Link to="/privacy-policy" style={{ color: '#cbd5e1', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#fff'} onMouseOut={(e) => e.target.style.color = '#cbd5e1'}>Privacy Policy</Link>
           </nav>
 
           {/* Header Action Buttons */}
@@ -272,10 +289,12 @@ const Landing = () => {
             gap: 20,
             boxShadow: '0 20px 25px rgba(0,0,0,0.5)'
           }}>
-            <span onClick={() => scrollToSection('features')} style={{ color: '#94a3b8', fontWeight: 600, fontSize: '1.1rem' }}>Features</span>
-            <span onClick={() => scrollToSection('pricing')} style={{ color: '#94a3b8', fontWeight: 600, fontSize: '1.1rem' }}>Pricing</span>
-            <span onClick={() => scrollToSection('about')} style={{ color: '#94a3b8', fontWeight: 600, fontSize: '1.1rem' }}>About Us</span>
-            <span onClick={() => scrollToSection('contact')} style={{ color: '#94a3b8', fontWeight: 600, fontSize: '1.1rem' }}>Contact</span>
+            <span onClick={() => { scrollToSection('features'); setMobileMenuOpen(false); }} style={{ color: '#94a3b8', fontWeight: 600, fontSize: '1.1rem', cursor: 'pointer' }}>Features</span>
+            <span onClick={() => { scrollToSection('pricing'); setMobileMenuOpen(false); }} style={{ color: '#94a3b8', fontWeight: 600, fontSize: '1.1rem', cursor: 'pointer' }}>Pricing</span>
+            <Link to="/about-us" onClick={() => setMobileMenuOpen(false)} style={{ color: '#94a3b8', textDecoration: 'none', fontWeight: 600, fontSize: '1.1rem' }}>About Us</Link>
+            <Link to="/contact-us" onClick={() => setMobileMenuOpen(false)} style={{ color: '#94a3b8', textDecoration: 'none', fontWeight: 600, fontSize: '1.1rem' }}>Contact Us</Link>
+            <Link to="/terms" onClick={() => setMobileMenuOpen(false)} style={{ color: '#94a3b8', textDecoration: 'none', fontWeight: 600, fontSize: '1.1rem' }}>Terms & Conditions</Link>
+            <Link to="/privacy-policy" onClick={() => setMobileMenuOpen(false)} style={{ color: '#94a3b8', textDecoration: 'none', fontWeight: 600, fontSize: '1.1rem' }}>Privacy Policy</Link>
             
             <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)', margin: '4px 0' }}></div>
             
@@ -740,18 +759,194 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* 4.5 Interactive Product Screenshot Gallery */}
+      <section style={{
+        padding: '80px 24px',
+        background: 'rgba(11, 15, 25, 0.4)',
+        borderTop: '1px solid rgba(255,255,255,0.06)'
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <div style={{ 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: 8, 
+              background: 'rgba(16, 185, 129, 0.1)', 
+              border: '1px solid rgba(16, 185, 129, 0.25)', 
+              color: '#34d399', 
+              padding: '6px 14px', 
+              borderRadius: '50px', 
+              fontSize: '0.8rem', 
+              fontWeight: 700, 
+              marginBottom: 16
+            }}>
+              <Sparkles size={14} /> LIVE APEX STORE SCREENSHOTS
+            </div>
+            <h2 style={{ fontSize: '2.25rem', fontWeight: 800, color: '#fff', marginBottom: 12 }}>Explore Our High-Performance UI</h2>
+            <p style={{ color: '#94a3b8', fontSize: '1.05rem', maxWidth: '650px', margin: '0 auto' }}>
+              Take a detailed look at the interface designed to streamline your hardware storefront, billing, inventory, and localization workflows.
+            </p>
+          </div>
+
+          {/* Gallery Tabs Nav */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: 12,
+            flexWrap: 'wrap',
+            marginBottom: 40
+          }}>
+            {[
+              { id: 'billing', label: 'POS Billing & Quotation', icon: <ShoppingCart size={18} /> },
+              { id: 'product', label: 'Product Creation', icon: <Package size={18} /> },
+              { id: 'supplier', label: 'Supplier Ledgers', icon: <Users size={18} /> },
+              { id: 'language', label: 'Hindi / Native Toggle', icon: <Languages size={18} /> }
+            ].map(tab => {
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    padding: '12px 24px',
+                    borderRadius: '12px',
+                    fontSize: '0.95rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    background: isActive ? 'linear-gradient(135deg, var(--primary), #059669)' : 'rgba(255, 255, 255, 0.04)',
+                    color: isActive ? '#ffffff' : '#cbd5e1',
+                    border: isActive ? 'none' : '1px solid rgba(255, 255, 255, 0.08)',
+                    transition: 'all 0.3s ease',
+                    boxShadow: isActive ? '0 10px 20px rgba(79, 70, 229, 0.25)' : 'none'
+                  }}
+                  onMouseOver={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                    }
+                  }}
+                >
+                  {tab.icon} {tab.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Interactive Tab Showcase Content */}
+          <div style={{
+            background: 'rgba(21, 28, 44, 0.65)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '24px',
+            padding: '32px',
+            boxShadow: '0 30px 60px rgba(0,0,0,0.3)',
+            display: 'grid',
+            gridTemplateColumns: '1.2fr 1.8fr',
+            gap: 40,
+            alignItems: 'center'
+          }} className="charts-grid">
+            
+            {/* Left Column: Descriptive Text */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              {activeTab === 'billing' && (
+                <>
+                  <div style={{ background: 'rgba(79, 70, 229, 0.1)', color: '#818cf8', padding: '6px 12px', borderRadius: '30px', fontSize: '0.75rem', fontWeight: 700, width: 'fit-content' }}>POINT OF SALE TERMINAL</div>
+                  <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#fff', margin: 0 }}>High Speed Billing & Quotations</h3>
+                  <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.95rem', margin: 0 }}>
+                    Our POS module is optimized for keyboard or barcode scanning speeds. Instantly parse cement, wiring, piping and fittings catalog items, calculate exact local GST (CGST/SGST), and apply discounts on the fly.
+                  </p>
+                  <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.95rem', margin: 0 }}>
+                    Generate detailed estimations or quotations with a single tap, download them as clean, professional business PDFs, and convert them to active tax invoices instantly once approved!
+                  </p>
+                </>
+              )}
+
+              {activeTab === 'product' && (
+                <>
+                  <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#34d399', padding: '6px 12px', borderRadius: '30px', fontSize: '0.75rem', fontWeight: 700, width: 'fit-content' }}>CATALOG MANAGER</div>
+                  <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#fff', margin: 0 }}>Smooth Product Catalog Setup</h3>
+                  <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.95rem', margin: 0 }}>
+                    Populate your shop's inventory catalog effortlessly. Add brand manufacturers, tax classes, barcode references, raw buy-in rates, custom selling prices, and category tags.
+                  </p>
+                  <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.95rem', margin: 0 }}>
+                    Enable smart threshold indicators: you can set custom alert quantities on every single item. When quantities fall below that mark, glowing red badges dynamically trigger on your dashboard.
+                  </p>
+                </>
+              )}
+
+              {activeTab === 'supplier' && (
+                <>
+                  <div style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', padding: '6px 12px', borderRadius: '30px', fontSize: '0.75rem', fontWeight: 700, width: 'fit-content' }}>LEDGER & ACCOUNTS</div>
+                  <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#fff', margin: 0 }}>Procurements & Supplier Ledgers</h3>
+                  <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.95rem', margin: 0 }}>
+                    Maintain crystal-clear accounts with wholesale suppliers and manufacturing plants. Record incoming inventory bills, credit periods, payment records (cash, bank transfer), and outstanding balances.
+                  </p>
+                  <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.95rem', margin: 0 }}>
+                    Instantly pull transaction histories and ledger charts. Track every single penny and eliminate errors in supplier balances or duplicate payment disbursements.
+                  </p>
+                </>
+              )}
+
+              {activeTab === 'language' && (
+                <>
+                  <div style={{ background: 'rgba(139, 92, 246, 0.1)', color: '#a78bfa', padding: '6px 12px', borderRadius: '30px', fontSize: '0.75rem', fontWeight: 700, width: 'fit-content' }}>LOCALIZATION SETTING</div>
+                  <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#fff', margin: 0 }}>Multi-language & Hindi Translation</h3>
+                  <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.95rem', margin: 0 }}>
+                    Bridge the operational gap with native languages. In one click, shop managers and storefront billing operators can translate the entire system interface into Hindi or other native vernaculars.
+                  </p>
+                  <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.95rem', margin: 0 }}>
+                    This native localized toggle makes training your store attendants, billing assistants, and warehouse packers incredibly fast and completely stress-free!
+                  </p>
+                </>
+              )}
+            </div>
+
+            {/* Right Column: Visual UI Mockup Screenshot */}
+            <div style={{
+              background: '#0b0f19',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '16px',
+              padding: '8px',
+              overflow: 'hidden',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: '360px'
+            }}>
+              {activeTab === 'billing' && <img src="/images/billing_quotation.png" alt="POS Billing Terminal UI" style={{ width: '100%', height: 'auto', borderRadius: '12px', objectFit: 'contain' }} />}
+              {activeTab === 'product' && <img src="/images/product_creation.png" alt="Product Setup Screen UI" style={{ width: '100%', height: 'auto', borderRadius: '12px', objectFit: 'contain' }} />}
+              {activeTab === 'supplier' && <img src="/images/supplier_creation.png" alt="Supplier Accounts Ledger UI" style={{ width: '100%', height: 'auto', borderRadius: '12px', objectFit: 'contain' }} />}
+              {activeTab === 'language' && <img src="/images/language_change.png" alt="Native Language Localization Switcher UI" style={{ width: '100%', height: 'auto', borderRadius: '12px', objectFit: 'contain' }} />}
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
       {/* 5. Subscriptions / Pricing Section */}
       <section id="pricing" style={{
         padding: '100px 24px',
         background: 'rgba(21, 28, 44, 0.45)',
-        borderY: '1px solid rgba(255,255,255,0.08)'
+        borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           
           <div style={{ textAlign: 'center', marginBottom: 64 }}>
             <div style={{ color: 'var(--primary)', fontWeight: 800, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Subscription Plans</div>
-            <h2 style={{ fontSize: '2.25rem', fontWeight: 800, marginBottom: 12 }}>Simple, Highly Transparent Pricing</h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
+            <h2 style={{ fontSize: '2.25rem', fontWeight: 800, color: '#fff', marginBottom: 12 }}>Simple, Highly Transparent Pricing</h2>
+            <p style={{ color: '#cbd5e1', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
               Start with our full-access free trial, then migrate to a commercial plan that aligns with your hardware store's footprint.
             </p>
           </div>
@@ -765,29 +960,31 @@ const Landing = () => {
           }}>
             {/* Plan 1: Trial */}
             <div style={{
-              background: 'var(--surface)',
-              border: '1px solid var(--border)',
+              background: 'rgba(21, 28, 44, 0.65)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
               borderRadius: '20px',
               padding: '40px 32px',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)',
+              color: '#ffffff'
             }}>
               <div>
                 <span style={{ fontSize: '0.8rem', color: '#10b981', background: '#ecfdf5', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>30-Day Trial</span>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginTop: 16, marginBottom: 8 }}>Evaluation Plan</h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Experience the complete capabilities risk-free.</p>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Evaluation Plan</h3>
+                <p style={{ color: '#cbd5e1', fontSize: '0.85rem' }}>Experience the complete capabilities risk-free.</p>
                 
                 <div style={{ margin: '24px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                  <span style={{ fontSize: '2.5rem', fontWeight: 900 }}>₹0</span>
-                  <span style={{ color: 'var(--text-muted)' }}>/ 30 Days</span>
+                  <span style={{ fontSize: '2.5rem', fontWeight: 900, color: '#fff' }}>₹0</span>
+                  <span style={{ color: '#94a3b8' }}>/ 30 Days</span>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid var(--border)', paddingTop: 24 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem' }}><CheckCircle2 size={16} color="#10b981" /> Full access to POS Billing</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem' }}><CheckCircle2 size={16} color="#10b981" /> Automated low stock warnings</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem' }}><CheckCircle2 size={16} color="#10b981" /> Complete customer ledger (Udhar)</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem' }}><CheckCircle2 size={16} color="#10b981" /> Unlimited Quotations PDF</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 24 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Full access to POS Billing</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Automated low stock warnings</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Complete customer ledger (Udhar)</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Unlimited Quotations PDF</div>
                 </div>
               </div>
 
@@ -815,7 +1012,7 @@ const Landing = () => {
 
             {/* Plan 2: Pro (Standard SaaS) */}
             <div style={{
-              background: 'var(--surface)',
+              background: 'rgba(21, 28, 44, 0.65)',
               border: '2px solid var(--primary)',
               borderRadius: '20px',
               padding: '40px 32px',
@@ -823,24 +1020,25 @@ const Landing = () => {
               flexDirection: 'column',
               justifyContent: 'space-between',
               position: 'relative',
-              boxShadow: '0 20px 40px rgba(79, 70, 229, 0.12)'
+              boxShadow: '0 20px 40px rgba(79, 70, 229, 0.15)',
+              color: '#ffffff'
             }}>
               <div style={{ position: 'absolute', top: -14, right: 30, background: 'var(--primary)', color: '#fff', fontSize: '0.75rem', fontWeight: 800, padding: '4px 12px', borderRadius: '20px', textTransform: 'uppercase' }}>Recommended</div>
               <div>
                 <span style={{ fontSize: '0.8rem', color: 'var(--primary)', background: 'rgba(79, 70, 229, 0.1)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Monthly SaaS</span>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginTop: 16, marginBottom: 8 }}>Professional Shop Plan</h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Ideal for expanding single or multi-staff hardware counters.</p>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Professional Shop Plan</h3>
+                <p style={{ color: '#cbd5e1', fontSize: '0.85rem' }}>Ideal for expanding single or multi-staff hardware counters.</p>
                 
                 <div style={{ margin: '24px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                  <span style={{ fontSize: '2.5rem', fontWeight: 900 }}>₹999</span>
-                  <span style={{ color: 'var(--text-muted)' }}>/ month</span>
+                  <span style={{ fontSize: '2.5rem', fontWeight: 900, color: '#fff' }}>₹999</span>
+                  <span style={{ color: '#94a3b8' }}>/ month</span>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid var(--border)', paddingTop: 24 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem' }}><CheckCircle2 size={16} color="#10b981" /> <strong>All Trial Features Included</strong></div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem' }}><CheckCircle2 size={16} color="#10b981" /> Secure Multi-Staff Logins</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem' }}><CheckCircle2 size={16} color="#10b981" /> Custom Domain Tenant Mapping</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem' }}><CheckCircle2 size={16} color="#10b981" /> Daily Database Backup Security</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 24 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> <strong>All Trial Features Included</strong></div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Secure Multi-Staff Logins</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Custom Domain Tenant Mapping</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Daily Database Backup Security</div>
                 </div>
               </div>
 
@@ -962,8 +1160,24 @@ const Landing = () => {
                     onChange={e => setContactForm({...contactForm, message: e.target.value})} 
                   />
                 </div>
-                <button type="submit" className="btn btn-primary" style={{ padding: '14px', borderRadius: '10px', fontWeight: 'bold' }}>
-                  Send Message
+                
+                {contactStatus && (
+                  <div style={{ 
+                    padding: '12px 16px', 
+                    borderRadius: '8px', 
+                    fontSize: '0.9rem', 
+                    textAlign: 'center', 
+                    background: contactStatus.success ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                    color: contactStatus.success ? '#10b981' : '#fca5a5',
+                    border: `1px solid ${contactStatus.success ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`,
+                    fontWeight: 600
+                  }}>
+                    {contactStatus.message}
+                  </div>
+                )}
+
+                <button type="submit" disabled={contactLoading} className="btn btn-primary" style={{ padding: '14px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer' }}>
+                  {contactLoading ? 'Sending Inquiry...' : 'Send Message'}
                 </button>
               </form>
             </div>

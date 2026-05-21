@@ -12,20 +12,21 @@
         gtag('js', new Date());
         gtag('config', 'AW-18169650337');
     </script>
-    <title>Hardware Shop SaaS Manager | Multi-Tenant POS & Inventory Software</title>
-    <meta name="description" content="Launch and scale your hardware business with the most powerful multi-tenant management solution. Manage shops, invoices, khata ledgers, staff payroll, and business audits dynamically.">
-    <meta name="keywords" content="hardware shop software, billing system, khata book for stores, saas retail, multi tenant POS, stock controller, inventory management, staff payments">
+    <title>Hardware Pro by Vynkra Technologies | Multi-Tenant POS & Inventory Software</title>
+    <meta name="description" content="Launch and scale your hardware business with Hardware Pro by Vynkra Technologies - the most powerful multi-tenant management solution. Manage shops, invoices, khata ledgers, staff payroll, and business audits dynamically.">
+    <meta name="author" content="Vynkra Technologies">
+    <meta name="keywords" content="hardware shop software, billing system, khata book for stores, saas retail, multi tenant POS, stock controller, inventory management, staff payments, Vynkra, Vynkra Technologies">
     <meta name="robots" content="index, follow">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Hardware Shop SaaS Manager | Multi-Tenant POS & Inventory Software">
-    <meta property="og:description" content="Complete billing, POS and hardware shop store analytics suite. Multi-tenant access with simple controls.">
+    <meta property="og:title" content="Hardware Pro by Vynkra Technologies | Multi-Tenant POS & Inventory Software">
+    <meta property="og:description" content="Complete billing, POS and hardware shop store analytics suite powered by Vynkra Technologies. Multi-tenant access with simple controls.">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:title" content="Hardware Shop SaaS Manager | Multi-Tenant POS & Inventory Software">
-    <meta property="twitter:description" content="Manage multiple storefronts seamlessly with our custom hardware management platform.">
+    <meta property="twitter:title" content="Hardware Pro by Vynkra Technologies | Multi-Tenant POS & Inventory Software">
+    <meta property="twitter:description" content="Manage multiple storefronts seamlessly with our custom hardware management platform engineered by Vynkra Technologies.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
