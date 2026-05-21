@@ -949,9 +949,9 @@ const Landing = () => {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
             gap: 30,
-            maxWidth: '1000px',
+            maxWidth: '1200px',
             margin: '0 auto'
           }}>
             {/* Plan 1: Trial */}
@@ -964,10 +964,11 @@ const Landing = () => {
               flexDirection: 'column',
               justifyContent: 'space-between',
               boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)',
-              color: '#ffffff'
+              color: '#ffffff',
+              transition: 'all 0.3s'
             }}>
               <div>
-                <span style={{ fontSize: '0.8rem', color: '#10b981', background: '#ecfdf5', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>30-Day Trial</span>
+                <span style={{ fontSize: '0.8rem', color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>30-Day Trial</span>
                 <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Evaluation Plan</h3>
                 <p style={{ color: '#cbd5e1', fontSize: '0.85rem' }}>Experience the complete capabilities risk-free.</p>
                 
@@ -1006,7 +1007,7 @@ const Landing = () => {
               </button>
             </div>
 
-            {/* Plan 2: Pro (Standard SaaS) */}
+            {/* Plan 2: Monthly Pro */}
             <div style={{
               background: 'rgba(21, 28, 44, 0.65)',
               border: '2px solid var(--primary)',
@@ -1017,16 +1018,17 @@ const Landing = () => {
               justifyContent: 'space-between',
               position: 'relative',
               boxShadow: '0 20px 40px rgba(79, 70, 229, 0.15)',
-              color: '#ffffff'
+              color: '#ffffff',
+              transition: 'all 0.3s'
             }}>
               <div style={{ position: 'absolute', top: -14, right: 30, background: 'var(--primary)', color: '#fff', fontSize: '0.75rem', fontWeight: 800, padding: '4px 12px', borderRadius: '20px', textTransform: 'uppercase' }}>Recommended</div>
               <div>
-                <span style={{ fontSize: '0.8rem', color: 'var(--primary)', background: 'rgba(79, 70, 229, 0.1)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Monthly SaaS</span>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Professional Shop Plan</h3>
-                <p style={{ color: '#cbd5e1', fontSize: '0.85rem' }}>Ideal for expanding single or multi-staff hardware counters.</p>
+                <span style={{ fontSize: '0.8rem', color: 'var(--primary)', background: 'rgba(79, 70, 229, 0.1)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Monthly Plan</span>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Standard Shop Plan</h3>
+                <p style={{ color: '#cbd5e1', fontSize: '0.85rem' }}>Perfect for active hardware counters and growing retail stores.</p>
                 
                 <div style={{ margin: '24px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                  <span style={{ fontSize: '2.5rem', fontWeight: 900, color: '#fff' }}>₹999</span>
+                  <span style={{ fontSize: '2.5rem', fontWeight: 900, color: '#fff' }}>₹299</span>
                   <span style={{ color: '#94a3b8' }}>/ month</span>
                 </div>
 
@@ -1043,7 +1045,60 @@ const Landing = () => {
                 className="btn btn-primary" 
                 style={{ width: '100%', padding: '14px', borderRadius: '10px', marginTop: 32, fontWeight: 'bold', cursor: 'pointer' }}
               >
-                Activate Pro Store
+                Activate Monthly Store
+              </button>
+            </div>
+
+            {/* Plan 3: Yearly Enterprise */}
+            <div style={{
+              background: 'rgba(21, 28, 44, 0.65)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '20px',
+              padding: '40px 32px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)',
+              color: '#ffffff',
+              transition: 'all 0.3s'
+            }}>
+              <div>
+                <span style={{ fontSize: '0.8rem', color: '#f59e0b', background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Annual saver</span>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Enterprise Value Plan</h3>
+                <p style={{ color: '#cbd5e1', fontSize: '0.85rem' }}>Maximum value for wholesale and long-term hardware yards.</p>
+                
+                <div style={{ margin: '24px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                  <span style={{ fontSize: '2.5rem', fontWeight: 900, color: '#fff' }}>₹2,999</span>
+                  <span style={{ color: '#94a3b8' }}>/ year</span>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 24 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> <strong>All Standard Features Included</strong></div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Priority 24/7 Telephone Support</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Free GST & Custom Invoice Setup</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Equivalent to just ₹250/month!</div>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => setShowRegisterModal(true)}
+                className="btn" 
+                style={{ 
+                  width: '100%', 
+                  padding: '14px', 
+                  borderRadius: '10px', 
+                  marginTop: 32, 
+                  fontWeight: 'bold', 
+                  cursor: 'pointer',
+                  background: 'rgba(255, 255, 255, 0.05)', 
+                  color: '#ffffff', 
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
+                  transition: 'all 0.2s ease-in-out'
+                }}
+                onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)'; e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.5)'; }}
+                onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'; e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)'; }}
+              >
+                Activate Annual Store
               </button>
             </div>
           </div>
