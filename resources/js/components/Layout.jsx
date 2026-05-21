@@ -43,7 +43,7 @@ const Layout = ({ children }) => {
     if (loginDate && loginDate !== new Date().toDateString()) {
         localStorage.removeItem('auth_token');
         localStorage.removeItem('login_date');
-        window.location.href = '/login?session_expired=1';
+        window.location.href = '/?session_expired=1';
         return;
     }
 
@@ -68,7 +68,7 @@ const Layout = ({ children }) => {
        api.post('/logout').catch(console.error).finally(() => {
           localStorage.removeItem('auth_token');
           localStorage.removeItem('login_date');
-          window.location.href = '/login';
+          window.location.href = '/';
        });
     }
   };
@@ -277,7 +277,7 @@ const Layout = ({ children }) => {
                    api.post('/logout').catch(console.error).finally(() => {
                       localStorage.removeItem('auth_token');
                       localStorage.removeItem('login_date');
-                      window.location.href = '/login';
+                      window.location.href = '/';
                    });
                 }
               }}
@@ -402,16 +402,16 @@ const Layout = ({ children }) => {
                     </button>
                     <button style={{ display: 'none' }}>
                    </button>
-                   <button 
-                    onClick={() => {
-                      if(confirm("Are you sure you want to log out?")) {
-                         api.post('/logout').catch(console.error).finally(() => {
-                            localStorage.removeItem('auth_token');
-                            localStorage.removeItem('login_date');
-                            window.location.href = '/login';
-                         });
-                      }
-                    }} 
+                    <button 
+                     onClick={() => {
+                       if(confirm("Are you sure you want to log out?")) {
+                          api.post('/logout').catch(console.error).finally(() => {
+                             localStorage.removeItem('auth_token');
+                             localStorage.removeItem('login_date');
+                             window.location.href = '/';
+                          });
+                       }
+                     }} 
                     style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '0.9rem' }}
                    >
                      <LogOut size={16} /> Logout

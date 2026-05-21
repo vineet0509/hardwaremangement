@@ -86,7 +86,7 @@ const Settings = () => {
           .then(() => {
             localStorage.removeItem('auth_token');
             Swal.fire('Deleted!', 'Your account has been soft deleted.', 'success').then(() => {
-               window.location.href = '/login';
+               window.location.href = '/';
             });
           })
           .catch(err => Swal.fire('Error', 'Could not delete account. Try again later.', 'error'));

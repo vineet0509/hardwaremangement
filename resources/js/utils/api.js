@@ -23,9 +23,9 @@ api.interceptors.response.use(response => response, error => {
       const token = localStorage.getItem('auth_token');
       // Only clear and redirect if we actually had a token (session expired)
       // and we are not already on the login page
-      if (token && window.location.pathname !== '/login') {
+      if (token && window.location.pathname !== '/') {
           localStorage.removeItem('auth_token');
-          window.location.href = '/login?session_expired=1';
+          window.location.href = '/?session_expired=1';
       }
   }
   return Promise.reject(error);

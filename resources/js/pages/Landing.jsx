@@ -69,6 +69,15 @@ const Landing = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('session_expired') === '1') {
+      setShowLoginModal(true);
+      setLoginError("Your session has expired. Please sign in again.");
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   const scrollToSection = (id) => {
     setMobileMenuOpen(false);
     const element = document.getElementById(id);
