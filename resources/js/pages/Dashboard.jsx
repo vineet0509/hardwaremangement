@@ -17,6 +17,8 @@ const Dashboard = () => {
       if (trackingFn) {
         trackingFn('event', 'conversion', {
           'send_to': 'AW-18169650337/NzGWCO-I2q4cEKG5-9dD',
+          'value': 299.00,
+          'currency': 'INR',
           'transaction_id': 'reg_' + new Date().getTime()
         });
         console.log('Google Ads Registration Purchase Conversion Event Triggered successfully!');

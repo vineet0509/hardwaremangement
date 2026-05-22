@@ -10,7 +10,7 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'AW-18169650337');
+        gtag('config', 'AW-18169650337', {'allow_enhanced_conversions': true});
     </script>
     <title>Hardware Shop SaaS Manager | Multi-Tenant POS & Inventory Software</title>
     <meta name="description" content="Launch and scale your hardware business with the most powerful multi-tenant management solution. Manage shops, invoices, khata ledgers, staff payroll, and business audits dynamically.">
