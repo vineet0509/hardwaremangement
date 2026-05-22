@@ -188,8 +188,8 @@ const Settings = () => {
                  <form onSubmit={handleSubscriptionRequest}>
                    <div className="form-group">
                      <select name="plan_type" className="form-control" required style={{ marginBottom: 12 }} defaultValue={formData.latest_request?.status === 'pending' ? formData.latest_request.plan_type : 'monthly'}>
-                       <option value="monthly">Monthly Plan - ₹499/month</option>
-                       <option value="yearly">Yearly Plan - ₹4999/year (with ₹999/year full support)</option>
+                       <option value="monthly">Monthly Plan - ₹299/month</option>
+                       <option value="yearly">Yearly Plan - ₹2,999/year (with free priority support)</option>
                      </select>
                    </div>
                    <button type="submit" className="btn btn-primary" style={{ width: '100%', background: 'var(--success)', border: 'none' }}>

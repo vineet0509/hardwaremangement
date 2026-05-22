@@ -425,12 +425,14 @@ const Landing = () => {
             boxShadow: '0 40px 80px rgba(0,0,0,0.4)',
             overflow: 'hidden'
           }}>
-            {/* Window controls */}
-            <div style={{ display: 'flex', gap: 6, marginBottom: 16, paddingLeft: 8 }}>
-              <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#ef4444' }}></div>
-              <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#f59e0b' }}></div>
-              <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#10b981' }}></div>
-              <span style={{ fontSize: '0.75rem', color: '#94a3b8', marginLeft: 16, fontFamily: 'monospace' }}>https://demo.hardwarepro.vynkra.in/dashboard</span>
+            {/* Platform Preview Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, paddingLeft: 8, paddingRight: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                  Platform Dashboard Preview
+                </span>
+              </div>
+              <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontStyle: 'italic' }}>Interactive Illustration</span>
             </div>
 
             {/* Simulated Live Dashboard Panels */}
