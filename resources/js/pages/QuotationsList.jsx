@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
-import { Search, Printer, Trash2, MessageSquare, Plus, FileText, Edit2 } from 'lucide-react';
+import { Search, Printer, Trash2, MessageSquare, Plus, FileText, Edit2, ArrowRightCircle } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 const QuotationsList = () => {
   const [quotations, setQuotations] = useState([]);
@@ -28,24 +29,32 @@ const QuotationsList = () => {
   );
 
   const deleteQuotation = (id) => {
-    if(confirm('Are you sure you want to delete this quotation?')) {
-      api.delete(`/quotations/${id}`)
-        .then(() => fetchQuotations())
-        .catch(err => alert(err.response?.data?.message || 'Error deleting quotation'));
-    }
+    Swal.fire({ title: 'Delete Quotation?', text: 'This action cannot be undone.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Yes, delete it' })
+      .then(result => {
+        if (result.isConfirmed) {
+          api.delete(`/quotations/${id}`)
+            .then(() => { fetchQuotations(); Swal.fire('Deleted!', 'Quotation removed.', 'success'); })
+            .catch(err => Swal.fire('Error', err.response?.data?.message || 'Error deleting quotation', 'error'));
+        }
+      });
   };
 
   const sendWhatsAppQuote = (quotation) => {
-    if (!quotation.customer_phone) return alert('No phone number available for this customer.');
-    
+    if (!quotation.customer_phone) return Swal.fire('No Phone', 'No phone number available for this customer.', 'warning');
     let wapn = quotation.customer_phone.replace(/[^0-9]/g,'');
     if (wapn.length === 10) wapn = '91' + wapn;
-
     const itemListStr = quotation.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity} ${i.unit || ''})`).join('\n') || '';
     const msgText = `*Quotation Details* 📝\n-----------------------------------\nHello ${quotation.customer_name},\nHere are the details for *Quotation No: ${quotation.quotation_number}*.\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Estimate:* Rs. ${quotation.total}\n\nThis is an estimate. Please contact us for more details.`;
+    window.open(`https://wa.me/${wapn}?text=${encodeURIComponent(msgText)}`, '_blank');
+  };
 
-    const msg = encodeURIComponent(msgText);
-    window.open(`https://wa.me/${wapn}?text=${msg}`, '_blank');
+  const convertToBill = (quotation) => {
+    Swal.fire({ title: 'Convert to Bill?', text: `Create a POS bill from Quotation ${quotation.quotation_number}?`, icon: 'question', showCancelButton: true, confirmButtonColor: '#4f46e5', confirmButtonText: 'Yes, Convert' })
+      .then(result => {
+        if (result.isConfirmed) {
+          navigate('/billing', { state: { fromQuotation: quotation } });
+        }
+      });
   };
 
   const printQuotation = async (id) => {
@@ -188,34 +197,33 @@ const QuotationsList = () => {
               <tr><td colSpan="6" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No quotations found.</td></tr>
             ) : filteredQuotations.map(q => (
               <tr key={q.id}>
-                <td style={{ fontWeight: 600, color: 'var(--blue)' }}>{q.quotation_number}</td>
-                <td>{new Date(q.created_at).toLocaleString()}</td>
+                <td style={{ fontWeight: 700, color: '#3b82f6' }}>{q.quotation_number}</td>
+                <td style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>{new Date(q.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
                 <td>
                   <div style={{ fontWeight: 600 }}>{q.customer_name || 'Walk-in'}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{q.customer_phone}</div>
-                  {q.notes && (
-                    <div style={{ fontSize: '0.8rem', color: 'var(--primary)', marginTop: 4, fontWeight: 500 }}>
-                      {q.notes}
-                    </div>
-                  )}
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{q.customer_phone}</div>
+                  {q.notes && <div style={{ fontSize: '0.78rem', color: 'var(--primary)', marginTop: 2, fontStyle: 'italic' }}>{q.notes}</div>}
                 </td>
-                <td style={{ fontWeight: 600 }}>{q.items?.length || 0} items</td>
-                <td style={{ color: 'var(--blue)', fontWeight: 600 }}>₹{q.total}</td>
+                <td><span className="badge badge-warning">{q.items?.length || 0} items</span></td>
+                <td style={{ color: '#3b82f6', fontWeight: 700, fontSize: '1.05rem' }}>₹{q.total}</td>
                 <td>
-                  <div className="d-flex gap-2">
-                    <button className="btn btn-outline" style={{ padding: '6px 10px' }} onClick={() => navigate('/quotations/create', { state: { editQuotationId: q.id } })} title="Edit Quotation">
-                      <Edit2 size={16} color="var(--primary)" />
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    <button className="btn btn-outline" style={{ padding: '6px 10px', gap: 5, fontSize: '0.8rem' }} onClick={() => navigate('/quotations/create', { state: { editQuotationId: q.id } })} title="Edit">
+                      <Edit2 size={14} color="var(--primary)" /> Edit
                     </button>
-                    <button className="btn btn-outline" style={{ padding: '6px 10px' }} onClick={() => printQuotation(q.id)} title="View/Print Quotation">
-                      <Printer size={16} color="var(--primary)" />
+                    <button className="btn btn-outline" style={{ padding: '6px 10px', gap: 5, fontSize: '0.8rem' }} onClick={() => printQuotation(q.id)} title="Print">
+                      <Printer size={14} color="var(--primary)" /> Print
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '6px 10px', gap: 5, fontSize: '0.8rem', borderColor: '#4f46e5', color: '#4f46e5' }} onClick={() => convertToBill(q)} title="Convert to Bill">
+                      <ArrowRightCircle size={14} /> To Bill
                     </button>
                     {q.customer_phone && (
-                      <button className="btn btn-outline" style={{ padding: '6px 10px', borderColor: '#22c55e', color: '#22c55e' }} onClick={() => sendWhatsAppQuote(q)} title="Send WhatsApp Quote">
-                        <MessageSquare size={16} />
+                      <button className="btn btn-outline" style={{ padding: '6px 10px', gap: 5, fontSize: '0.8rem', borderColor: '#22c55e', color: '#22c55e' }} onClick={() => sendWhatsAppQuote(q)} title="Send WhatsApp">
+                        <MessageSquare size={14} /> WhatsApp
                       </button>
                     )}
-                    <button className="btn btn-outline" style={{ padding: '6px 10px' }} onClick={() => deleteQuotation(q.id)} title="Delete Quotation">
-                      <Trash2 size={16} color="var(--danger)" />
+                    <button className="btn btn-outline" style={{ padding: '6px 10px', gap: 5, fontSize: '0.8rem' }} onClick={() => deleteQuotation(q.id)} title="Delete">
+                      <Trash2 size={14} color="var(--danger)" /> Delete
                     </button>
                   </div>
                 </td>

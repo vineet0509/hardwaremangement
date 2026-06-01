@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
-import { Search, ShoppingCart, Trash2, IndianRupee, Save, ArrowLeft, Package, User, Phone, MapPin, CreditCard, PlusCircle } from 'lucide-react';
+import { Search, ShoppingCart, Trash2, IndianRupee, Save, ArrowLeft, Package, User, Phone, MapPin, CreditCard, PlusCircle, XCircle, Banknote, Smartphone, ClipboardList } from 'lucide-react';
 
 import Swal from 'sweetalert2';
 
@@ -76,6 +76,25 @@ const Billing = () => {
       }).catch(err => Swal.fire('Error', 'Failed to load bill for editing.', 'error'));
     }
   }, [editBillId]);
+
+  // Pre-fill bill from a converted quotation
+  useEffect(() => {
+    if (location.state?.fromQuotation && !editBillId) {
+      const q = location.state.fromQuotation;
+      setCustomerInfo({ name: q.customer_name || '', phone: q.customer_phone || '', address: q.customer_address || '' });
+      setIsGstBill(q.is_gst || false);
+      setPayment(prev => ({ ...prev, discount: q.discount || 0 }));
+      setCart((q.items || []).map(i => ({
+        product_id: i.product_id,
+        name: i.product_name,
+        description: i.description || '',
+        unit: i.unit,
+        price: i.price,
+        quantity: i.quantity,
+        stock: 9999
+      })));
+    }
+  }, []);
 
   const addToCart = (product) => {
     if (product.quantity <= 0) return Swal.fire('Stock Out', 'Product is out of stock!', 'warning');
@@ -350,48 +369,61 @@ const Billing = () => {
             />
           </div>
         </div>
-        <div className="panel-body" style={{ background: 'var(--surface-hover)' }}>
-          <div style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 16, marginBottom: 8 }}>
+        {/* Category Filter Strip — always visible, never scrolled away */}
+        <div style={{
+          display: 'flex',
+          gap: 8,
+          overflowX: 'auto',
+          padding: '10px 16px',
+          background: 'var(--surface)',
+          borderBottom: '1px solid var(--border)',
+          flexShrink: 0,
+          WebkitOverflowScrolling: 'touch',
+          scrollbarWidth: 'none',
+        }}>
+          <button 
+            onClick={() => setSelectedCategory(null)}
+            style={{
+              padding: '8px 18px',
+              borderRadius: 24,
+              border: selectedCategory === null ? 'none' : '1px solid var(--border)',
+              background: selectedCategory === null ? 'var(--primary)' : 'var(--surface)',
+              color: selectedCategory === null ? 'white' : 'var(--text-muted)',
+              cursor: 'pointer',
+              fontSize: '0.88rem',
+              fontWeight: 700,
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
+              transition: 'all 0.2s',
+              boxShadow: selectedCategory === null ? '0 4px 10px rgba(79, 70, 229, 0.3)' : 'none'
+            }}
+          >
+            All Items
+          </button>
+          {categories.map(cat => (
             <button 
-              onClick={() => setSelectedCategory(null)}
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
               style={{
-                padding: '12px 24px',
+                padding: '8px 16px',
                 borderRadius: 24,
-                border: selectedCategory === null ? 'none' : '1px solid var(--border)',
-                background: selectedCategory === null ? 'var(--primary)' : 'var(--surface)',
-                color: selectedCategory === null ? 'white' : 'var(--text-muted)',
+                border: selectedCategory === cat.id ? 'none' : '1px solid var(--border)',
+                background: selectedCategory === cat.id ? 'var(--primary)' : 'var(--surface)',
+                color: selectedCategory === cat.id ? 'white' : 'var(--text-muted)',
                 cursor: 'pointer',
-                fontSize: '1.15rem',
-                fontWeight: 700,
+                fontSize: '0.85rem',
+                fontWeight: 600,
                 whiteSpace: 'nowrap',
+                flexShrink: 0,
                 transition: 'all 0.2s',
-                boxShadow: selectedCategory === null ? '0 4px 10px rgba(79, 70, 229, 0.3)' : 'none'
+                boxShadow: selectedCategory === cat.id ? '0 4px 10px rgba(79, 70, 229, 0.3)' : 'none'
               }}
             >
-              All Items
+              {cat.name}
             </button>
-            {categories.map(cat => (
-              <button 
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                style={{
-                  padding: '8px 18px',
-                  borderRadius: 24,
-                  border: selectedCategory === cat.id ? 'none' : '1px solid var(--border)',
-                  background: selectedCategory === cat.id ? 'var(--primary)' : 'var(--surface)',
-                  color: selectedCategory === cat.id ? 'white' : 'var(--text-muted)',
-                  cursor: 'pointer',
-                  fontSize: '0.9rem',
-                  fontWeight: 600,
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.2s',
-                  boxShadow: selectedCategory === cat.id ? '0 4px 10px rgba(79, 70, 229, 0.3)' : 'none'
-                }}
-              >
-                {cat.name}
-              </button>
-            ))}
-          </div>
+          ))}
+        </div>
+        <div className="panel-body" style={{ background: 'var(--surface-hover)' }}>
           <div className="product-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
             {(!products || !Array.isArray(products) || products.length === 0) ? (
                <div style={{ color: 'var(--text-muted)', textAlign: 'center', gridColumn: '1 / -1', padding: '40px' }}>No products found matching your criteria.</div>
@@ -418,8 +450,18 @@ const Billing = () => {
       <div className="pos-cart-panel">
         <div className="panel-header" style={{ background: editBillId ? 'rgba(245, 158, 11, 0.1)' : 'rgba(16, 185, 129, 0.1)', color: editBillId ? 'var(--warning)' : 'var(--primary)' }}>
           <div className="d-flex align-items-center gap-2">
-             {editBillId ? <><ArrowLeft size={20} style={{ cursor: 'pointer' }} onClick={() => navigate('/bills')} /> Editing Bill #{editBillId}</> : <><ShoppingCart size={20} /> Current Bill</>}
+             {editBillId ? <><ArrowLeft size={20} style={{ cursor: 'pointer' }} onClick={() => navigate('/bills')} /> Editing Bill #{editBillId}</> : <><ShoppingCart size={20} /> Current Bill {cart.length > 0 && <span style={{ background: 'var(--primary)', color: '#fff', borderRadius: '50%', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800, marginLeft: 6 }}>{cart.reduce((s, i) => s + i.quantity, 0)}</span>}</>}
           </div>
+          {cart.length > 0 && (
+            <button
+              onClick={() => Swal.fire({ title: 'Clear Cart?', text: 'All items will be removed.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Yes, clear it' }).then(r => { if (r.isConfirmed) { setCart([]); setCustomerInfo({ name: '', phone: '', address: '' }); setPayment({ method: 'cash', paid: 0, discount: 0, upi_digits: '' }); } })}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', color: 'var(--danger)', borderRadius: 8, padding: '6px 12px', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}
+              onMouseOver={e => e.currentTarget.style.background = 'rgba(239,68,68,0.2)'}
+              onMouseOut={e => e.currentTarget.style.background = 'rgba(239,68,68,0.1)'}
+            >
+              <XCircle size={15} /> Clear
+            </button>
+          )}
         </div>
         
         <div className="panel-body" style={{ padding: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
@@ -538,23 +580,50 @@ const Billing = () => {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '20px', marginBottom: 24 }}>
-              <div style={{ flex: 1 }}>
-                <label style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-muted)', marginBottom: 8, display: 'block', textTransform: 'uppercase' }}>Payment Mode</label>
-                <div style={{ position: 'relative' }}>
-                  <select className="form-control" value={payment.method} onChange={e => setPayment({...payment, method: e.target.value})} style={{ padding: '16px', fontWeight: 700, fontSize: '1.15rem', color: 'var(--primary)', cursor: 'pointer', appearance: 'none', background: 'var(--surface-hover)' }}>
-                    <option value="cash">💵 Cash Payment</option>
-                    <option value="upi">📱 UPI / Online</option>
-                    <option value="credit">📝 Credit (Udhar)</option>
-                  </select>
-                </div>
+            {/* 1-Tap Payment Mode Chips */}
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-muted)', marginBottom: 10, display: 'block', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Payment Mode</label>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {[
+                  { value: 'cash', label: 'Cash', emoji: '💵', icon: Banknote, color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
+                  { value: 'upi', label: 'UPI', emoji: '📱', icon: Smartphone, color: '#3b82f6', bg: 'rgba(59,130,246,0.12)' },
+                  { value: 'credit', label: 'Credit', emoji: '📝', icon: ClipboardList, color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
+                ].map(mode => (
+                  <button
+                    key={mode.value}
+                    type="button"
+                    onClick={() => setPayment(prev => ({ ...prev, method: mode.value }))}
+                    style={{
+                      flex: 1,
+                      padding: '13px 6px',
+                      borderRadius: 12,
+                      border: payment.method === mode.value ? `2px solid ${mode.color}` : '1.5px solid var(--border)',
+                      background: payment.method === mode.value ? mode.bg : 'var(--surface)',
+                      color: payment.method === mode.value ? mode.color : 'var(--text-muted)',
+                      fontWeight: 800,
+                      fontSize: '0.88rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 4,
+                      boxShadow: payment.method === mode.value ? `0 4px 12px ${mode.color}30` : 'none',
+                    }}
+                  >
+                    <span style={{ fontSize: '1.4rem' }}>{mode.emoji}</span>
+                    {mode.label}
+                  </button>
+                ))}
               </div>
-              <div style={{ flex: 1 }}>
-                <label style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-muted)', marginBottom: 8, display: 'block', textTransform: 'uppercase' }}>Amount Received</label>
-                <div style={{ display: 'flex', alignItems: 'center', background: 'var(--surface-hover)', border: '1.5px solid var(--border)', borderRadius: '10px', padding: '4px 16px', transition: 'all 0.2s' }}>
-                  <span style={{ color: 'var(--text-muted)', fontWeight: 800, fontSize: '1.2rem' }}>₹</span>
-                  <input type="number" value={payment.paid} onChange={e => setPayment({...payment, paid: e.target.value})} style={{ border: 'none', outline: 'none', width: '100%', padding: '12px 8px', fontWeight: 800, fontSize: '1.3rem', color: 'var(--success)', background: 'transparent' }} />
-                </div>
+            </div>
+
+            {/* Amount Received */}
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-muted)', marginBottom: 10, display: 'block', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Amount Received</label>
+              <div style={{ display: 'flex', alignItems: 'center', background: 'var(--surface-hover)', border: '1.5px solid var(--border)', borderRadius: '10px', padding: '4px 16px', transition: 'all 0.2s' }}>
+                <span style={{ color: 'var(--text-muted)', fontWeight: 800, fontSize: '1.2rem' }}>₹</span>
+                <input type="number" value={payment.paid} onChange={e => setPayment({...payment, paid: e.target.value})} style={{ border: 'none', outline: 'none', width: '100%', padding: '12px 8px', fontWeight: 800, fontSize: '1.3rem', color: 'var(--success)', background: 'transparent' }} />
               </div>
             </div>
 

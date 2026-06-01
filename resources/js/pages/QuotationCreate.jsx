@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
-import { Search, ShoppingCart, Trash2, IndianRupee, Save, ArrowLeft, Package, FileText } from 'lucide-react';
+import { Search, Trash2, Save, ArrowLeft, Package, FileText, User, Phone, MapPin, PlusCircle, XCircle } from 'lucide-react';
 
 import Swal from 'sweetalert2';
 
@@ -273,55 +273,27 @@ const QuotationCreate = () => {
 
       {/* Products Selection Panel */}
       <div className="pos-products-panel">
-        <div className="panel-header" style={{ flexWrap: 'wrap', gap: 12 }}>
-          <div>Products Menu</div>
-          <div className="form-control" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px', minWidth: '200px', flex: 1, margin: 0 }}>
-            <Search size={16} color="var(--text-muted)" />
+        <div className="panel-header" style={{ flexWrap: 'wrap', gap: 12, background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)' }}>
+            <Package size={20} color="var(--primary)" /> Products
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', background: 'var(--bg-color)', border: '1px solid var(--border)', borderRadius: 24, flex: 1, minWidth: 180 }}>
+            <Search size={18} color="var(--text-muted)" />
             <input 
-              type="text" placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)}
-              style={{ background: 'transparent', border: 'none', color: 'inherit', outline: 'none', width: '100%' }}
+              type="text" placeholder="Search products..." value={search} onChange={e => setSearch(e.target.value)}
+              style={{ background: 'transparent', border: 'none', color: 'inherit', outline: 'none', width: '100%', fontSize: '0.95rem' }}
             />
           </div>
         </div>
-        <div className="panel-body">
-          <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 12, marginBottom: 16 }}>
-            <button 
-              onClick={() => setSelectedCategory(null)}
-              style={{
-                padding: '6px 14px',
-                borderRadius: 20,
-                border: '1px solid var(--border)',
-                background: selectedCategory === null ? 'var(--primary)' : 'var(--surface)',
-                color: selectedCategory === null ? 'white' : 'var(--text-main)',
-                cursor: 'pointer',
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                whiteSpace: 'nowrap'
-              }}
-            >
-              All Categories
-            </button>
-            {categories.map(cat => (
-              <button 
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                style={{
-                  padding: '6px 14px',
-                  borderRadius: 20,
-                  border: '1px solid var(--border)',
-                  background: selectedCategory === cat.id ? 'var(--primary)' : 'var(--surface)',
-                  color: selectedCategory === cat.id ? 'white' : 'var(--text-main)',
-                  cursor: 'pointer',
-                  fontSize: '0.85rem',
-                  fontWeight: 600,
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                {cat.name}
-              </button>
-            ))}
-          </div>
-          <div className="product-grid">
+        {/* Category Filter Strip */}
+        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', padding: '10px 16px', background: 'var(--surface)', borderBottom: '1px solid var(--border)', flexShrink: 0, scrollbarWidth: 'none' }}>
+          <button onClick={() => setSelectedCategory(null)} style={{ padding: '7px 16px', borderRadius: 20, border: selectedCategory === null ? 'none' : '1px solid var(--border)', background: selectedCategory === null ? 'var(--primary)' : 'var(--surface)', color: selectedCategory === null ? 'white' : 'var(--text-muted)', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 700, whiteSpace: 'nowrap', flexShrink: 0, transition: 'all 0.2s', boxShadow: selectedCategory === null ? '0 4px 10px rgba(79,70,229,0.3)' : 'none' }}>All Items</button>
+          {categories.map(cat => (
+            <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} style={{ padding: '7px 14px', borderRadius: 20, border: selectedCategory === cat.id ? 'none' : '1px solid var(--border)', background: selectedCategory === cat.id ? 'var(--primary)' : 'var(--surface)', color: selectedCategory === cat.id ? 'white' : 'var(--text-muted)', cursor: 'pointer', fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0, transition: 'all 0.2s', boxShadow: selectedCategory === cat.id ? '0 4px 10px rgba(79,70,229,0.3)' : 'none' }}>{cat.name}</button>
+          ))}
+        </div>
+        <div className="panel-body" style={{ background: 'var(--surface-hover)' }}>
+          <div className="product-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 16 }}>
             {(!products || !Array.isArray(products) || products.length === 0) ? (
                <div style={{ color: 'var(--text-muted)' }}>No products found.</div>
             ) : products.map(p => (
@@ -340,71 +312,75 @@ const QuotationCreate = () => {
 
       {/* Cart & Checkout Panel */}
       <div className="pos-cart-panel">
-        <div className="panel-header" style={{ background: editQuotationId ? 'rgba(245, 158, 11, 0.1)' : 'rgba(59, 130, 246, 0.1)', color: editQuotationId ? 'var(--warning)' : 'var(--blue)' }}>
+        <div className="panel-header" style={{ background: editQuotationId ? 'rgba(245,158,11,0.1)' : 'rgba(59,130,246,0.08)', color: editQuotationId ? 'var(--warning)' : '#3b82f6' }}>
           <div className="d-flex align-items-center gap-2">
-             {editQuotationId ? <><ArrowLeft size={20} style={{ cursor: 'pointer' }} onClick={() => navigate('/quotations')} /> Editing Quotation #{editQuotationId}</> : <><ArrowLeft size={20} style={{ cursor: 'pointer' }} onClick={() => navigate('/quotations')} /> New Quotation</>}
+            <ArrowLeft size={20} style={{ cursor: 'pointer' }} onClick={() => navigate('/quotations')} />
+            {editQuotationId ? `Editing Quotation #${editQuotationId}` : <>New Quotation {cart.length > 0 && <span style={{ background: '#3b82f6', color: '#fff', borderRadius: '50%', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800, marginLeft: 6 }}>{cart.reduce((s,i) => s+i.quantity, 0)}</span>}</>}
           </div>
+          {cart.length > 0 && (
+            <button onClick={() => setCart([])} style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', color: 'var(--danger)', borderRadius: 8, padding: '5px 10px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}>
+              <XCircle size={14} /> Clear
+            </button>
+          )}
         </div>
-        
-        <div className="panel-body" style={{ padding: 16 }}>
-          <div style={{ position: 'relative', marginBottom: 16 }}>
-            <div style={{ display: 'flex', gap: 12, marginBottom: 8 }}>
-              <input type="text" className="form-control" placeholder="Customer Name *" value={customerInfo.name} onChange={e => setCustomerInfo({...customerInfo, name: e.target.value})} style={{ padding: '8px 12px' }}/>
-              <input type="text" className="form-control" placeholder="Phone *" value={customerInfo.phone} onChange={e => setCustomerInfo({...customerInfo, phone: e.target.value})} style={{ padding: '8px 12px' }}/>
-            </div>
-            <textarea className="form-control" placeholder="Customer Full Address (Optional)" value={customerInfo.address} onChange={e => setCustomerInfo({...customerInfo, address: e.target.value})} style={{ padding: '8px 12px', minHeight: '50px', resize: 'none' }}></textarea>
-            
-            <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
-               <input 
-                 type="checkbox" 
-                 id="gst_quote_toggle"
-                 checked={isGst} 
-                 onChange={e => setIsGst(e.target.checked)} 
-                 style={{ width: 18, height: 18, cursor: 'pointer' }}
-               />
-               <label htmlFor="gst_quote_toggle" style={{ fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer', color: isGst ? 'var(--primary)' : 'var(--text-muted)' }}>
-                 Generate GST Quotation (18%)
-               </label>
-            </div>
 
+        {/* Customer Details */}
+        <div style={{ padding: '16px 20px', background: 'var(--surface-hover)', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
+          <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Customer Details</div>
+          <div style={{ position: 'relative' }}>
+            <div style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
+              <div style={{ flex: 1, display: 'flex', alignItems: 'center', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '4px 12px' }}>
+                <User size={16} color="var(--primary)" />
+                <input type="text" placeholder="Customer Name *" value={customerInfo.name} onChange={e => setCustomerInfo({...customerInfo, name: e.target.value})} style={{ border: 'none', outline: 'none', background: 'transparent', padding: '9px 8px', width: '100%', fontSize: '0.92rem' }}/>
+              </div>
+              <div style={{ flex: 1, display: 'flex', alignItems: 'center', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '4px 12px' }}>
+                <Phone size={16} color="var(--primary)" />
+                <input type="text" placeholder="Phone *" value={customerInfo.phone} onChange={e => setCustomerInfo({...customerInfo, phone: e.target.value})} style={{ border: 'none', outline: 'none', background: 'transparent', padding: '9px 8px', width: '100%', fontSize: '0.92rem' }}/>
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '4px 12px', marginBottom: 10 }}>
+              <MapPin size={16} color="var(--primary)" style={{ marginTop: 10 }} />
+              <textarea placeholder="Address (Optional)" value={customerInfo.address} onChange={e => setCustomerInfo({...customerInfo, address: e.target.value})} style={{ border: 'none', outline: 'none', background: 'transparent', padding: '8px', width: '100%', fontSize: '0.92rem', minHeight: 44, resize: 'none' }}></textarea>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(16,185,129,0.05)', padding: '10px 12px', borderRadius: 8, border: '1px solid rgba(16,185,129,0.2)' }}>
+              <input type="checkbox" id="gst_quote_toggle" checked={isGst} onChange={e => setIsGst(e.target.checked)} style={{ width: 18, height: 18, cursor: 'pointer', accentColor: 'var(--primary)' }} />
+              <label htmlFor="gst_quote_toggle" style={{ fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer', color: isGst ? 'var(--primary)' : 'var(--text-muted)' }}>Generate GST Quotation (18%)</label>
+            </div>
             {customerResults.length > 0 && (
-              <div style={{ background: '#fff', border: '1px solid var(--border)', position: 'absolute', top: '100%', left: 0, width: '100%', zIndex: 100, borderRadius: 8, marginTop: 4, maxHeight: 200, overflowY: 'auto', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}>
-                 {customerResults.map((c, i) => (
-                   <div key={i} style={{ padding: '10px 12px', cursor: 'pointer', borderBottom: '1px solid var(--border)' }} onClick={() => {
-                       setCustomerInfo({ name: c.customer_name, phone: c.customer_phone || '', address: c.customer_address || '' });
-                       setCustomerResults([]);
-                   }}>
-                     <strong style={{ display: 'block', color: 'var(--primary)' }}>{c.customer_name}</strong>
-                     <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Phone: {c.customer_phone || 'N/A'} | Addr: {c.customer_address}</span>
-                   </div>
-                 ))}
+              <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 100, borderRadius: 10, marginTop: 4, maxHeight: 200, overflowY: 'auto', boxShadow: '0 10px 25px rgba(0,0,0,0.12)' }}>
+                <div style={{ padding: '8px 14px', fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Matching Customers</div>
+                {customerResults.map((c, i) => (
+                  <div key={i} style={{ padding: '10px 14px', cursor: 'pointer', borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 2 }} onClick={() => { setCustomerInfo({ name: c.customer_name, phone: c.customer_phone || '', address: c.customer_address || '' }); setCustomerResults([]); }}>
+                    <strong style={{ color: 'var(--primary)', fontSize: '0.95rem' }}>{c.customer_name}</strong>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{c.customer_phone ? `📞 ${c.customer_phone}` : 'No Phone'} • 📍 {c.customer_address}</span>
+                  </div>
+                ))}
               </div>
             )}
           </div>
+        </div>
 
-          <div style={{ flex: 1, overflowY: 'auto' }}>
-            {cart.map(item => (
-              <div key={item.product_id} className="cart-item">
-                <div className="cart-item-info">
-                  <div className="cart-item-title">{item.name}</div>
-                  <div className="cart-item-price">₹{item.price} x {item.quantity} ${item.unit || ''} = <span style={{color: 'var(--text-main)', fontWeight: 600}}>₹{item.price * item.quantity}</span></div>
-                </div>
-                <div className="cart-item-controls">
-                  <button onClick={() => updateQuantity(item.product_id, item.quantity - 1)}>-</button>
-                  <input 
-                    type="number" 
-                    min="0"
-                    value={item.quantity} 
-                    onChange={(e) => updateQuantity(item.product_id, e.target.value)}
-                    style={{ width: 55, textAlign: 'center', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-main)', padding: '4px', borderRadius: 4, margin: '0 4px' }}
-                  />
-                  <button onClick={() => updateQuantity(item.product_id, item.quantity + 1)}>+</button>
-                  <button onClick={() => removeFromCart(item.product_id)} style={{ background: 'var(--danger)', marginLeft: 8 }}><Trash2 size={14} /></button>
-                </div>
+        <div className="panel-body" style={{ padding: '12px 20px' }}>
+          {cart.length === 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-muted)', gap: 12 }}>
+              <FileText size={44} style={{ opacity: 0.15 }} />
+              <div style={{ fontWeight: 600, fontSize: '1rem' }}>Quotation is empty</div>
+              <div style={{ fontSize: '0.85rem' }}>Add products from the left panel</div>
+            </div>
+          ) : cart.map(item => (
+            <div key={item.product_id} className="cart-item" style={{ padding: '14px 0' }}>
+              <div className="cart-item-info">
+                <div className="cart-item-title" style={{ fontSize: '1rem', marginBottom: 4 }}>{item.name}</div>
+                <div className="cart-item-price">₹{item.price} × {item.quantity} {item.unit || ''} = <span style={{ color: 'var(--text-main)', fontWeight: 800 }}>₹{(item.price * item.quantity).toFixed(2)}</span></div>
               </div>
-            ))}
-            {cart.length === 0 && <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>Quotation is empty</div>}
-          </div>
+              <div className="cart-item-controls" style={{ background: 'var(--surface)', padding: '6px', borderRadius: 10, border: '1px solid var(--border)' }}>
+                <button onClick={() => updateQuantity(item.product_id, item.quantity - 1)} style={{ width: 30, height: 30, borderRadius: 6, fontSize: '1.1rem' }}>-</button>
+                <input type="number" min="0" value={item.quantity} onChange={(e) => updateQuantity(item.product_id, e.target.value)} style={{ width: 46, textAlign: 'center', background: 'transparent', border: 'none', color: 'var(--text-main)', fontWeight: 800, fontSize: '1rem', outline: 'none' }} />
+                <button onClick={() => updateQuantity(item.product_id, item.quantity + 1)} style={{ width: 30, height: 30, borderRadius: 6, fontSize: '1.1rem' }}>+</button>
+                <button onClick={() => removeFromCart(item.product_id)} style={{ background: 'var(--danger)', color: 'white', borderColor: 'var(--danger)', marginLeft: 10, width: 30, height: 30, borderRadius: 6 }}><Trash2 size={14} /></button>
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="panel-footer">
