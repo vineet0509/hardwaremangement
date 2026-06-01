@@ -224,7 +224,7 @@ const PublicLayout = ({ children }) => {
                   className="btn btn-primary" 
                   style={{ padding: '10px 20px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: 8 }}
                 >
-                  Start Free Trial <Sparkles size={16} />
+                  Start Trial <Sparkles size={16} />
                 </button>
               </>
             )}
@@ -487,7 +487,7 @@ const PublicLayout = ({ children }) => {
                   onClick={() => { setShowLoginModal(false); setShowRegisterModal(true); }}
                   style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 700, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
                 >
-                  Start 30-Day Free Trial
+                  Start 30-Day Trial
                 </button>
               </div>
             </form>

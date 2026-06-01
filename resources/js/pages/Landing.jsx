@@ -257,7 +257,7 @@ const Landing = () => {
                   className="btn btn-primary" 
                   style={{ padding: '10px 20px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: 8 }}
                 >
-                  Start Free Trial <Sparkles size={16} />
+                  Start Trial <Sparkles size={16} />
                 </button>
               </>
             )}
@@ -396,7 +396,7 @@ const Landing = () => {
                   className="btn btn-primary" 
                   style={{ padding: '16px 36px', borderRadius: '12px', fontSize: '1.05rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 10 }}
                 >
-                  Start 30-Day Trial Free <ArrowRight size={20} />
+                  Start 30-Day Trial <ArrowRight size={20} />
                 </button>
                 <button 
                   onClick={() => setShowLoginModal(true)}
@@ -890,7 +890,7 @@ const Landing = () => {
                     Bridge the operational gap with native languages. In one click, shop managers and storefront billing operators can translate the entire system interface into Hindi or other native vernaculars.
                   </p>
                   <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.95rem', margin: 0 }}>
-                    This native localized toggle makes training your store attendants, billing assistants, and warehouse packers incredibly fast and completely stress-free!
+                    This native localized toggle makes training your store attendants, billing assistants, and warehouse packers incredibly fast and completely effortless!
                   </p>
                 </>
               )}
@@ -922,7 +922,7 @@ const Landing = () => {
             <div style={{ color: 'var(--primary)', fontWeight: 800, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Subscription Plans</div>
             <h2 style={{ fontSize: '2.25rem', fontWeight: 800, color: '#fff', marginBottom: 12 }}>Simple, Highly Transparent Pricing</h2>
             <p style={{ color: '#cbd5e1', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
-              Start with our full-access free trial, then migrate to a commercial plan that aligns with your hardware store's footprint.
+              Start with our full-access trial, then migrate to a commercial plan that aligns with your hardware store's footprint.
             </p>
           </div>
 
@@ -949,7 +949,7 @@ const Landing = () => {
               <div>
                 <span style={{ fontSize: '0.8rem', color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>30-Day Trial</span>
                 <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Evaluation Plan</h3>
-                <p style={{ color: '#cbd5e1', fontSize: '0.85rem' }}>Experience the complete capabilities risk-free.</p>
+                <p style={{ color: '#cbd5e1', fontSize: '0.85rem' }}>Experience the complete capabilities with confidence.</p>
                 
                 <div style={{ margin: '24px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
                   <span style={{ fontSize: '2.5rem', fontWeight: 900, color: '#fff' }}>₹0</span>
@@ -966,7 +966,6 @@ const Landing = () => {
 
               <button 
                 onClick={() => setShowRegisterModal(true)}
-                className="btn" 
                 style={{ 
                   width: '100%', 
                   padding: '14px', 
@@ -982,7 +981,7 @@ const Landing = () => {
                 onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)'; e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.5)'; }}
                 onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'; e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)'; }}
               >
-                Register Free Trial
+                Register Trial
               </button>
             </div>
 
@@ -1054,7 +1053,7 @@ const Landing = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 24 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> <strong>All Standard Features Included</strong></div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Priority 24/7 Telephone Support</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Free GST & Custom Invoice Setup</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Included GST & Custom Invoice Setup</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Equivalent to just ₹250/month!</div>
                 </div>
               </div>
@@ -1405,7 +1404,7 @@ const Landing = () => {
                   onClick={() => { setShowLoginModal(false); setShowRegisterModal(true); }}
                   style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 700, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
                 >
-                  Start 30-Day Free Trial
+                  Start 30-Day Trial
                 </button>
               </div>
             </form>
