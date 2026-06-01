@@ -14,13 +14,17 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
+        if ($request->has('gst_number') && $request->gst_number !== null) {
+            $request->merge(['gst_number' => strtoupper(trim($request->gst_number))]);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'mobile' => 'nullable|string|max:15|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'shop_name' => 'required|string|max:255',
-            'gst_number' => 'nullable|string|max:20'
+            'gst_number' => ['nullable', 'string', new \App\Rules\ValidGstin()]
         ]);
 
         // 1. Create the unique Shop (Multi-tenant partition)

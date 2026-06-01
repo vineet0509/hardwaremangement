@@ -19,7 +19,11 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    let value = e.target.value;
+    if (e.target.name === 'gst_number') {
+      value = value.toUpperCase().replace(/\s/g, '');
+    }
+    setFormData({ ...formData, [e.target.name]: value });
   };
 
   const handleRegister = (e) => {
@@ -27,6 +31,15 @@ const Register = () => {
     if(formData.password !== formData.password_confirmation) {
        return setError("Passwords do not match");
     }
+    
+    // Indian GSTIN format validation
+    if (formData.gst_number) {
+      const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i;
+      if (!gstRegex.test(formData.gst_number)) {
+        return setError("Invalid GST number. Must be a valid 15-character Indian GSTIN format (e.g., 27AAPCS1234F1Z5).");
+      }
+    }
+
     setLoading(true);
     setError(null);
     // Fetch CSRF cookie before registration

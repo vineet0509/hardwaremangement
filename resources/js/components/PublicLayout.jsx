@@ -95,6 +95,14 @@ const PublicLayout = ({ children }) => {
       return setRegisterError("Passwords do not match");
     }
 
+    // Indian GSTIN format validation
+    if (registerData.gst_number) {
+      const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i;
+      if (!gstRegex.test(registerData.gst_number)) {
+        return setRegisterError("Invalid GST number. Must be a valid 15-character Indian GSTIN format (e.g., 27AAPCS1234F1Z5).");
+      }
+    }
+
     setRegisterLoading(true);
     setRegisterError(null);
 
@@ -572,7 +580,7 @@ const PublicLayout = ({ children }) => {
                     className="form-control" 
                     placeholder="GST Number (Optional)" 
                     value={registerData.gst_number} 
-                    onChange={e => setRegisterData({...registerData, gst_number: e.target.value})} 
+                    onChange={e => setRegisterData({...registerData, gst_number: e.target.value.toUpperCase().replace(/\s/g, '')})} 
                   />
                 </div>
               </div>

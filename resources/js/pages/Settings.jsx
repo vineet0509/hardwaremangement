@@ -12,6 +12,24 @@ const Settings = () => {
     current_password: '', new_password: '', new_password_confirmation: ''
   });
   const [loading, setLoading] = useState(true);
+  const [gstChecking, setGstChecking] = useState(false);
+  const [gstResult, setGstResult] = useState(null);
+
+  const handleVerifyGst = () => {
+    if (!formData.gst_number) {
+      return Swal.fire('Validation', 'Please enter a GST number first.', 'warning');
+    }
+    setGstChecking(true);
+    setGstResult(null);
+    api.get(`/verify-gst?gstin=${formData.gst_number}`)
+      .then(res => {
+        setGstResult(res.data);
+      })
+      .catch(err => {
+        setGstResult({ success: false, valid: false, message: 'Verification API is offline or encountered an error.' });
+      })
+      .finally(() => setGstChecking(false));
+  };
 
   const fetchSettings = () => {
     api.get('/settings')
@@ -36,6 +54,15 @@ const Settings = () => {
 
   const handleSave = (e) => {
     e.preventDefault();
+    
+    // Indian GSTIN format validation
+    if (formData.gst_number) {
+      const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i;
+      if (!gstRegex.test(formData.gst_number)) {
+        return Swal.fire('Error', 'Invalid GST number. Must be a valid 15-character Indian GSTIN format (e.g., 27AAPCS1234F1Z5).', 'error');
+      }
+    }
+
     api.post('/settings', formData)
       .then(res => {
         Swal.fire('Success', 'Settings saved successfully!', 'success').then(() => {
@@ -119,9 +146,68 @@ const Settings = () => {
                 value={formData.company_phone} onChange={e => setFormData({...formData, company_phone: e.target.value})} />
             </div>
             <div className="form-group">
-              <label className="form-label">GST Number (Optional)</label>
-              <input type="text" className="form-control"
-                value={formData.gst_number} onChange={e => setFormData({...formData, gst_number: e.target.value})} />
+              <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>GST Number (Optional)</span>
+                {formData.gst_number && (
+                  <button 
+                    type="button" 
+                    onClick={handleVerifyGst} 
+                    disabled={gstChecking}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--primary)',
+                      fontSize: '0.75rem',
+                      fontWeight: 'bold',
+                      textDecoration: 'underline',
+                      cursor: 'pointer',
+                      padding: 0
+                    }}
+                  >
+                    {gstChecking ? 'Verifying...' : 'Verify Online'}
+                  </button>
+                )}
+              </label>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <input type="text" className="form-control" style={{ flex: 1 }}
+                  value={formData.gst_number} onChange={e => {
+                    setFormData({...formData, gst_number: e.target.value.toUpperCase().replace(/\s/g, '')});
+                    setGstResult(null);
+                  }} />
+              </div>
+              
+              {gstResult && (
+                <div style={{ 
+                  marginTop: 8, 
+                  padding: '8px 12px', 
+                  borderRadius: 6, 
+                  fontSize: '0.8rem', 
+                  background: gstResult.valid ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)',
+                  border: gstResult.valid ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(239, 68, 68, 0.2)',
+                  color: gstResult.valid ? '#10b981' : '#ef4444'
+                }}>
+                  {gstResult.valid ? (
+                    <div>
+                      <strong>🟢 Valid GSTIN Checksum</strong>
+                      <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: 2 }}>
+                        State: <b>{gstResult.details?.state_name}</b> ({gstResult.details?.state_code}) | PAN: <b>{gstResult.details?.pan}</b>
+                      </div>
+                      <a 
+                        href={`https://services.gst.gov.in/services/searchtp`} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        style={{ display: 'inline-block', marginTop: 4, color: 'var(--primary)', textDecoration: 'underline', fontSize: '0.75rem' }}
+                      >
+                        Verify Taxpayer Details on Official GST Portal ↗
+                      </a>
+                    </div>
+                  ) : (
+                    <div>
+                      <strong>🔴 Invalid GSTIN:</strong> {gstResult.message}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             <div className="form-group">
               <label className="form-label">Business Address</label>

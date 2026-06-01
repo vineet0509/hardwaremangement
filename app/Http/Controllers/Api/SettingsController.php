@@ -78,11 +78,15 @@ class SettingsController extends Controller
         $settings = Setting::first();
         $shop = auth()->user()->shop;
         
+        if ($request->has('gst_number') && $request->gst_number !== null) {
+            $request->merge(['gst_number' => strtoupper(trim($request->gst_number))]);
+        }
+
         $request->validate([
             'company_name' => 'required|string|max:255',
             'company_phone'=> 'nullable|string|max:50',
             'company_address' => 'nullable|string',
-            'gst_number' => 'nullable|string|max:20',
+            'gst_number' => ['nullable', 'string', new \App\Rules\ValidGstin()],
         ]);
 
         $data = $request->only(['company_name', 'company_phone', 'company_address']);
