@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingCart, Users, FileText, Receipt, LogOut, Settings as SettingsIcon, Banknote, Languages, Lock, Shield, Menu, X, Truck, AlertTriangle, Sun, Moon, ClipboardList, Info, HelpCircle } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, Users, FileText, Receipt, LogOut, Settings as SettingsIcon, Banknote, Languages, Lock, Shield, Menu, X, Truck, AlertTriangle, Sun, Moon, ClipboardList, Info, HelpCircle, Compass } from 'lucide-react';
 import api from '../utils/api';
+import OnboardingTour from './OnboardingTour';
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -27,6 +28,13 @@ const Layout = ({ children }) => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('app_theme') || 'dark');
+  const [showTour, setShowTour] = useState(false);
+
+  const handleStartTour = () => {
+    localStorage.removeItem('onboarding_complete');
+    setIsMobileMenuOpen(false);
+    setShowTour(true);
+  };
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -91,6 +99,8 @@ const Layout = ({ children }) => {
 
   return (
     <div className="app-container">
+      {/* Onboarding Tour Overlay */}
+      {showTour && <OnboardingTour onComplete={() => setShowTour(false)} />}
       {/* Sidebar Overlay for Mobile */}
       {isMobileMenuOpen && (
         <div 
@@ -182,6 +192,25 @@ const Layout = ({ children }) => {
           >
             <HelpCircle size={20} /> Contact Us
           </NavLink>
+
+          {/* Product Tour Button */}
+          <button
+            onClick={handleStartTour}
+            className="nav-item"
+            style={{ 
+              width: '100%', 
+              textAlign: 'left', 
+              background: 'rgba(139, 92, 246, 0.08)', 
+              border: '1px solid rgba(139, 92, 246, 0.18)',
+              color: '#a78bfa',
+              cursor: 'pointer',
+              borderRadius: 10,
+              marginTop: 4,
+              fontWeight: 600,
+            }}
+          >
+            <Compass size={20} /> Product Tour
+          </button>
 
           <NavLink 
             to="/privacy-policy" 

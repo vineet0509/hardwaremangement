@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import api from '../utils/api';
+import OnboardingTour from '../components/OnboardingTour';
 import { IndianRupee, Users, Package, AlertCircle, ShoppingCart, TrendingUp, CreditCard, Banknote, Clock, PlusCircle } from 'lucide-react';
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -8,10 +9,13 @@ const Dashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showTour, setShowTour] = useState(false);
 
   useEffect(() => {
     // Check if the user just completed a new store registration conversion
     const justRegistered = sessionStorage.getItem('just_registered');
+    const onboardingDone = localStorage.getItem('onboarding_complete');
+
     if (justRegistered === 'true') {
       const trackingFn = window.gtag || (typeof gtag === 'function' ? gtag : null);
       if (trackingFn) {
@@ -26,6 +30,10 @@ const Dashboard = () => {
         console.warn('Google Ads gtag function is not defined.');
       }
       sessionStorage.removeItem('just_registered');
+      // Show onboarding tour for brand new registrations
+      if (!onboardingDone) {
+        setTimeout(() => setShowTour(true), 600);
+      }
     }
 
     api.get('/dashboard')
@@ -66,6 +74,8 @@ const Dashboard = () => {
 
   return (
     <div>
+      {/* First-time Onboarding Tour */}
+      {showTour && <OnboardingTour onComplete={() => setShowTour(false)} />}
       {/* Quick Action Shortcuts */}
       <div className="quick-actions-grid">
         <NavLink to="/billing" className="btn" style={{ padding: '16px', background: 'var(--primary)', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, textDecoration: 'none', borderRadius: 12 }}>
