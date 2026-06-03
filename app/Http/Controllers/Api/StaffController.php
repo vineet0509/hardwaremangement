@@ -45,10 +45,11 @@ class StaffController extends Controller
 
         if ($request->enable_login && $request->phone) {
             $user = \App\Models\User::create([
-                'name' => $request->name,
-                'mobile' => $request->phone,
-                'password' => \Illuminate\Support\Facades\Hash::make($request->password),
-                'role' => 'staff',
+                'name'        => $request->name,
+                'email'       => $request->phone . '@staff.local',
+                'mobile'      => $request->phone,
+                'password'    => \Illuminate\Support\Facades\Hash::make($request->password),
+                'role'        => 'staff',
                 'business_id' => $request->user()->business_id,
             ]);
             $staff->update(['user_id' => $user->id]);
