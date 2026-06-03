@@ -25,4 +25,14 @@ class Shop extends Model
     {
         return $this->hasOne(Setting::class);
     }
+
+    public function parent()
+    {
+        return $this->belongsTo(Shop::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Shop::class, 'parent_id');
+    }
 }

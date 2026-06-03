@@ -45,11 +45,21 @@ class SettingsController extends Controller
 
     public function submitSubscriptionRequest(Request $request): JsonResponse
     {
+        if (auth()->user()->shop->parent_id !== null) {
+            return response()->json(['message' => 'Subscription updates must be managed by the parent shop owner.'], 403);
+        }
+
         $request->validate([
-            'plan_type' => 'required|in:monthly,yearly',
+            'plan_type' => 'required|in:pro,business,enterprise',
         ]);
 
-        $amount = $request->plan_type === 'yearly' ? 4999 : 499;
+        $prices = [
+            'pro' => 2999,
+            'business' => 4999,
+            'enterprise' => 9999
+        ];
+        
+        $amount = $prices[$request->plan_type];
 
         $existing = \App\Models\SubscriptionRequest::where('shop_id', auth()->user()->shop_id)
             ->where('status', 'pending')

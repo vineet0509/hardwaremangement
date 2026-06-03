@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Supplier;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Traits\RestrictsChildShops;
 
 class SupplierController extends Controller
 {
+    use RestrictsChildShops;
     public function index(): JsonResponse
     {
         $suppliers = Supplier::with('transactions')->orderBy('name')->get()->map(function($s) {
@@ -23,6 +25,10 @@ class SupplierController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        if ($this->isChildShopContext()) {
+            return response()->json(['message' => 'Child shops cannot create suppliers.'], 403);
+        }
+
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:50',
@@ -37,6 +43,10 @@ class SupplierController extends Controller
 
     public function storeTransaction(Request $request, Supplier $supplier): JsonResponse
     {
+        if ($this->isChildShopContext()) {
+            return response()->json(['message' => 'Child shops cannot manage supplier transactions.'], 403);
+        }
+
         $data = $request->validate([
             'type' => 'required|in:purchase,payment',
             'amount' => 'required|numeric|min:0.01',
@@ -56,6 +66,10 @@ class SupplierController extends Controller
 
     public function update(Request $request, Supplier $supplier): JsonResponse
     {
+        if ($this->isChildShopContext()) {
+            return response()->json(['message' => 'Child shops cannot edit suppliers.'], 403);
+        }
+
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:50',
@@ -70,6 +84,10 @@ class SupplierController extends Controller
 
     public function destroy(Supplier $supplier): JsonResponse
     {
+        if ($this->isChildShopContext()) {
+            return response()->json(['message' => 'Child shops cannot delete suppliers.'], 403);
+        }
+
         $supplier->delete();
         return response()->json(['message' => 'Supplier deleted successfully']);
     }

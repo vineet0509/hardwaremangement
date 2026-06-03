@@ -928,8 +928,8 @@ const Landing = () => {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: 30,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gap: 20,
             maxWidth: '1200px',
             margin: '0 auto'
           }}>
@@ -938,7 +938,7 @@ const Landing = () => {
               background: 'rgba(21, 28, 44, 0.65)',
               border: '1px solid rgba(255, 255, 255, 0.08)',
               borderRadius: '20px',
-              padding: '40px 32px',
+              padding: '30px 24px',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
@@ -947,50 +947,74 @@ const Landing = () => {
               transition: 'all 0.3s'
             }}>
               <div>
-                <span style={{ fontSize: '0.8rem', color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>30-Day Trial</span>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Evaluation Plan</h3>
-                <p style={{ color: '#cbd5e1', fontSize: '0.85rem' }}>Experience the complete capabilities with confidence.</p>
+                <span style={{ fontSize: '0.75rem', color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Trial Plan</span>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Evaluation</h3>
                 
-                <div style={{ margin: '24px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                  <span style={{ fontSize: '2.5rem', fontWeight: 900, color: '#fff' }}>₹0</span>
+                <div style={{ margin: '16px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                  <span style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>₹0</span>
                   <span style={{ color: '#94a3b8' }}>/ 30 Days</span>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 24 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Full access to POS Billing</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Automated low stock warnings</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Complete customer ledger (Udhar)</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Unlimited Quotations PDF</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#10b981" /> Up to 3 Child Shops</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Full POS Billing Access</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Basic Reporting</div>
                 </div>
               </div>
 
               <button 
                 onClick={() => setShowRegisterModal(true)}
-                style={{ 
-                  width: '100%', 
-                  padding: '14px', 
-                  borderRadius: '10px', 
-                  marginTop: 32, 
-                  fontWeight: 'bold', 
-                  cursor: 'pointer',
-                  background: 'rgba(255, 255, 255, 0.05)', 
-                  color: '#ffffff', 
-                  border: '1px solid rgba(255, 255, 255, 0.25)',
-                  transition: 'all 0.2s ease-in-out'
-                }}
-                onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)'; e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.5)'; }}
-                onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'; e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)'; }}
+                className="btn" 
+                style={{ width: '100%', padding: '12px', borderRadius: '10px', marginTop: 24, fontWeight: 'bold', cursor: 'pointer', background: 'rgba(255, 255, 255, 0.05)', color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.25)' }}
               >
-                Register Trial
+                Start Trial
               </button>
             </div>
 
-            {/* Plan 2: Monthly Pro */}
+            {/* Plan 2: Pro */}
+            <div className="pricing-card" style={{
+              background: 'rgba(21, 28, 44, 0.65)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '20px',
+              padding: '30px 24px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)',
+              color: '#ffffff',
+              transition: 'all 0.3s'
+            }}>
+              <div>
+                <span style={{ fontSize: '0.75rem', color: '#3b82f6', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Pro</span>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Standard Shop</h3>
+                
+                <div style={{ margin: '16px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                  <span style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>₹2,999</span>
+                  <span style={{ color: '#94a3b8' }}>/ year</span>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#3b82f6" /> Up to 10 Child Shops</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#3b82f6" /> All Trial Features</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#3b82f6" /> Custom Domain Mapping</div>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => setShowRegisterModal(true)}
+                className="btn" 
+                style={{ width: '100%', padding: '12px', borderRadius: '10px', marginTop: 24, fontWeight: 'bold', cursor: 'pointer', background: 'rgba(255, 255, 255, 0.05)', color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.25)' }}
+              >
+                Get Pro
+              </button>
+            </div>
+
+            {/* Plan 3: Business */}
             <div className="pricing-card" style={{
               background: 'rgba(21, 28, 44, 0.65)',
               border: '2px solid var(--primary)',
               borderRadius: '20px',
-              padding: '40px 32px',
+              padding: '30px 24px',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
@@ -999,40 +1023,38 @@ const Landing = () => {
               color: '#ffffff',
               transition: 'all 0.3s'
             }}>
-              <div style={{ position: 'absolute', top: -14, right: 30, background: 'var(--primary)', color: '#fff', fontSize: '0.75rem', fontWeight: 800, padding: '4px 12px', borderRadius: '20px', textTransform: 'uppercase' }}>Recommended</div>
+              <div style={{ position: 'absolute', top: -12, right: 20, background: 'var(--primary)', color: '#fff', fontSize: '0.7rem', fontWeight: 800, padding: '4px 10px', borderRadius: '20px', textTransform: 'uppercase' }}>Recommended</div>
               <div>
-                <span style={{ fontSize: '0.8rem', color: 'var(--primary)', background: 'rgba(79, 70, 229, 0.1)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Monthly Plan</span>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Standard Shop Plan</h3>
-                <p style={{ color: '#cbd5e1', fontSize: '0.85rem' }}>Perfect for active hardware counters and growing retail stores.</p>
+                <span style={{ fontSize: '0.75rem', color: 'var(--primary)', background: 'rgba(79, 70, 229, 0.1)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Business</span>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Wholesale Plan</h3>
                 
-                <div style={{ margin: '24px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                  <span style={{ fontSize: '2.5rem', fontWeight: 900, color: '#fff' }}>₹299</span>
-                  <span style={{ color: '#94a3b8' }}>/ month</span>
+                <div style={{ margin: '16px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                  <span style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>₹4,999</span>
+                  <span style={{ color: '#94a3b8' }}>/ year</span>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 24 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> <strong>All Trial Features Included</strong></div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Secure Multi-Staff Logins</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Custom Domain Tenant Mapping</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Daily Database Backup Security</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="var(--primary)" /> Up to 50 Child Shops</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="var(--primary)" /> All Pro Features Included</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="var(--primary)" /> Priority Support</div>
                 </div>
               </div>
 
               <button 
                 onClick={() => setShowRegisterModal(true)}
                 className="btn btn-primary" 
-                style={{ width: '100%', padding: '14px', borderRadius: '10px', marginTop: 32, fontWeight: 'bold', cursor: 'pointer' }}
+                style={{ width: '100%', padding: '12px', borderRadius: '10px', marginTop: 24, fontWeight: 'bold', cursor: 'pointer' }}
               >
-                Activate Monthly Store
+                Get Business
               </button>
             </div>
 
-            {/* Plan 3: Yearly Enterprise */}
+            {/* Plan 4: Enterprise */}
             <div className="pricing-card" style={{
               background: 'rgba(21, 28, 44, 0.65)',
               border: '1px solid rgba(255, 255, 255, 0.08)',
               borderRadius: '20px',
-              padding: '40px 32px',
+              padding: '30px 24px',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
@@ -1041,42 +1063,27 @@ const Landing = () => {
               transition: 'all 0.3s'
             }}>
               <div>
-                <span style={{ fontSize: '0.8rem', color: '#f59e0b', background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Annual saver</span>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Enterprise Value Plan</h3>
-                <p style={{ color: '#cbd5e1', fontSize: '0.85rem' }}>Maximum value for wholesale and long-term hardware yards.</p>
+                <span style={{ fontSize: '0.75rem', color: '#f59e0b', background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Enterprise</span>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Max Control</h3>
                 
-                <div style={{ margin: '24px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                  <span style={{ fontSize: '2.5rem', fontWeight: 900, color: '#fff' }}>₹2,999</span>
+                <div style={{ margin: '16px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                  <span style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>₹9,999</span>
                   <span style={{ color: '#94a3b8' }}>/ year</span>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 24 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> <strong>All Standard Features Included</strong></div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Priority 24/7 Telephone Support</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Included GST & Custom Invoice Setup</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Equivalent to just ₹250/month!</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#f59e0b" /> Unlimited Child Shops</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#f59e0b" /> Dedicated Account Manager</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#f59e0b" /> Full API Access</div>
                 </div>
               </div>
 
               <button 
                 onClick={() => setShowRegisterModal(true)}
                 className="btn" 
-                style={{ 
-                  width: '100%', 
-                  padding: '14px', 
-                  borderRadius: '10px', 
-                  marginTop: 32, 
-                  fontWeight: 'bold', 
-                  cursor: 'pointer',
-                  background: 'rgba(255, 255, 255, 0.05)', 
-                  color: '#ffffff', 
-                  border: '1px solid rgba(255, 255, 255, 0.25)',
-                  transition: 'all 0.2s ease-in-out'
-                }}
-                onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)'; e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.5)'; }}
-                onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'; e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)'; }}
+                style={{ width: '100%', padding: '12px', borderRadius: '10px', marginTop: 24, fontWeight: 'bold', cursor: 'pointer', background: 'rgba(255, 255, 255, 0.05)', color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.25)' }}
               >
-                Activate Annual Store
+                Get Enterprise
               </button>
             </div>
           </div>

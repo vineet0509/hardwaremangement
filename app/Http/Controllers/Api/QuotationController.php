@@ -165,4 +165,67 @@ class QuotationController extends Controller
         $quotation->delete();
         return response()->json(['message' => 'Quotation deleted successfully']);
     }
+
+    public function convertToBill(Request $request, Quotation $quotation)
+    {
+        try {
+            DB::beginTransaction();
+
+            $bill = \App\Models\Bill::create([
+                'bill_number'    => \App\Models\Bill::generateBillNumber(),
+                'customer_name'  => $quotation->customer_name,
+                'customer_phone' => $quotation->customer_phone,
+                'customer_address'=> $quotation->customer_address,
+                'subtotal'       => $quotation->subtotal,
+                'discount'       => $quotation->discount,
+                'tax'            => $quotation->tax,
+                'total'          => $quotation->total,
+                'paid_amount'    => 0,
+                'due_amount'     => $quotation->total,
+                'payment_method' => 'cash',
+                'status'         => 'pending',
+                'notes'          => "Converted from Quotation #{$quotation->quotation_number}",
+                'is_gst'         => false,
+            ]);
+
+            foreach ($quotation->items as $item) {
+                $product = \App\Models\Product::find($item->product_id);
+                if (!$product) throw new \Exception("Product {$item->product_name} not found.");
+                if ($product->quantity < $item->quantity) {
+                    throw new \Exception("Insufficient stock for: {$product->name}");
+                }
+
+                \App\Models\BillItem::create([
+                    'bill_id'      => $bill->id,
+                    'shop_id'      => $bill->shop_id,
+                    'product_id'   => $product->id,
+                    'product_name' => $product->name,
+                    'description'  => $product->description,
+                    'unit'         => $product->unit,
+                    'price'        => $item->price,
+                    'quantity'     => $item->quantity,
+                    'discount'     => 0,
+                    'total'        => $item->total,
+                ]);
+
+                $product->decrement('quantity', $item->quantity);
+                \App\Models\StockTransaction::create([
+                    'product_id' => $product->id,
+                    'type'       => 'sale',
+                    'quantity'   => -$item->quantity,
+                    'price'      => $item->price,
+                ]);
+            }
+
+            $quotation->notes = ($quotation->notes ? $quotation->notes . "\n" : "") . "Converted to Bill #{$bill->bill_number}";
+            $quotation->save();
+
+            DB::commit();
+            return response()->json(['message' => 'Successfully converted to bill', 'bill' => $bill->load('items')], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Failed to convert quotation: ' . $e->getMessage()], 500);
+        }
+    }
 }

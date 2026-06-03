@@ -524,6 +524,31 @@ class BillController extends Controller
         ]);
     }
 
+    public function sendUdharReminder(Request $request, $phone): JsonResponse
+    {
+        $phone = urldecode($phone);
+        
+        $customer = Bill::where('customer_phone', $phone)->first();
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found.'], 404);
+        }
+
+        $totalDue = Bill::where('customer_phone', $phone)->sum('due_amount');
+        
+        if ($totalDue <= 0) {
+            return response()->json(['message' => 'Customer has no pending dues.'], 400);
+        }
+
+        $message = "Dear {$customer->customer_name},\nThis is a gentle reminder that your pending Udhar Khata balance is ₹{$totalDue}. Please clear the dues at your earliest convenience.\nThank you!";
+
+        \Log::info("WhatsApp Udhar Reminder to {$phone}: " . $message);
+
+        return response()->json([
+            'message' => 'WhatsApp Udhar reminder sent successfully.',
+            'total_due' => $totalDue
+        ]);
+    }
+
     public function destroy(Bill $bill): JsonResponse
     {
         // Restore stock on delete

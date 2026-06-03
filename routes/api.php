@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\SuperAdminController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\ExpenseController;
+use App\Http\Controllers\Api\ChildShopController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -32,6 +33,11 @@ Route::post('/subscription-request', [SettingsController::class, 'submitSubscrip
 // Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index']);
 
+// Child Shops
+Route::get('/child-shops', [ChildShopController::class, 'index']);
+Route::post('/child-shops', [ChildShopController::class, 'store']);
+Route::patch('/child-shops/{id}/toggle-status', [ChildShopController::class, 'toggleStatus']);
+
 // Products & Categories
 Route::get('/products/export',      [ProductController::class, 'exportCSV']);
 Route::post('/products/import',     [ProductController::class, 'importCSV']);
@@ -45,6 +51,7 @@ Route::post('/products/{product}/remove-stock', [ProductController::class, 'remo
 Route::get('/customers', [BillController::class, 'customersList']);
 Route::get('/customers/search', [BillController::class, 'searchCustomer']);
 Route::put('/customers/{phone}', [BillController::class, 'updateCustomer']);
+Route::post('/customers/{phone}/send-reminder', [BillController::class, 'sendUdharReminder']);
 Route::get('/udhar', [BillController::class, 'udharList']);
 Route::get('/advances', [BillController::class, 'advancesList']);
 Route::post('/advances', [BillController::class, 'storeAdvance']);
@@ -54,6 +61,7 @@ Route::get('/bills/export', [BillController::class, 'exportCSV']);
 Route::post('/bills/send-whatsapp', [BillController::class, 'sendWhatsApp']);
 Route::apiResource('bills', BillController::class);
 Route::apiResource('quotations', QuotationController::class);
+Route::post('/quotations/{quotation}/convert-to-bill', [QuotationController::class, 'convertToBill']);
 
 // Staff
 Route::apiResource('staff', StaffController::class);
@@ -79,6 +87,8 @@ Route::get('/salary-records',                           [StaffController::class,
     Route::get('/reports/sales',        [ReportController::class, 'salesReport']);
     Route::get('/reports/stock',        [ReportController::class, 'stockReport']);
     Route::get('/reports/salary',       [ReportController::class, 'salaryReport']);
+    Route::get('/reports/gst-export',   [ReportController::class, 'gstrExport']);
+    Route::get('/reports/profit-loss',  [ReportController::class, 'profitAndLoss']);
 
     // Super Admin
     Route::get('/super-admin/shops', [SuperAdminController::class, 'index']);

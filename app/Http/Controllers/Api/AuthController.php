@@ -83,6 +83,10 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid login credentials.'], 401);
         }
 
+        if ($user->shop && !$user->shop->is_active) {
+            return response()->json(['message' => 'Your account or shop has been deactivated. Please contact your administrator.'], 403);
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         \App\Models\LoginLog::create([

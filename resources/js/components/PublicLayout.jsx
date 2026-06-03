@@ -49,6 +49,7 @@ const PublicLayout = ({ children }) => {
   });
   const [registerError, setRegisterError] = useState(null);
   const [registerLoading, setRegisterLoading] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -93,6 +94,9 @@ const PublicLayout = ({ children }) => {
     e.preventDefault();
     if (registerData.password !== registerData.password_confirmation) {
       return setRegisterError("Passwords do not match");
+    }
+    if (!termsAccepted) {
+      return setRegisterError("You must agree to the Terms and Conditions to register.");
     }
 
     // Indian GSTIN format validation
@@ -643,6 +647,19 @@ const PublicLayout = ({ children }) => {
                     onChange={e => setRegisterData({...registerData, password_confirmation: e.target.value})} 
                   />
                 </div>
+              </div>
+
+              <div style={{ marginBottom: 20, display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                <input 
+                  type="checkbox" 
+                  id="termsCheck"
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  style={{ marginTop: 4, cursor: 'pointer' }}
+                />
+                <label htmlFor="termsCheck" style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.5, cursor: 'pointer', margin: 0 }}>
+                  I have read and agree to the <a href="/terms" target="_blank" style={{ color: 'var(--primary)', textDecoration: 'underline' }}>Terms and Conditions</a>, including the strict no-refund policy.
+                </label>
               </div>
 
               <button type="submit" disabled={registerLoading} className="btn btn-primary" style={{ width: '100%', padding: '14px', fontSize: '1rem', fontWeight: 700, borderRadius: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8 }}>

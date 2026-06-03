@@ -65,6 +65,21 @@ const Terms = () => {
             </p>
           </section>
 
+          <section style={{ marginBottom: 32 }}>
+            <h2 style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '1.5rem', marginBottom: 16, borderBottom: '1px solid var(--border)', paddingBottom: 10 }}>
+              <ShieldAlert color="var(--danger)" /> 6. Strict No Refund Policy
+            </h2>
+            <p style={{ color: 'var(--text-muted)', marginBottom: 12 }}>
+              Hardware Shop Manager enforces a strict <strong>No Refund Policy</strong>. Please read carefully:
+            </p>
+            <ul style={{ color: 'var(--text-muted)', paddingLeft: 24, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <li>We provide a full 30-day free trial so you can thoroughly evaluate the software before committing to a paid plan.</li>
+              <li>Once a subscription plan (Pro, Business, or Enterprise) is purchased and activated, <strong>no refunds, partial or full, will be issued under any circumstances</strong>.</li>
+              <li>This policy applies regardless of your usage of the platform, your business status, or any dissatisfaction after the purchase.</li>
+              <li>Subscription downgrades will not result in prorated refunds or credits.</li>
+            </ul>
+          </section>
+
           <section>
             <p style={{ color: 'var(--text-muted)', fontStyle: 'italic', textAlign: 'center', marginTop: 40, borderTop: '1px solid var(--border)', paddingTop: 20 }}>
               If you have any questions about these Terms & Conditions, please contact our support desk at support@vynkra.in.

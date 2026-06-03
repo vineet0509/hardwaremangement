@@ -106,4 +106,87 @@ class ReportController extends Controller
 
         return response()->json(compact('records', 'advances', 'summary'));
     }
+
+    public function gstrExport(Request $request)
+    {
+        $from = $request->get('date_from', now()->startOfMonth()->toDateString());
+        $to   = $request->get('date_to', now()->toDateString());
+
+        $bills = Bill::whereBetween(DB::raw('DATE(created_at)'), [$from, $to])
+            ->orderBy('created_at')
+            ->get();
+
+        $csvFileName = 'gstr1_export_' . now()->format('Ymd_His') . '.csv';
+        
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$csvFileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = [
+            'Invoice No.', 'Invoice Date', 'Customer Name', 'Phone', 'Is GST Bill', 
+            'Taxable Value', 'Total Tax', 'Total Invoice Value'
+        ];
+
+        $callback = function() use($bills, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($bills as $bill) {
+                fputcsv($file, [
+                    $bill->bill_number,
+                    $bill->created_at->format('Y-m-d'),
+                    $bill->customer_name,
+                    $bill->customer_phone,
+                    $bill->is_gst ? 'Yes' : 'No',
+                    $bill->subtotal - $bill->discount,
+                    $bill->tax,
+                    $bill->total
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function profitAndLoss(Request $request): JsonResponse
+    {
+        $from = $request->get('date_from', now()->startOfMonth()->toDateString());
+        $to   = $request->get('date_to', now()->toDateString());
+
+        $revenue = Bill::whereBetween(DB::raw('DATE(created_at)'), [$from, $to])->sum('total');
+        
+        $cogs = DB::table('bill_items')
+            ->join('bills', 'bill_items.bill_id', '=', 'bills.id')
+            ->join('products', 'bill_items.product_id', '=', 'products.id')
+            ->where('bills.shop_id', auth('sanctum')->user()->shop_id)
+            ->whereBetween(DB::raw('DATE(bills.created_at)'), [$from, $to])
+            ->selectRaw('SUM(bill_items.quantity * products.purchase_price) as cogs')
+            ->value('cogs') ?? 0;
+
+        $expenses = \App\Models\Expense::whereBetween(DB::raw('DATE(expense_date)'), [$from, $to])->sum('amount');
+        
+        $salaries = DB::table('salary_records')
+            ->where('shop_id', auth('sanctum')->user()->shop_id)
+            ->whereBetween(DB::raw('DATE(created_at)'), [$from, $to])
+            ->sum('paid_amount');
+
+        $netProfit = $revenue - $cogs - $expenses - $salaries;
+
+        return response()->json([
+            'date_from' => $from,
+            'date_to' => $to,
+            'revenue' => round($revenue, 2),
+            'cogs' => round($cogs, 2),
+            'gross_profit' => round($revenue - $cogs, 2),
+            'expenses' => round($expenses, 2),
+            'salaries' => round($salaries, 2),
+            'net_profit' => round($netProfit, 2)
+        ]);
+    }
 }

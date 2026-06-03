@@ -12,9 +12,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use App\Traits\RestrictsChildShops;
 
 class ProductController extends Controller
 {
+    use RestrictsChildShops;
     public function index(Request $request): JsonResponse
     {
         $query = Product::with('category');
@@ -38,6 +40,10 @@ class ProductController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        if ($this->isChildShopContext()) {
+            return response()->json(['message' => 'Child shops cannot create products.'], 403);
+        }
+
         $data = $request->validate([
             'category_id'     => [
                 'required',
@@ -92,6 +98,10 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product): JsonResponse
     {
+        if ($this->isChildShopContext()) {
+            return response()->json(['message' => 'Child shops cannot edit products.'], 403);
+        }
+
         $data = $request->validate([
             'category_id'     => [
                 'sometimes',
@@ -114,12 +124,20 @@ class ProductController extends Controller
 
     public function destroy(Product $product): JsonResponse
     {
+        if ($this->isChildShopContext()) {
+            return response()->json(['message' => 'Child shops cannot delete products.'], 403);
+        }
+
         $product->delete();
         return response()->json(['message' => 'Product deleted successfully.']);
     }
 
     public function addStock(Request $request, Product $product): JsonResponse
     {
+        if ($this->isChildShopContext()) {
+            return response()->json(['message' => 'Child shops cannot manage stock directly.'], 403);
+        }
+
         $data = $request->validate([
             'quantity'  => 'required|integer|min:1',
             'price'     => 'nullable|numeric|min:0',
@@ -156,6 +174,10 @@ class ProductController extends Controller
 
     public function removeStock(Request $request, Product $product): JsonResponse
     {
+        if ($this->isChildShopContext()) {
+            return response()->json(['message' => 'Child shops cannot manage stock directly.'], 403);
+        }
+
         $data = $request->validate([
             'quantity'  => 'required|integer|min:1',
             'reason'    => 'nullable|string|max:255',
@@ -187,6 +209,10 @@ class ProductController extends Controller
 
     public function storeCategory(Request $request): JsonResponse
     {
+        if ($this->isChildShopContext()) {
+            return response()->json(['message' => 'Child shops cannot create categories.'], 403);
+        }
+
         $data = $request->validate([
             'name'        => [
                 'required',
@@ -242,6 +268,10 @@ class ProductController extends Controller
 
     public function importCSV(Request $request)
     {
+        if ($this->isChildShopContext()) {
+            return response()->json(['message' => 'Child shops cannot import products.'], 403);
+        }
+
         $request->validate([
             'file' => 'required|file|mimes:csv,txt|max:2048'
         ]);
