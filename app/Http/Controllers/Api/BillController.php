@@ -495,6 +495,93 @@ class BillController extends Controller
         return response()->json(['message' => 'Repayment processed successfully.']);
     }
 
+    public function returnItems(Request $request, Bill $bill): JsonResponse
+    {
+        $data = $request->validate([
+            'items' => 'required|array|min:1',
+            'items.*.id' => 'required|exists:bill_items,id',
+            'items.*.return_qty' => 'required|integer|min:1',
+        ]);
+
+        $bill->load('items');
+        
+        $totalDeduction = 0;
+
+        try {
+            DB::transaction(function () use ($data, $bill, &$totalDeduction) {
+                foreach ($data['items'] as $returnItem) {
+                    $billItem = $bill->items->firstWhere('id', $returnItem['id']);
+                    
+                    if (!$billItem) continue;
+
+                    $maxReturnable = $billItem->quantity - $billItem->returned_quantity;
+                    if ($returnItem['return_qty'] > $maxReturnable) {
+                        throw new \Exception("Cannot return more than originally purchased for item: {$billItem->product_name}");
+                    }
+
+                    // Update bill item returned quantity
+                    $billItem->increment('returned_quantity', $returnItem['return_qty']);
+
+                    // Calculate value deducted from bill
+                    // $itemDiscount in store() was total discount for the line.
+                    $unitDiscount = $billItem->quantity > 0 ? ($billItem->discount / $billItem->quantity) : 0;
+                    $deduction = ($billItem->price * $returnItem['return_qty']) - ($unitDiscount * $returnItem['return_qty']);
+                    
+                    // The tax is calculated on the subtotal. If `is_gst` is true, tax = 18% of (subtotal - discount).
+                    // In `store()`, we just used `$tax = $data['tax'] ?? 0;`.
+                    // So let's proportionately reduce the tax as well.
+                    $totalDeduction += $deduction;
+
+                    // Restore stock
+                    $product = Product::find($billItem->product_id);
+                    if ($product) {
+                        $product->increment('quantity', $returnItem['return_qty']);
+                        StockTransaction::create([
+                            'product_id' => $product->id,
+                            'type'       => 'return',
+                            'quantity'   => $returnItem['return_qty'],
+                            'price'      => $billItem->price,
+                            'reference'  => "Return from Bill #{$bill->bill_number}",
+                        ]);
+                    }
+                }
+
+                $taxDeduction = 0;
+                if ($bill->subtotal > 0 && $bill->tax > 0) {
+                    $taxRatio = $bill->tax / $bill->subtotal;
+                    $taxDeduction = $totalDeduction * $taxRatio;
+                }
+
+                $billDiscountDeduction = 0;
+                if ($bill->subtotal > 0 && $bill->discount > 0) {
+                    $discountRatio = $bill->discount / $bill->subtotal;
+                    $billDiscountDeduction = $totalDeduction * $discountRatio;
+                }
+
+                $bill->subtotal -= $totalDeduction;
+                $bill->tax -= $taxDeduction;
+                $bill->discount -= $billDiscountDeduction;
+                
+                $finalDeduction = $totalDeduction - $billDiscountDeduction + $taxDeduction;
+                $bill->total -= $finalDeduction;
+
+                if ($bill->total < $bill->paid_amount) {
+                    $bill->paid_amount = $bill->total; 
+                    $bill->due_amount = 0;
+                } else {
+                    $bill->due_amount = $bill->total - $bill->paid_amount;
+                }
+                
+                $bill->status = $bill->due_amount <= 0 ? 'paid' : ($bill->paid_amount > 0 && $bill->due_amount > 0 ? 'partial' : 'pending');
+                $bill->save();
+            });
+
+            return response()->json(['message' => 'Items returned successfully, stock restored.', 'bill' => $bill->fresh('items')]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
+    }
+
     public function sendWhatsApp(Request $request): JsonResponse
     {
         $request->validate([

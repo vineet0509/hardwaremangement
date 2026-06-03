@@ -80,6 +80,42 @@ const Terms = () => {
             </ul>
           </section>
 
+          <section style={{ marginBottom: 32 }}>
+            <h2 style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '1.5rem', marginBottom: 16, borderBottom: '1px solid var(--border)', paddingBottom: 10 }}>
+              <Globe color="var(--primary)" /> 7. Tax & Legal Compliance
+            </h2>
+            <p style={{ color: 'var(--text-muted)' }}>
+              VyaparSync provides tools to calculate taxes (such as GST) and generate invoices. However, you, as the business owner, are solely responsible for verifying the accuracy of tax calculations, ensuring compliance with your local and national tax authorities, and legally filing your returns. VyaparSync acts only as a software provider and accepts no liability for tax miscalculations or legal disputes arising from your invoices.
+            </p>
+          </section>
+
+          <section style={{ marginBottom: 32 }}>
+            <h2 style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '1.5rem', marginBottom: 16, borderBottom: '1px solid var(--border)', paddingBottom: 10 }}>
+              <Key color="var(--primary)" /> 8. Fair Usage Policy & API Limits
+            </h2>
+            <p style={{ color: 'var(--text-muted)' }}>
+              While we offer unmetered bandwidth for standard business operations, all accounts are subject to a Fair Usage Policy. You agree not to abuse the system through automated bots, excessive API requests, or using the platform for non-retail file hosting. VyaparSync reserves the right to throttle or suspend accounts that negatively impact server performance or other tenants.
+            </p>
+          </section>
+
+          <section style={{ marginBottom: 32 }}>
+            <h2 style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '1.5rem', marginBottom: 16, borderBottom: '1px solid var(--border)', paddingBottom: 10 }}>
+              <ShieldAlert color="var(--primary)" /> 9. Account Termination & Suspension
+            </h2>
+            <p style={{ color: 'var(--text-muted)' }}>
+              VyaparSync reserves the right to immediately suspend or terminate your account, without prior notice, if you are found to be using the platform for illegal activities, selling prohibited goods, violating these terms, or engaging in fraudulent behavior. Upon termination for breach of terms, no refunds will be provided and access to your data may be permanently revoked.
+            </p>
+          </section>
+
+          <section style={{ marginBottom: 32 }}>
+            <h2 style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '1.5rem', marginBottom: 16, borderBottom: '1px solid var(--border)', paddingBottom: 10 }}>
+              <BookOpen color="var(--primary)" /> 10. Service Availability & Maintenance
+            </h2>
+            <p style={{ color: 'var(--text-muted)' }}>
+              We strive to maintain a 99.9% uptime for all our SaaS infrastructure. However, VyaparSync may occasionally require scheduled downtime for upgrades and maintenance. We will make reasonable efforts to notify business owners of scheduled maintenance windows. We are not liable for any lost revenue or operational disruption caused by unscheduled outages or internet service provider failures.
+            </p>
+          </section>
+
           <section>
             <p style={{ color: 'var(--text-muted)', fontStyle: 'italic', textAlign: 'center', marginTop: 40, borderTop: '1px solid var(--border)', paddingTop: 20 }}>
               If you have any questions about these Terms & Conditions, please contact our support desk at support@vynkra.in.
