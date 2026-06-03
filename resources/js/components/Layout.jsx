@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingCart, Users, FileText, Receipt, LogOut, Settings as SettingsIcon, Banknote, Languages, Lock, Shield, Menu, X, Truck, AlertTriangle, Sun, Moon, ClipboardList, Info, HelpCircle, Compass } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, Users, FileText, Receipt, LogOut, Settings as SettingsIcon, Banknote, Languages, Lock, Shield, Menu, X, Truck, AlertTriangle, Sun, Moon, ClipboardList, Info, HelpCircle, Compass, Building } from 'lucide-react';
 import api from '../utils/api';
 import OnboardingTour from './OnboardingTour';
 
@@ -19,6 +19,7 @@ const Layout = ({ children }) => {
     { name: 'Other Expenses', path: '/expenses', icon: Banknote },
     { name: 'Staff Advances', path: '/advances', icon: Banknote },
     { name: 'Staff Management', path: '/staff', icon: Users },
+    { name: 'Branches (Shops)', path: '/child-shops', icon: Building },
     { name: 'Reports', path: '/reports', icon: FileText },
   ];
 

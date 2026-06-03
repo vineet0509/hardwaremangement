@@ -24,6 +24,7 @@ import Suppliers from './pages/Suppliers';
 import Expenses from './pages/Expenses';
 import AboutUs from './pages/AboutUs';
 import ContactUs from './pages/ContactUs';
+import ChildShops from './pages/ChildShops';
 import PublicLayout from './components/PublicLayout';
 import api from './utils/api';
 import '../css/app.css';
@@ -66,6 +67,7 @@ function App() {
         <Route path="/staff" element={<ProtectedRoute><Layout><Staff /></Layout></ProtectedRoute>} />
         <Route path="/reports" element={<ProtectedRoute><Layout><Reports /></Layout></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Layout><Settings /></Layout></ProtectedRoute>} />
+        <Route path="/child-shops" element={<ProtectedRoute><Layout><ChildShops /></Layout></ProtectedRoute>} />
         <Route path="/suppliers" element={<ProtectedRoute><Layout><Suppliers /></Layout></ProtectedRoute>} />
         <Route path="/expenses" element={<ProtectedRoute><Layout><Expenses /></Layout></ProtectedRoute>} />
         <Route path="/super-admin" element={<ProtectedRoute><Layout><SuperAdmin /></Layout></ProtectedRoute>} />
