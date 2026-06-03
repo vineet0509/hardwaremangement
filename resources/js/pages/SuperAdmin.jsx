@@ -17,15 +17,6 @@ const SuperAdmin = () => {
     fetchSubscriptionRequests();
   }, []);
 
-  // ✅ Early return must come after ALL hooks (Rules of Hooks)
-  if (loading) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-        <div className="spinner" style={{ border: '4px solid rgba(255,255,255,0.1)', borderTop: '4px solid var(--primary)', borderRadius: '50%', width: 40, height: 40, animation: 'spin 1s linear infinite' }} />
-      </div>
-    );
-  }
-
   const fetchSubscriptionRequests = () => {
     api.get('/super-admin/subscription-requests')
       .then(res => setSubscriptionRequests(res.data))
@@ -99,6 +90,14 @@ const SuperAdmin = () => {
         .catch(err => alert(err.response?.data?.message || 'Error rejecting request'));
     }
   };
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+        <div className="spinner" style={{ border: '4px solid rgba(255,255,255,0.1)', borderTop: '4px solid var(--primary)', borderRadius: '50%', width: 40, height: 40, animation: 'spin 1s linear infinite' }} />
+      </div>
+    );
+  }
 
   return (
     <div>

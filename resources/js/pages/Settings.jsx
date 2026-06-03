@@ -52,9 +52,6 @@ const Settings = () => {
     fetchSettings();
   }, []);
 
-  // ✅ Early return must come after ALL hooks (Rules of Hooks)
-  if (loading) return <div>Loading settings...</div>;
-
   const handleSave = (e) => {
     e.preventDefault();
     
@@ -85,7 +82,6 @@ const Settings = () => {
       })
       .catch(err => Swal.fire('Error', err.response?.data?.message || 'Failed to submit request', 'error'));
   };
-
 
   const handlePasswordChange = (e) => {
     e.preventDefault();
@@ -124,7 +120,10 @@ const Settings = () => {
     });
   };
 
+  if (loading) return <div>Loading settings...</div>;
+
   return (
+
     <div>
       <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', gap: 12 }}>
         <SettingsIcon color="var(--primary)" size={32} />
