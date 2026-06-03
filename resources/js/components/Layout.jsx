@@ -72,6 +72,16 @@ const Layout = ({ children }) => {
       .finally(() => setAuthLoading(false));
   }, []);
 
+  // ✅ This useEffect must be ABOVE any early returns to follow the Rules of Hooks
+  useEffect(() => {
+    if (user && user.role === 'staff') {
+      const allowedPaths = ['/billing', '/bills', '/quotations', '/privacy-policy', '/terms'];
+      if (!allowedPaths.some(p => location.pathname.startsWith(p))) {
+        navigate('/billing', { replace: true });
+      }
+    }
+  }, [user, location.pathname, navigate]);
+
   const handleLogout = () => {
     if(confirm("Are you sure you want to log out?")) {
        api.post('/logout').catch(console.error).finally(() => {
@@ -101,14 +111,7 @@ const Layout = ({ children }) => {
     allNavItems.push({ name: 'Super Admin', path: '/super-admin', icon: Shield });
   }
 
-  useEffect(() => {
-    if (user && user.role === 'staff') {
-      const allowedPaths = ['/billing', '/bills', '/quotations', '/privacy-policy', '/terms'];
-      if (!allowedPaths.some(p => location.pathname.startsWith(p))) {
-        navigate('/billing', { replace: true });
-      }
-    }
-  }, [user, location.pathname, navigate]);
+
 
   return (
     <div className="app-container">
