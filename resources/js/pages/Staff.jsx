@@ -58,11 +58,20 @@ const Staff = () => {
         year: new Date().getFullYear(),
         basic_salary: s.monthly_salary,
         paid_amount: s.monthly_salary,
-        payment_date: new Date().toISOString().slice(0, 16)
-      }).then(() => {
-        alert('Salary paid successfully!');
-        fetchStaff();
-      }).catch(err => alert('Error: ' + err.response?.data?.message));
+        status: 'paid',
+        payment_date: new Date().toISOString().slice(0, 10)
+      })
+      .then(() => { alert('Salary marked as paid!'); fetchStaff(); })
+      .catch(err => alert(err.response?.data?.message || 'Error occurred.'));
+    }
+  };
+
+  const handleToggleStatus = (s) => {
+    const newStatus = s.status === 'active' ? 'inactive' : 'active';
+    if(confirm(`Are you sure you want to mark ${s.name} as ${newStatus}?`)) {
+      api.put(`/staff/${s.id}`, { status: newStatus })
+        .then(() => fetchStaff())
+        .catch(err => alert(err.response?.data?.message || 'Error updating status.'));
     }
   };
 
@@ -113,6 +122,14 @@ const Staff = () => {
               </button>
               <button className="btn btn-primary" style={{ flex: 1, padding: '8px', fontSize: '0.8rem' }} onClick={() => paySalary(s)}>
                 <CheckCircle size={16} /> Pay Salary
+              </button>
+            </div>
+            <div className="d-flex mt-2">
+              <button 
+                className={`btn btn-outline ${s.status === 'active' ? 'btn-danger' : 'btn-success'}`} 
+                style={{ flex: 1, padding: '8px', fontSize: '0.8rem', borderColor: s.status === 'active' ? 'var(--danger)' : 'var(--success)', color: s.status === 'active' ? 'var(--danger)' : 'var(--success)' }} 
+                onClick={() => handleToggleStatus(s)}>
+                {s.status === 'active' ? 'Deactivate' : 'Activate'}
               </button>
             </div>
           </div>

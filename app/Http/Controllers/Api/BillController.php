@@ -130,6 +130,7 @@ class BillController extends Controller
             'payment_method' => $data['method'],
             'status'         => 'paid',
             'notes'          => "Advance Received",
+            'user_id'        => auth()->id(),
             'created_at'     => $data['date'],
             'updated_at'     => $data['date']
         ]);
@@ -139,7 +140,7 @@ class BillController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $query = Bill::with('items');
+        $query = Bill::with(['items', 'creator']);
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
@@ -327,6 +328,7 @@ class BillController extends Controller
                 'status'         => $status,
                 'notes'          => $data['notes'] ?? null,
                 'is_gst'         => $data['is_gst'] ?? false,
+                'user_id'        => auth()->id(),
             ]);
 
             foreach ($itemsData as $item) {

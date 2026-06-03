@@ -87,6 +87,13 @@ class AuthController extends Controller
             return response()->json(['message' => 'Your account or shop has been deactivated. Please contact your administrator.'], 403);
         }
 
+        if ($user->role === 'staff') {
+            $staffRecord = \App\Models\Staff::where('user_id', $user->id)->first();
+            if ($staffRecord && $staffRecord->status === 'inactive') {
+                return response()->json(['message' => 'Your staff account has been deactivated. Please contact your administrator.'], 403);
+            }
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         \App\Models\LoginLog::create([

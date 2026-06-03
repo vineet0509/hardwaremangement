@@ -15,7 +15,7 @@ class Bill extends Model
         'bill_number', 'customer_name', 'customer_phone', 'customer_address',
         'subtotal', 'discount', 'tax', 'total',
         'paid_amount', 'due_amount',
-        'payment_method', 'status', 'notes', 'is_gst',
+        'payment_method', 'status', 'notes', 'is_gst', 'user_id',
     ];
 
     protected $casts = [
@@ -31,6 +31,11 @@ class Bill extends Model
     public function items(): HasMany
     {
         return $this->hasMany(BillItem::class);
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public static function generateBillNumber(): string

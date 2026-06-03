@@ -365,6 +365,7 @@ const BillsList = () => {
               <th>Total Amount</th>
               <th>Paid</th>
               <th>Due</th>
+              <th>Created By</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -390,6 +391,11 @@ const BillsList = () => {
                 <td style={{ fontWeight: 600 }}>₹{b.total}</td>
                 <td style={{ color: 'var(--success)' }}>₹{b.paid_amount}</td>
                 <td style={{ color: 'var(--danger)' }}>₹{b.due_amount}</td>
+                <td>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontWeight: 500 }}>
+                    {b.creator ? b.creator.name : 'Admin'}
+                  </div>
+                </td>
                 <td>
                   <span className={`badge ${b.status === 'paid' ? 'badge-success' : b.status === 'partial' ? 'badge-warning' : 'badge-danger'}`}>
                     {b.status}
