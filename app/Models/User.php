@@ -15,9 +15,9 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
-    public function shop()
+    public function business()
     {
-        return $this->belongsTo(Shop::class);
+        return $this->belongsTo(Business::class);
     }
 
     /**
@@ -30,8 +30,9 @@ class User extends Authenticatable
         'email',
         'mobile',
         'password',
-        'shop_id',
+        'business_id',
         'is_super_admin',
+        'role',
     ];
 
     /**

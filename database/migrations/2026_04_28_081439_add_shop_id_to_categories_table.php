@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('categories', function (Blueprint $table) {
-            $table->foreignId('shop_id')->nullable()->after('id')->constrained('shops')->cascadeOnDelete();
+            $table->foreignId('business_id')->nullable()->after('id')->constrained('businesses')->cascadeOnDelete();
         });
 
         // Assign all existing categories to default shop 1
-        \DB::table('categories')->update(['shop_id' => 1]);
+        \DB::table('categories')->update(['business_id' => 1]);
     }
 
     /**
@@ -25,8 +25,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('categories', function (Blueprint $table) {
-            $table->dropForeign(['shop_id']);
-            $table->dropColumn('shop_id');
+            $table->dropForeign(['business_id']);
+            $table->dropColumn('business_id');
         });
     }
 };

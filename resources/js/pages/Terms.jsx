@@ -19,7 +19,7 @@ const Terms = () => {
               <Globe color="var(--primary)" /> 1. Agreement to Terms
             </h2>
             <p style={{ color: 'var(--text-muted)' }}>
-              By registering an account and using the Hardware Shop Manager SaaS platform, you agree to be bound by these Terms & Conditions. If you do not agree with all of these terms, you are prohibited from using the application and must discontinue use immediately.
+              By registering an account and using the VyaparSync SaaS platform, you agree to be bound by these Terms & Conditions. If you do not agree with all of these terms, you are prohibited from using the application and must discontinue use immediately.
             </p>
           </section>
 
@@ -52,7 +52,7 @@ const Terms = () => {
               <ShieldAlert color="var(--primary)" /> 4. Data Usage & Ownership
             </h2>
             <p style={{ color: 'var(--text-muted)' }}>
-              You retain all ownership rights to the inventory, sales transactions, bills, staff logs, and customer ledger data entered into your tenant database partition. Hardware Shop Manager does not share or sell your business details to third parties. We utilize state-of-the-art multi-tenant logical partitioning to guarantee absolute privacy.
+              You retain all ownership rights to the inventory, sales transactions, bills, staff logs, and customer ledger data entered into your tenant database partition. VyaparSync does not share or sell your business details to third parties. We utilize state-of-the-art multi-tenant logical partitioning to guarantee absolute privacy.
             </p>
           </section>
 
@@ -61,7 +61,7 @@ const Terms = () => {
               <Scale color="var(--primary)" /> 5. Limitation of Liability
             </h2>
             <p style={{ color: 'var(--text-muted)' }}>
-              Hardware Shop Manager SaaS is provided on an "as-is" and "as-available" basis. In no event shall we or our developers be liable for any direct, indirect, incidental, or consequential damages (including loss of sales data, stock logs, or ledger discrepancies) arising out of your use or inability to use the software.
+              VyaparSync SaaS is provided on an "as-is" and "as-available" basis. In no event shall we or our developers be liable for any direct, indirect, incidental, or consequential damages (including loss of sales data, stock logs, or ledger discrepancies) arising out of your use or inability to use the software.
             </p>
           </section>
 
@@ -70,7 +70,7 @@ const Terms = () => {
               <ShieldAlert color="var(--danger)" /> 6. Strict No Refund Policy
             </h2>
             <p style={{ color: 'var(--text-muted)', marginBottom: 12 }}>
-              Hardware Shop Manager enforces a strict <strong>No Refund Policy</strong>. Please read carefully:
+              VyaparSync enforces a strict <strong>No Refund Policy</strong>. Please read carefully:
             </p>
             <ul style={{ color: 'var(--text-muted)', paddingLeft: 24, display: 'flex', flexDirection: 'column', gap: 8 }}>
               <li>We provide a full 30-day free trial so you can thoroughly evaluate the software before committing to a paid plan.</li>

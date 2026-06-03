@@ -3,16 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BelongsToShop;
+use App\Traits\BelongsToBusiness;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BillItem extends Model
 {
-    use BelongsToShop;
+    use BelongsToBusiness;
 
     protected $fillable = [
         'bill_id', 'product_id', 'product_name', 'description',
-        'price', 'quantity', 'unit', 'discount', 'total', 'shop_id',
+        'price', 'quantity', 'unit', 'discount', 'total', 'business_id',
     ];
 
     protected $casts = [

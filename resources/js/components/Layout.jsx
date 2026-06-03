@@ -19,7 +19,7 @@ const Layout = ({ children }) => {
     { name: 'Other Expenses', path: '/expenses', icon: Banknote },
     { name: 'Staff Advances', path: '/advances', icon: Banknote },
     { name: 'Staff Management', path: '/staff', icon: Users },
-    { name: 'Branches (Shops)', path: '/child-shops', icon: Building },
+    { name: 'Branches (Businesses)', path: '/child-businesses', icon: Building },
     { name: 'Reports', path: '/reports', icon: FileText },
   ];
 
@@ -93,10 +93,22 @@ const Layout = ({ children }) => {
     );
   }
 
-  const allNavItems = [...navItems];
+  let allNavItems = [...navItems];
+  if (user && user.role === 'staff') {
+    allNavItems = navItems.filter(item => ['/billing', '/bills', '/quotations'].includes(item.path));
+  }
   if (user && (user.is_super_admin === true || user.is_super_admin == 1)) {
     allNavItems.push({ name: 'Super Admin', path: '/super-admin', icon: Shield });
   }
+
+  useEffect(() => {
+    if (user && user.role === 'staff') {
+      const allowedPaths = ['/billing', '/bills', '/quotations', '/privacy-policy', '/terms'];
+      if (!allowedPaths.some(p => location.pathname.startsWith(p))) {
+        navigate('/billing', { replace: true });
+      }
+    }
+  }, [user, location.pathname, navigate]);
 
   return (
     <div className="app-container">
@@ -120,7 +132,7 @@ const Layout = ({ children }) => {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
               <span style={{ fontSize: '1.05rem', fontWeight: 800, color: '#ffffff', lineHeight: '1.2', textTransform: 'uppercase', letterSpacing: '0.02em', wordBreak: 'break-word' }}>
-                 {settings?.company_name || 'Hardware Pro'}
+                 {settings?.company_name || 'VyaparSync'}
               </span>
               <span style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginTop: 3 }}>
                  Management System
@@ -170,13 +182,15 @@ const Layout = ({ children }) => {
 
           <div style={{ margin: '12px 0', borderTop: '1px solid rgba(255,255,255,0.08)' }}></div>
 
-          <NavLink 
-            to="/settings" 
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={`nav-item ${location.pathname === '/settings' ? 'active' : ''}`}
-          >
-            <SettingsIcon size={20} /> Settings
-          </NavLink>
+          {user?.role !== 'staff' && (
+            <NavLink 
+              to="/settings" 
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`nav-item ${location.pathname === '/settings' ? 'active' : ''}`}
+            >
+              <SettingsIcon size={20} /> Settings
+            </NavLink>
+          )}
 
           <NavLink 
             to="/about-us" 
@@ -270,7 +284,7 @@ const Layout = ({ children }) => {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <span style={{ color: 'white', fontSize: '0.9rem', fontWeight: 600 }}>{user?.name || 'Admin User'}</span>
-              <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>{user?.is_super_admin ? 'Super Admin' : 'Shop Manager'}</span>
+              <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>{user?.is_super_admin ? 'Super Admin' : (user?.role === 'staff' ? 'Cashier / Staff' : 'Business Manager')}</span>
             </div>
           </div>
           
@@ -283,12 +297,14 @@ const Layout = ({ children }) => {
                 <Shield size={16} /> Super Admin Dashboard
               </button>
             )}
-            <button 
-              onClick={() => { setIsMobileMenuOpen(false); navigate('/settings'); }}
-              style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(255, 255, 255, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
-            >
-              <SettingsIcon size={16} /> Settings
-            </button>
+            {user?.role !== 'staff' && (
+              <button 
+                onClick={() => { setIsMobileMenuOpen(false); navigate('/settings'); }}
+                style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(255, 255, 255, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
+              >
+                <SettingsIcon size={16} /> Settings
+              </button>
+            )}
             <button 
               onClick={() => { setIsMobileMenuOpen(false); navigate('/privacy-policy'); }}
               style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(255, 255, 255, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
@@ -331,7 +347,7 @@ const Layout = ({ children }) => {
               <Menu size={24} />
             </button>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 600, margin: 0 }}>
-              {allNavItems.find(item => location.pathname.startsWith(item.path))?.name || 'Hardware Shop Manager'}
+              {allNavItems.find(item => location.pathname.startsWith(item.path))?.name || 'VyaparSync'}
             </h2>
           </div>
           
@@ -384,7 +400,7 @@ const Layout = ({ children }) => {
                >
                  <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                    <div style={{ fontWeight: 600, fontSize: '0.9rem', lineHeight: 1.2 }}>{user?.name || 'Admin User'}</div>
-                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{user?.is_super_admin ? 'Super Admin' : 'Shop Manager'}</div>
+                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{user?.is_super_admin ? 'Super Admin' : (user?.role === 'staff' ? 'Cashier / Staff' : 'Business Manager')}</div>
                  </div>
                  <div style={{ width: 40, height: 40, borderRadius: '50%', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
                    {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
@@ -405,12 +421,14 @@ const Layout = ({ children }) => {
                        <Shield size={16} /> Super Admin
                      </button>
                    )}
-                   <button 
-                     onClick={() => navigate('/settings')} 
-                     style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.9rem' }}
-                   >
-                     <SettingsIcon size={16} /> Settings
-                   </button>
+                   {user?.role !== 'staff' && (
+                     <button 
+                       onClick={() => navigate('/settings')} 
+                       style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.9rem' }}
+                     >
+                       <SettingsIcon size={16} /> Settings
+                     </button>
+                   )}
                    <button 
                      onClick={() => navigate('/settings')} 
                      title="Scroll to Security in Settings"
@@ -527,7 +545,7 @@ const Layout = ({ children }) => {
               gap: 12
             }}>
               <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 24 }}>
-                <span>&copy; {new Date().getFullYear()} Hardware Shop Manager</span>
+                <span>&copy; {new Date().getFullYear()} VyaparSync</span>
                 <a href="/privacy-policy" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); navigate('/privacy-policy'); }}>Privacy Policy</a>
                 <a href="/terms" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); navigate('/terms'); }}>Terms & Conditions</a>
                 <a href="/about-us" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); navigate('/about-us'); }}>About Us</a>

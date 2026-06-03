@@ -90,7 +90,7 @@ const QuotationsList = () => {
           </head>
           <body>
             <div class="header">
-              <h1>${settings.company_name || 'Hardware Shop'}</h1>
+              <h1>${settings.company_name || 'VyaparSync'}</h1>
               <p>${settings.company_address || ''}</p>
               <p>Ph: ${settings.company_phone || ''}</p>
               <h2 style="margin-top: 15px; color: #3b82f6;">ESTIMATE / QUOTATION</h2>

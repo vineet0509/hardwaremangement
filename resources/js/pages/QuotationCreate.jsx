@@ -128,7 +128,7 @@ const QuotationCreate = () => {
           <div class="invoice-box">
             <div class="header">
               <div class="shop-info">
-                <h1>${settings.company_name || 'Hardware Shop'}</h1>
+                <h1>${settings.company_name || 'VyaparSync'}</h1>
                 <p>${settings.company_address || ''}</p>
                 <p>Phone: ${settings.company_phone || ''}</p>
                 ${settings.gst_number ? `<p><strong>GSTIN: ${settings.gst_number}</strong></p>` : ''}
@@ -231,7 +231,7 @@ const QuotationCreate = () => {
              
              let itemListStr = res.data.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity} ${i.unit || ''}) = Rs.${i.total}`).join('\n') || '';
              
-             const msgText = `*Hardware Shop Quotation* 📝\n-----------------------------------\n*Quotation No:* ${res.data.quotation_number}\n*Customer:* ${res.data.customer_name || 'Walk-in'}\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Amount:* Rs. ${res.data.total}\n\nThis is an estimate and subject to change. Thank you!`;
+             const msgText = `*VyaparSync Quotation* 📝\n-----------------------------------\n*Quotation No:* ${res.data.quotation_number}\n*Customer:* ${res.data.customer_name || 'Walk-in'}\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Amount:* Rs. ${res.data.total}\n\nThis is an estimate and subject to change. Thank you!`;
 
              const msg = encodeURIComponent(msgText);
              window.open(`https://wa.me/${wapn}?text=${msg}`, '_blank');

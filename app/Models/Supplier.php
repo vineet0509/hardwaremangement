@@ -3,15 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BelongsToShop;
+use App\Traits\BelongsToBusiness;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Supplier extends Model
 {
-    use BelongsToShop, SoftDeletes;
+    use BelongsToBusiness, SoftDeletes;
 
     protected $fillable = [
-        'shop_id',
+        'business_id',
         'name',
         'phone',
         'email',
@@ -28,8 +28,8 @@ class Supplier extends Model
         return $this->hasMany(Product::class);
     }
 
-    public function shop()
+    public function business()
     {
-        return $this->belongsTo(Shop::class);
+        return $this->belongsTo(Business::class);
     }
 }

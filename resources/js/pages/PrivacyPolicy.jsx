@@ -20,7 +20,7 @@ const PrivacyPolicy = () => {
               <FileText color="var(--primary)" /> 1. Introduction
             </h2>
             <p style={{ color: 'var(--text-muted)' }}>
-              Welcome to the Hardware Shop Manager. We respect your privacy and are committed to protecting your personal data. 
+              Welcome to the VyaparSync. We respect your privacy and are committed to protecting your personal data. 
               This Privacy Policy explains how we collect, use, and safeguard your information when you use our Point of Sale (POS) and Store Management system.
             </p>
           </section>
@@ -33,7 +33,7 @@ const PrivacyPolicy = () => {
               We collect information necessary to provide you with comprehensive billing and inventory management services:
             </p>
             <ul style={{ color: 'var(--text-muted)', paddingLeft: 24, display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <li><strong>Shop Data:</strong> Business name, domain, contact information, and configuration settings.</li>
+              <li><strong>Business Data:</strong> Business name, domain, contact information, and configuration settings.</li>
               <li><strong>User Data:</strong> Staff names, emails, roles, and encrypted passwords.</li>
               <li><strong>Customer Data:</strong> Customer names, phone numbers, and addresses entered during billing for ledger management.</li>
               <li><strong>Transaction Data:</strong> Invoices, billing history, payment methods, and pending dues.</li>
@@ -45,7 +45,7 @@ const PrivacyPolicy = () => {
               <EyeOff color="var(--primary)" /> 3. How We Use Your Information
             </h2>
             <p style={{ color: 'var(--text-muted)' }}>
-              Your data is strictly used for the operation and improvement of the Hardware Shop Manager system. Specifically, we use it to:
+              Your data is strictly used for the operation and improvement of the VyaparSync system. Specifically, we use it to:
             </p>
             <ul style={{ color: 'var(--text-muted)', paddingLeft: 24, marginTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
               <li>Process transactions and generate bills.</li>
@@ -69,13 +69,13 @@ const PrivacyPolicy = () => {
               <Shield color="var(--primary)" /> 5. Your Rights
             </h2>
             <p style={{ color: 'var(--text-muted)' }}>
-              You have the right to access, update, or delete your personal and business information at any time. Shop administrators can manage these details directly through the system's settings. If you require complete account deletion, please contact the Super Administrator.
+              You have the right to access, update, or delete your personal and business information at any time. Business administrators can manage these details directly through the system's settings. If you require complete account deletion, please contact the Super Administrator.
             </p>
           </section>
 
           <section>
             <p style={{ color: 'var(--text-muted)', fontStyle: 'italic', textAlign: 'center', marginTop: 40, borderTop: '1px solid var(--border)', paddingTop: 20 }}>
-              By using the Hardware Shop Manager, you agree to the collection and use of information in accordance with this Privacy Policy.
+              By using the VyaparSync, you agree to the collection and use of information in accordance with this Privacy Policy.
             </p>
           </section>
         </div>

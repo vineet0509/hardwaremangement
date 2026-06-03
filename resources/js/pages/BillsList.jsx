@@ -91,7 +91,7 @@ const BillsList = () => {
 
       let msgText = '';
       
-      const shopName = settings.company_name || 'Hardware Shop';
+      const shopName = settings.company_name || 'VyaparSync';
       const gstStr = (bill.is_gst && settings.gst_number) ? `*GSTIN:* ${settings.gst_number}\n` : '';
       const pdfLink = `${window.location.origin}/api/bills/${bill.id}/pdf?token=${localStorage.getItem('auth_token')}`;
 
@@ -144,7 +144,7 @@ const BillsList = () => {
           </head>
           <body>
             <div class="header">
-              <h1>${settings.company_name || 'Hardware Shop'}</h1>
+              <h1>${settings.company_name || 'VyaparSync'}</h1>
               <p>${settings.company_address || ''}</p>
               <p>Ph: ${settings.company_phone || ''}</p>
               ${(bill.is_gst && settings.gst_number) ? `<p><strong>GSTIN: ${settings.gst_number}</strong></p>` : ''}

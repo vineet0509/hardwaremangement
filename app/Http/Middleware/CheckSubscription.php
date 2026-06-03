@@ -17,9 +17,9 @@ class CheckSubscription
     {
         $user = auth('sanctum')->user();
         if ($user && !$user->is_super_admin) {
-            $shop = \App\Models\Shop::find($user->shop_id);
-            if ($shop && $shop->trial_ends_at) {
-                $isExpired = \Carbon\Carbon::now()->greaterThan($shop->trial_ends_at);
+            $business = \App\Models\Business::find($user->business_id);
+            if ($business && $business->trial_ends_at) {
+                $isExpired = \Carbon\Carbon::now()->greaterThan($business->trial_ends_at);
                 if ($isExpired) {
                     if ($request->isMethod('post') || $request->isMethod('put') || $request->isMethod('patch') || $request->isMethod('delete')) {
                         return response()->json([

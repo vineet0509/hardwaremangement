@@ -102,9 +102,13 @@ const Products = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const payload = { 
+      ...formData, 
+      supplier_id: formData.supplier_id ? formData.supplier_id : null 
+    };
     const req = editProductId 
-      ? api.put(`/products/${editProductId}`, formData)
-      : api.post('/products', formData);
+      ? api.put(`/products/${editProductId}`, payload)
+      : api.post('/products', payload);
       
     req.then(() => {
         setShowModal(false);

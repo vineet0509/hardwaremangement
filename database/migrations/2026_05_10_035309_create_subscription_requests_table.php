@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('subscription_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('shop_id')->constrained()->onDelete('cascade');
+            $table->foreignId('business_id')->constrained()->onDelete('cascade');
             $table->string('plan_type'); // 'monthly', 'yearly'
             $table->decimal('amount', 10, 2)->default(0);
             $table->string('status')->default('pending'); // 'pending', 'approved', 'rejected'

@@ -3,18 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BelongsToShop;
+use App\Traits\BelongsToBusiness;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Staff extends Model
 {
-    use BelongsToShop, SoftDeletes;
+    use BelongsToBusiness, SoftDeletes;
 
     protected $fillable = [
         'name', 'phone', 'role', 'address',
         'aadhar_number', 'monthly_salary',
-        'joining_date', 'status',
+        'joining_date', 'status', 'user_id'
     ];
 
     protected $casts = [

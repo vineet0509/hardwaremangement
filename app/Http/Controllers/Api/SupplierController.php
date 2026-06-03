@@ -6,11 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Supplier;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Traits\RestrictsChildShops;
+use App\Traits\RestrictsChildBusinesses;
 
 class SupplierController extends Controller
 {
-    use RestrictsChildShops;
+    use RestrictsChildBusinesses;
     public function index(): JsonResponse
     {
         $suppliers = Supplier::with('transactions')->orderBy('name')->get()->map(function($s) {

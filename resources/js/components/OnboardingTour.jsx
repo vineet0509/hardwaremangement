@@ -15,7 +15,7 @@ const STEPS = [
     badge: '🎉 Welcome!',
     badgeColor: '#a78bfa',
     title: 'Your Store is Live!',
-    description: 'Congratulations on setting up your hardware business management system. This quick tour will show you the 5 key areas to get started. It only takes 2 minutes!',
+    description: 'Congratulations on setting up your business management system. This quick tour will show you the 5 key areas to get started. It only takes 2 minutes!',
     tips: [
       'Everything you do is auto-saved & secured',
       'Your 30-day trial gives full access to all features',
@@ -47,7 +47,7 @@ const STEPS = [
     badge: 'Step 2 — Suppliers',
     badgeColor: '#60a5fa',
     title: 'Track Your Suppliers & Payments',
-    description: 'Add your hardware suppliers and track what you owe them. Record every purchase payment against a supplier to always know your outstanding supplier balances.',
+    description: 'Add your retail suppliers and track what you owe them. Record every purchase payment against a supplier to always know your outstanding supplier balances.',
     tips: [
       'Each supplier has a running ledger of all transactions',
       'Great for tracking credit from your raw material distributors',
@@ -111,7 +111,7 @@ const STEPS = [
     badge: '✅ All Set!',
     badgeColor: '#10b981',
     title: "You're Ready to Go!",
-    description: "You now know all the key features of your Hardware Shop Manager. Start by adding your products, then create your first bill. Your dashboard will fill up with live business data as you go.",
+    description: "You now know all the key features of your VyaparSync. Start by adding your products, then create your first bill. Your dashboard will fill up with live business data as you go.",
     tips: [
       'Come back to this tour anytime from Help & Support',
       'Contact us at support@vynkra.in for any assistance',
@@ -393,7 +393,7 @@ const OnboardingTour = ({ onComplete }) => {
               onMouseOut={e => e.currentTarget.style.opacity = '1'}
             >
               {isLast ? (
-                <><BadgeCheck size={18} /> Start Managing My Shop</>
+                <><BadgeCheck size={18} /> Start Managing My Business</>
               ) : (
                 <>Next <ArrowRight size={16} /></>
               )}
@@ -429,7 +429,7 @@ const OnboardingTour = ({ onComplete }) => {
           fontSize: '0.75rem',
           color: '#334155',
         }}>
-          {step + 1} of {STEPS.length} — Hardware Shop Manager Setup Tour
+          {step + 1} of {STEPS.length} — VyaparSync Setup Tour
         </div>
       </div>
     </div>

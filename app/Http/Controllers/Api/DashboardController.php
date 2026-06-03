@@ -54,7 +54,7 @@ class DashboardController extends Controller
         // Top selling products
         $topProducts = DB::table('bill_items')
             ->join('products', 'bill_items.product_id', '=', 'products.id')
-            ->where('bill_items.shop_id', auth('sanctum')->user()->shop_id)
+            ->where('bill_items.business_id', auth('sanctum')->user()->business_id)
             ->selectRaw('products.name, SUM(bill_items.quantity) as sold, SUM(bill_items.total) as revenue')
             ->groupBy('products.id', 'products.name')
             ->orderByDesc('sold')
@@ -67,7 +67,7 @@ class DashboardController extends Controller
         $todayProfit = DB::table('bill_items')
             ->join('bills', 'bill_items.bill_id', '=', 'bills.id')
             ->join('products', 'bill_items.product_id', '=', 'products.id')
-            ->where('bill_items.shop_id', auth('sanctum')->user()->shop_id)
+            ->where('bill_items.business_id', auth('sanctum')->user()->business_id)
             ->whereDate('bills.created_at', $today)
             ->selectRaw('SUM((bill_items.price - products.purchase_price) * bill_items.quantity - bill_items.discount) as profit')
             ->value('profit') ?? 0;
@@ -93,7 +93,7 @@ class DashboardController extends Controller
         $topCategories = DB::table('bill_items')
             ->join('products', 'bill_items.product_id', '=', 'products.id')
             ->join('categories', 'products.category_id', '=', 'categories.id')
-            ->where('bill_items.shop_id', auth('sanctum')->user()->shop_id)
+            ->where('bill_items.business_id', auth('sanctum')->user()->business_id)
             ->selectRaw('categories.name, SUM(bill_items.quantity) as sold, SUM(bill_items.total) as revenue')
             ->groupBy('categories.id', 'categories.name')
             ->orderByDesc('revenue')

@@ -26,7 +26,7 @@ class QuotationController extends Controller
             'items.*.product_id' => [
                 'required',
                 \Illuminate\Validation\Rule::exists('products', 'id')->where(function ($query) {
-                    return $query->where('shop_id', auth()->user()->shop_id);
+                    return $query->where('business_id', auth()->user()->business_id);
                 }),
             ],
             'items.*.quantity' => 'required|numeric|min:0.1',
@@ -106,7 +106,7 @@ class QuotationController extends Controller
             'items.*.product_id' => [
                 'required',
                 \Illuminate\Validation\Rule::exists('products', 'id')->where(function ($query) {
-                    return $query->where('shop_id', auth()->user()->shop_id);
+                    return $query->where('business_id', auth()->user()->business_id);
                 }),
             ],
             'items.*.quantity' => 'required|numeric|min:0.1',
@@ -197,7 +197,7 @@ class QuotationController extends Controller
 
                 \App\Models\BillItem::create([
                     'bill_id'      => $bill->id,
-                    'shop_id'      => $bill->shop_id,
+                    'business_id'      => $bill->business_id,
                     'product_id'   => $product->id,
                     'product_name' => $product->name,
                     'description'  => $product->description,

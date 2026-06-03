@@ -22,13 +22,13 @@ class ApiLoggerMiddleware
         
         $user = $request->user();
         $userInfo = $user ? "User: {$user->id} ({$user->name})" : "Guest";
-        $shopId = $user ? "Shop: {$user->shop_id}" : "N/A";
+        $businessId = $user ? "Shop: {$user->business_id}" : "N/A";
 
         $logData = [
             'timestamp' => now()->toDateTimeString(),
             'ip' => $request->ip(),
             'user' => $userInfo,
-            'shop' => $shopId,
+            'business' => $businessId,
             'method' => $request->method(),
             'url' => $request->fullUrl(),
             'input' => $input,

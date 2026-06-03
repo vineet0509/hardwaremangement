@@ -170,7 +170,7 @@ const Billing = () => {
           <div class="invoice-box">
             <div class="header">
               <div class="shop-info">
-                <h1>${settings.company_name || 'Hardware Shop'}</h1>
+                <h1>${settings.company_name || 'VyaparSync'}</h1>
                 <p>${settings.company_address || ''}</p>
                 <p>Phone: ${settings.company_phone || ''}</p>
                 ${(isGst && settings.gst_number) ? `<p><strong>GSTIN: ${settings.gst_number}</strong></p>` : ''}
@@ -305,7 +305,7 @@ const Billing = () => {
                
                let itemListStr = res.data.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity} ${i.unit || ''}) = Rs.${i.total}`).join('\n') || '';
                
-               const shopName = settings.company_name || 'Hardware Shop';
+               const shopName = settings.company_name || 'VyaparSync';
                const gstStr = (res.data.is_gst && settings.gst_number) ? `*GSTIN:* ${settings.gst_number}\n` : '';
                const pdfLink = `${window.location.origin}/api/bills/${res.data.id}/pdf?token=${localStorage.getItem('auth_token')}`;
 

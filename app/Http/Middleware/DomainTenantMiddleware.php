@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Models\Shop;
+use App\Models\Business;
 use Illuminate\Http\Request;
 
 class DomainTenantMiddleware
@@ -17,12 +17,12 @@ class DomainTenantMiddleware
             return $next($request);
         }
 
-        $shop = Shop::where('domain', $host)
+        $business = Business::where('domain', $host)
             ->orWhere('domain', 'like', '%' . explode('.', $host)[0] . '%')
             ->first();
 
-        if ($shop) {
-            app()->instance('current_shop', $shop);
+        if ($business) {
+            app()->instance('current_shop', $business);
         }
 
         return $next($request);

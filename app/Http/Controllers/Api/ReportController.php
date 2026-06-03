@@ -32,7 +32,7 @@ class ReportController extends Controller
         $topProducts = DB::table('bill_items')
             ->join('bills', 'bill_items.bill_id', '=', 'bills.id')
             ->join('products', 'bill_items.product_id', '=', 'products.id')
-            ->where('bill_items.shop_id', auth('sanctum')->user()->shop_id)
+            ->where('bill_items.business_id', auth('sanctum')->user()->business_id)
             ->whereBetween(DB::raw('DATE(bills.created_at)'), [$from, $to])
             ->selectRaw('products.name, SUM(bill_items.quantity) as sold, SUM(bill_items.total) as revenue')
             ->groupBy('products.id', 'products.name')
@@ -81,7 +81,7 @@ class ReportController extends Controller
 
         $records = DB::table('salary_records')
             ->join('staff', 'salary_records.staff_id', '=', 'staff.id')
-            ->where('salary_records.shop_id', auth('sanctum')->user()->shop_id)
+            ->where('salary_records.business_id', auth('sanctum')->user()->business_id)
             ->where('salary_records.month', $month)
             ->where('salary_records.year', $year)
             ->select('staff.name', 'staff.role', 'salary_records.*')
@@ -89,7 +89,7 @@ class ReportController extends Controller
 
         $advances = DB::table('advance_payments')
             ->join('staff', 'advance_payments.staff_id', '=', 'staff.id')
-            ->where('advance_payments.shop_id', auth('sanctum')->user()->shop_id)
+            ->where('advance_payments.business_id', auth('sanctum')->user()->business_id)
             ->whereYear('advance_date', $year)->whereMonth('advance_date', $month)
             ->select('staff.name', 'staff.role', 'advance_payments.*')
             ->orderByDesc('advance_date')->get();
@@ -164,7 +164,7 @@ class ReportController extends Controller
         $cogs = DB::table('bill_items')
             ->join('bills', 'bill_items.bill_id', '=', 'bills.id')
             ->join('products', 'bill_items.product_id', '=', 'products.id')
-            ->where('bills.shop_id', auth('sanctum')->user()->shop_id)
+            ->where('bills.business_id', auth('sanctum')->user()->business_id)
             ->whereBetween(DB::raw('DATE(bills.created_at)'), [$from, $to])
             ->selectRaw('SUM(bill_items.quantity * products.purchase_price) as cogs')
             ->value('cogs') ?? 0;
@@ -172,7 +172,7 @@ class ReportController extends Controller
         $expenses = \App\Models\Expense::whereBetween(DB::raw('DATE(expense_date)'), [$from, $to])->sum('amount');
         
         $salaries = DB::table('salary_records')
-            ->where('shop_id', auth('sanctum')->user()->shop_id)
+            ->where('business_id', auth('sanctum')->user()->business_id)
             ->whereBetween(DB::raw('DATE(created_at)'), [$from, $to])
             ->sum('paid_amount');
 

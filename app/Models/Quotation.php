@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BelongsToShop;
+use App\Traits\BelongsToBusiness;
 use Illuminate\Database\Eloquent\SoftDeletes;
 class Quotation extends Model
 {
-    use BelongsToShop, SoftDeletes;
+    use BelongsToBusiness, SoftDeletes;
     protected $fillable = [
-        'shop_id',
+        'business_id',
         'quotation_number',
         'customer_name',
         'customer_phone',

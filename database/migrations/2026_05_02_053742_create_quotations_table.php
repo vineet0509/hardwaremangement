@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('quotations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('shop_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('business_id')->constrained()->cascadeOnDelete();
             $table->string('quotation_number');
             $table->string('customer_name')->nullable();
             $table->string('customer_phone')->nullable();
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
             
-            $table->unique(['shop_id', 'quotation_number']);
+            $table->unique(['business_id', 'quotation_number']);
         });
     }
 

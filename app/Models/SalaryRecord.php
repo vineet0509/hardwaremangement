@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BelongsToShop;
+use App\Traits\BelongsToBusiness;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SalaryRecord extends Model
 {
-    use BelongsToShop;
+    use BelongsToBusiness;
 
     protected $fillable = [
         'staff_id', 'month', 'year',

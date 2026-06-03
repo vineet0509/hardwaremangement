@@ -12,7 +12,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\SuperAdminController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\ExpenseController;
-use App\Http\Controllers\Api\ChildShopController;
+use App\Http\Controllers\Api\ChildBusinessController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -34,9 +34,9 @@ Route::post('/subscription-request', [SettingsController::class, 'submitSubscrip
 Route::get('/dashboard', [DashboardController::class, 'index']);
 
 // Child Shops
-Route::get('/child-shops', [ChildShopController::class, 'index']);
-Route::post('/child-shops', [ChildShopController::class, 'store']);
-Route::patch('/child-shops/{id}/toggle-status', [ChildShopController::class, 'toggleStatus']);
+Route::get('/child-businesses', [ChildBusinessController::class, 'index']);
+Route::post('/child-businesses', [ChildBusinessController::class, 'store']);
+Route::patch('/child-businesses/{id}/toggle-status', [ChildBusinessController::class, 'toggleStatus']);
 
 // Products & Categories
 Route::get('/products/export',      [ProductController::class, 'exportCSV']);

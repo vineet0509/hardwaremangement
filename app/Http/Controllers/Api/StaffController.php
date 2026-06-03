@@ -29,16 +29,32 @@ class StaffController extends Controller
     {
         $data = $request->validate([
             'name'           => 'required|string|max:255',
-            'phone'          => 'nullable|string|max:20',
+            'phone'          => 'required_if:enable_login,true|nullable|string|max:20' . ($request->enable_login ? '|unique:users,mobile' : ''),
             'role'           => 'required|string|max:100',
             'address'        => 'nullable|string',
             'aadhar_number'  => 'nullable|string|max:12',
             'monthly_salary' => 'required|numeric|min:0',
             'joining_date'   => 'required|date',
             'status'         => 'in:active,inactive',
+            'enable_login'   => 'boolean',
+            'password'       => 'required_if:enable_login,true|nullable|string|min:6',
         ]);
 
-        return response()->json(Staff::create($data), 201);
+        $staffData = collect($data)->except(['enable_login', 'password'])->toArray();
+        $staff = Staff::create($staffData);
+
+        if ($request->enable_login && $request->phone) {
+            $user = \App\Models\User::create([
+                'name' => $request->name,
+                'mobile' => $request->phone,
+                'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+                'role' => 'staff',
+                'business_id' => $request->user()->business_id,
+            ]);
+            $staff->update(['user_id' => $user->id]);
+        }
+
+        return response()->json($staff, 201);
     }
 
     public function show(Staff $staff): JsonResponse

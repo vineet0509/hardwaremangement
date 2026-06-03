@@ -136,7 +136,7 @@ const Settings = () => {
           <h3 style={{ borderBottom: '1px solid var(--border)', paddingBottom: 12, marginBottom: 16 }}>Business Information</h3>
           <form onSubmit={handleSave}>
             <div className="form-group">
-              <label className="form-label">Company / Shop Name</label>
+              <label className="form-label">Company / Business Name</label>
               <input type="text" className="form-control" required
                 value={formData.company_name} onChange={e => setFormData({...formData, company_name: e.target.value})} />
             </div>

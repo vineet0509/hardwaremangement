@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Shop extends Model
+class Business extends Model
 {
     use SoftDeletes;
     protected $fillable = [
@@ -13,7 +13,8 @@ class Shop extends Model
         'gst_number',
         'domain',
         'is_active',
-        'trial_ends_at'
+        'trial_ends_at',
+        'parent_id',
     ];
 
     public function users()
@@ -28,11 +29,11 @@ class Shop extends Model
 
     public function parent()
     {
-        return $this->belongsTo(Shop::class, 'parent_id');
+        return $this->belongsTo(Business::class, 'parent_id');
     }
 
     public function children()
     {
-        return $this->hasMany(Shop::class, 'parent_id');
+        return $this->hasMany(Business::class, 'parent_id');
     }
 }

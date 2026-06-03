@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('supplier_transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('shop_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('business_id')->constrained()->cascadeOnDelete();
             $table->foreignId('supplier_id')->constrained()->cascadeOnDelete();
             $table->enum('type', ['purchase', 'payment'])->default('payment');
             $table->decimal('amount', 12, 2);

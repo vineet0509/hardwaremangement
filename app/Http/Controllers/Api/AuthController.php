@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use App\Models\Shop;
+use App\Models\Business;
 use App\Models\Setting;
 
 class AuthController extends Controller
@@ -28,7 +28,7 @@ class AuthController extends Controller
         ]);
 
         // 1. Create the unique Shop (Multi-tenant partition)
-        $shop = Shop::create([
+        $business = Business::create([
             'name' => $request->shop_name,
             'gst_number' => $request->gst_number,
             'is_active' => true,
@@ -38,7 +38,7 @@ class AuthController extends Controller
         // 2. Initialize default Settings for this specific shop
         // Force the environment to recognize this shop so Global Scopes pass safely
         Setting::withoutGlobalScopes()->create([
-            'shop_id' => $shop->id,
+            'business_id' => $business->id,
             'company_name' => $request->shop_name,
             'subscription_plan' => 'monthly', // Default 30 day trial
             'subscription_expires_at' => now()->addDays(30)
@@ -50,7 +50,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'mobile' => $request->mobile,
             'password' => Hash::make($request->password),
-            'shop_id' => $shop->id,
+            'business_id' => $business->id,
         ]);
 
         // 4. Authenticate User immediately
@@ -83,7 +83,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid login credentials.'], 401);
         }
 
-        if ($user->shop && !$user->shop->is_active) {
+        if ($user->business && !$user->business->is_active) {
             return response()->json(['message' => 'Your account or shop has been deactivated. Please contact your administrator.'], 403);
         }
 
@@ -91,13 +91,13 @@ class AuthController extends Controller
 
         \App\Models\LoginLog::create([
             'user_id' => $user->id,
-            'shop_id' => $user->shop_id,
+            'business_id' => $user->business_id,
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
             'login_at' => now(),
         ]);
 
-        $logMessage = "[" . now()->toDateTimeString() . "] User ID: " . $user->id . " | Name: " . $user->name . " | Shop ID: " . $user->shop_id . " | IP: " . $request->ip() . " | Agent: " . $request->userAgent() . PHP_EOL;
+        $logMessage = "[" . now()->toDateTimeString() . "] User ID: " . $user->id . " | Name: " . $user->name . " | Shop ID: " . $user->business_id . " | IP: " . $request->ip() . " | Agent: " . $request->userAgent() . PHP_EOL;
         \Illuminate\Support\Facades\File::append(storage_path('logs/user_logins.log'), $logMessage);
 
         return response()->json([
@@ -178,7 +178,7 @@ class AuthController extends Controller
                                     " . nl2br(e($msgContent)) . "
                                 </div>
                                 <p style='font-size: 0.85rem; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 10px; margin-top: 20px;'>
-                                    This enquiry was sent automatically from the Hardware Pro Landing Page.
+                                    This enquiry was sent automatically from the VyaparSync Landing Page.
                                 </p>
                             </div>
                         ");

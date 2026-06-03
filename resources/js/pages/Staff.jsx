@@ -10,7 +10,7 @@ const Staff = () => {
   const [selectedStaff, setSelectedStaff] = useState(null);
 
   const [formData, setFormData] = useState({
-    name: '', phone: '', role: 'Labour', monthly_salary: 0, joining_date: new Date().toISOString().slice(0, 16)
+    name: '', phone: '', role: 'Labour', monthly_salary: 0, joining_date: new Date().toISOString().slice(0, 16), enable_login: false, password: ''
   });
 
   const [advanceData, setAdvanceData] = useState({
@@ -33,7 +33,7 @@ const Staff = () => {
       .then(() => { 
         setShowModal(false); 
         fetchStaff(); 
-        setFormData({ name: '', phone: '', role: 'Labour', monthly_salary: 0, joining_date: new Date().toISOString().slice(0, 16) });
+        setFormData({ name: '', phone: '', role: 'Labour', monthly_salary: 0, joining_date: new Date().toISOString().slice(0, 16), enable_login: false, password: '' });
       })
       .catch(err => alert(err.response?.data?.message || 'Error occurred while saving staff.'));
   };
@@ -191,6 +191,19 @@ const Staff = () => {
                     <input type="datetime-local" className="form-control" required value={formData.joining_date} onChange={e => setFormData({...formData, joining_date: e.target.value})} />
                   </div>
                 </div>
+                <div className="form-group" style={{ marginTop: 16 }}>
+                  <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontWeight: 600 }}>
+                    <input type="checkbox" checked={formData.enable_login || false} onChange={e => setFormData({...formData, enable_login: e.target.checked})} style={{ width: 18, height: 18 }} />
+                    Enable Login (Role: Staff)
+                  </label>
+                  <small style={{ color: 'var(--text-muted)' }}>They will log in using their phone number and the password below.</small>
+                </div>
+                {formData.enable_login && (
+                  <div className="form-group">
+                    <label className="form-label">Login Password</label>
+                    <input type="text" className="form-control" required={formData.enable_login} placeholder="Minimum 6 characters" value={formData.password || ''} onChange={e => setFormData({...formData, password: e.target.value})} />
+                  </div>
+                )}
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-outline" onClick={() => setShowModal(false)}>Cancel</button>

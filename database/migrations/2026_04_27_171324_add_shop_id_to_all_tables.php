@@ -16,13 +16,13 @@ return new class extends Migration
         foreach ($tables as $t) {
             if (Schema::hasTable($t)) {
                 Schema::table($t, function (Blueprint $table) {
-                    $table->foreignId('shop_id')->nullable()->constrained('shops')->cascadeOnDelete();
+                    $table->foreignId('business_id')->nullable()->constrained('businesses')->cascadeOnDelete();
                 });
             }
         }
 
         // Seed Default tenant
-        $defaultShopId = DB::table('shops')->insertGetId([
+        $defaultShopId = DB::table('businesses')->insertGetId([
             'name' => 'Default Hardware Shop',
             'domain' => 'default.localhost',
             'created_at' => now(),
@@ -32,7 +32,7 @@ return new class extends Migration
         // Assign all existing records to the default shop
         foreach ($tables as $t) {
             if (Schema::hasTable($t)) {
-                DB::table($t)->update(['shop_id' => $defaultShopId]);
+                DB::table($t)->update(['business_id' => $defaultShopId]);
             }
         }
     }
@@ -46,8 +46,8 @@ return new class extends Migration
         foreach ($tables as $t) {
             if (Schema::hasTable($t)) {
                 Schema::table($t, function (Blueprint $table) {
-                    $table->dropForeign(['shop_id']);
-                    $table->dropColumn('shop_id');
+                    $table->dropForeign(['business_id']);
+                    $table->dropColumn('business_id');
                 });
             }
         }

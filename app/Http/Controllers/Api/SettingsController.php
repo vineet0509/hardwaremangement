@@ -13,11 +13,11 @@ class SettingsController extends Controller
     public function index(): JsonResponse
     {
         $settings = Setting::first();
-        $shop = auth()->user()->shop;
+        $business = auth()->user()->business;
 
         if (!$settings) {
             $settings = Setting::create([
-                'company_name' => $shop->name ?? 'Hardware Manager',
+                'company_name' => $business->name ?? 'VyaparSync',
                 'subscription_plan' => 'full_time',
             ]);
         }
@@ -37,15 +37,15 @@ class SettingsController extends Controller
         $data = $settings->toArray();
         $data['is_expired'] = $isExpired;
         $data['trial_days_remaining'] = max(0, $daysRemaining);
-        $data['gst_number'] = $shop?->gst_number ?? '';
-        $data['latest_request'] = \App\Models\SubscriptionRequest::where('shop_id', $shop->id)->latest()->first();
+        $data['gst_number'] = $business?->gst_number ?? '';
+        $data['latest_request'] = \App\Models\SubscriptionRequest::where('business_id', $business->id)->latest()->first();
         
         return response()->json($data);
     }
 
     public function submitSubscriptionRequest(Request $request): JsonResponse
     {
-        if (auth()->user()->shop->parent_id !== null) {
+        if (auth()->user()->business->parent_id !== null) {
             return response()->json(['message' => 'Subscription updates must be managed by the parent shop owner.'], 403);
         }
 
@@ -61,7 +61,7 @@ class SettingsController extends Controller
         
         $amount = $prices[$request->plan_type];
 
-        $existing = \App\Models\SubscriptionRequest::where('shop_id', auth()->user()->shop_id)
+        $existing = \App\Models\SubscriptionRequest::where('business_id', auth()->user()->business_id)
             ->where('status', 'pending')
             ->first();
 
@@ -74,7 +74,7 @@ class SettingsController extends Controller
         }
 
         \App\Models\SubscriptionRequest::create([
-            'shop_id' => auth()->user()->shop_id,
+            'business_id' => auth()->user()->business_id,
             'plan_type' => $request->plan_type,
             'amount' => $amount,
             'status' => 'pending'
@@ -86,7 +86,7 @@ class SettingsController extends Controller
     public function update(Request $request): JsonResponse
     {
         $settings = Setting::first();
-        $shop = auth()->user()->shop;
+        $business = auth()->user()->business;
         
         if ($request->has('gst_number') && $request->gst_number !== null) {
             $request->merge(['gst_number' => strtoupper(trim($request->gst_number))]);
@@ -107,12 +107,12 @@ class SettingsController extends Controller
             $settings = Setting::create($data);
         }
 
-        if ($shop) {
-            $shop->update(['gst_number' => $request->gst_number]);
+        if ($business) {
+            $business->update(['gst_number' => $request->gst_number]);
         }
 
         $response = $settings->toArray();
-        $response['gst_number'] = $shop?->gst_number ?? '';
+        $response['gst_number'] = $business?->gst_number ?? '';
 
         return response()->json($response);
     }

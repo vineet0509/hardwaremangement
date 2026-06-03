@@ -66,7 +66,7 @@ const Register = () => {
                <Package size={36} strokeWidth={2.5} />
             </div>
              <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#111827', marginBottom: 8, letterSpacing: '-0.02em' }}>Register Store</h2>
-             <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Start managing your hardware business today.</p>
+             <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Start managing your business today.</p>
              
              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#ecfdf5', color: '#059669', padding: '6px 14px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold', marginTop: '16px', border: '1px solid #d1fae5' }}>
                <BadgeCheck size={16} /> 30-Day Trial Period Included
@@ -76,7 +76,7 @@ const Register = () => {
           <form onSubmit={handleRegister}>
             {error && <div style={{ background: 'rgba(239, 68, 68, 0.08)', color: 'var(--danger)', padding: '12px 16px', borderRadius: 10, fontSize: '0.85rem', marginBottom: 24, textAlign: 'center', border: '1px solid rgba(239, 68, 68, 0.2)' }}>{error}</div>}
 
-            {/* Section: Shop Details */}
+            {/* Section: Business Details */}
             <div style={{ marginBottom: 24 }}>
                <h4 style={{ fontSize: '0.8rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
                   <Store size={14} /> Store Information
@@ -86,7 +86,7 @@ const Register = () => {
                     type="text" 
                     name="shop_name" 
                     className="form-control" 
-                    placeholder="Official Shop Name (Ex: Apex Hardware)" 
+                    placeholder="Official Business Name (Ex: Apex Store)" 
                     required 
                     value={formData.shop_name} 
                     onChange={handleChange} 
@@ -181,7 +181,7 @@ const Register = () => {
           <div style={{ display: 'flex', gap: 20, fontSize: '0.85rem' }}>
             <Link to="/privacy-policy" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}><Shield size={14} /> Privacy Policy</Link>
             <Link to="/terms" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}><FileText size={14} /> Terms & Conditions</Link>
-            <a href="#" onClick={(e) => { e.preventDefault(); alert("Hardware Shop Manager SaaS v2.0\nSupport: support@vynkra.in"); }} style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Help & Support</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); alert("VyaparSync SaaS v2.0\nSupport: support@vynkra.in"); }} style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Help & Support</a>
           </div>
         </div>
       </div>

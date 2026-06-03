@@ -216,7 +216,7 @@ const Landing = () => {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <span style={{ fontSize: '1.25rem', fontWeight: 900, letterSpacing: '-0.02em', background: 'linear-gradient(90deg, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                Hardware Pro
+                VyaparSync
               </span>
               <span style={{ fontSize: '0.6rem', color: '#10b981', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                 BY VYNKRA
@@ -363,7 +363,7 @@ const Landing = () => {
             margin: '0 auto 24px',
             color: '#fff'
           }}>
-            Simplifying Hardware Retail with <span style={{ background: 'linear-gradient(95deg, var(--primary) 10%, #10b981 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Modern Automation</span>
+            Simplifying retail operations with <span style={{ background: 'linear-gradient(95deg, var(--primary) 10%, #10b981 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Modern Automation</span>
           </h1>
 
           {/* Subtitle */}
@@ -454,7 +454,7 @@ const Landing = () => {
               {/* Mock Dashboard Headers */}
               <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, marginBottom: 32 }}>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800 }}>Apex Hardware Store</h3>
+                  <h3 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800 }}>Apex store</h3>
                   <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.85rem' }}>Management Dashboard Overview</p>
                 </div>
                 <div style={{ display: 'flex', gap: 12 }}>
@@ -621,7 +621,7 @@ const Landing = () => {
           <div style={{ textAlign: 'center', marginBottom: 64 }}>
             <h2 style={{ fontSize: '2.25rem', fontWeight: 800, marginBottom: 12 }}>Packed with Professional Grade Features</h2>
             <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '650px', margin: '0 auto' }}>
-              We've engineered every feature from the ground up to solve real operational bottlenecks faced by local hardware merchants.
+              We've engineered every feature from the ground up to solve real operational bottlenecks faced by local retail merchants.
             </p>
           </div>
 
@@ -786,7 +786,7 @@ const Landing = () => {
             </div>
             <h2 style={{ fontSize: '2.25rem', fontWeight: 800, color: '#fff', marginBottom: 12 }}>Explore Our High-Performance UI</h2>
             <p style={{ color: '#94a3b8', fontSize: '1.05rem', maxWidth: '650px', margin: '0 auto' }}>
-              Take a detailed look at the interface designed to streamline your hardware storefront, billing, inventory, and localization workflows.
+              Take a detailed look at the interface designed to streamline your storefront, billing, inventory, and localization workflows.
             </p>
           </div>
 
@@ -922,7 +922,7 @@ const Landing = () => {
             <div style={{ color: 'var(--primary)', fontWeight: 800, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Subscription Plans</div>
             <h2 style={{ fontSize: '2.25rem', fontWeight: 800, color: '#fff', marginBottom: 12 }}>Simple, Highly Transparent Pricing</h2>
             <p style={{ color: '#cbd5e1', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
-              Start with our full-access trial, then migrate to a commercial plan that aligns with your hardware store's footprint.
+              Start with our full-access trial, then migrate to a commercial plan that aligns with your store's footprint.
             </p>
           </div>
 
@@ -956,7 +956,7 @@ const Landing = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#10b981" /> Up to 3 Child Shops</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#10b981" /> Up to 3 Branches</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Full POS Billing Access</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Basic Reporting</div>
                 </div>
@@ -986,7 +986,7 @@ const Landing = () => {
             }}>
               <div>
                 <span style={{ fontSize: '0.75rem', color: '#3b82f6', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Pro</span>
-                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Standard Shop</h3>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Standard Business</h3>
                 
                 <div style={{ margin: '16px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
                   <span style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>₹2,999</span>
@@ -994,7 +994,7 @@ const Landing = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#3b82f6" /> Up to 10 Child Shops</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#3b82f6" /> Up to 10 Branches</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#3b82f6" /> All Trial Features</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#3b82f6" /> Custom Domain Mapping</div>
                 </div>
@@ -1034,7 +1034,7 @@ const Landing = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="var(--primary)" /> Up to 50 Child Shops</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="var(--primary)" /> Up to 50 Branches</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="var(--primary)" /> All Pro Features Included</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="var(--primary)" /> Priority Support</div>
                 </div>
@@ -1072,7 +1072,7 @@ const Landing = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#f59e0b" /> Unlimited Child Shops</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#f59e0b" /> Unlimited Branches</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#f59e0b" /> Dedicated Account Manager</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#f59e0b" /> Full API Access</div>
                 </div>
@@ -1099,7 +1099,7 @@ const Landing = () => {
           </div>
           <h2 style={{ fontSize: '2.25rem', fontWeight: 800, marginBottom: 16 }}>Our Commitment & Vision</h2>
           <p style={{ color: 'var(--text-main)', fontSize: '1.1rem', lineHeight: 1.8, marginBottom: 24 }}>
-            Built by the retail and SaaS engineering team at <strong>Vynkra Technologies</strong>, our Hardware Shop Manager was created after observing first-hand the daily hurdles of traditional hardware retailers. Small shops struggle with complicated desktop-only tools, manual stock counting, and lost credit ledger notes.
+            Built by the retail and SaaS engineering team at <strong>Vynkra Technologies</strong>, our VyaparSync was created after observing first-hand the daily hurdles of traditional retail operationsers. Small shops struggle with complicated desktop-only tools, manual stock counting, and lost credit ledger notes.
           </p>
           <p style={{ color: 'var(--text-muted)', fontSize: '1rem', lineHeight: 1.7, marginBottom: 32 }}>
             Our mission is simple: deliver high-performance, web-based, multi-tenant billing solutions that require zero IT expertise to operate. Your business ledger is securely backed up, completely private, and running on robust modern standards.
@@ -1189,7 +1189,7 @@ const Landing = () => {
                   <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 600, marginBottom: 8 }}>Message / Enquiry</label>
                   <textarea 
                     className="form-control" 
-                    placeholder="Describe your query or hardware store migration support needs..." 
+                    placeholder="Describe your query or store migration support needs..." 
                     style={{ height: 100, resize: 'none' }} 
                     required 
                     value={contactForm.message} 
@@ -1244,10 +1244,10 @@ const Landing = () => {
                 <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', color: 'white', padding: '6px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Package size={18} strokeWidth={2.5} />
                 </div>
-                <span style={{ fontSize: '1.1rem', fontWeight: 900, color: '#fff' }}>Hardware Pro</span>
+                <span style={{ fontSize: '1.1rem', fontWeight: 900, color: '#fff' }}>VyaparSync</span>
               </div>
               <p style={{ fontSize: '0.85rem', lineHeight: 1.6 }}>
-                Advanced Multi-Tenant SaaS solution tailored for hardware shops, wholesalers, and retail building materials counters.
+                Advanced Multi-Tenant SaaS solution tailored for retail businesses, wholesalers, and retail building materials counters.
               </p>
               <div style={{ fontSize: '0.75rem', opacity: 0.8 }}>
                 SaaS Version 2.0.4. Active, safe and isolated.
@@ -1298,7 +1298,7 @@ const Landing = () => {
             gap: 16,
             fontSize: '0.8rem'
           }}>
-            <span>&copy; {new Date().getFullYear()} Hardware Shop Manager. All rights reserved.</span>
+            <span>&copy; {new Date().getFullYear()} VyaparSync. All rights reserved.</span>
             <span>
               Powered by <a href="https://vynkra.in" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none' }}>Vynkra Technologies</a>
             </span>
@@ -1358,7 +1358,7 @@ const Landing = () => {
               <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 54, height: 54, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', color: 'white', boxShadow: '0 8px 16px rgba(79,70,229,0.2)' }}>
                 <Package size={28} strokeWidth={2.5} />
               </div>
-              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)', margin: '0 0 4px' }}>Hardware Pro</h3>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)', margin: '0 0 4px' }}>VyaparSync</h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>Management Dashboard Login</p>
             </div>
 
@@ -1474,7 +1474,7 @@ const Landing = () => {
                 <Package size={28} strokeWidth={2.5} />
               </div>
               <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)', margin: '0 0 4px' }}>Register Store</h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>Start managing your hardware business today.</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>Start managing your business today.</p>
               
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold', marginTop: '10px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
                 <BadgeCheck size={14} /> 30-Day Trial Period Included
@@ -1490,7 +1490,7 @@ const Landing = () => {
 
             {/* Form */}
             <form onSubmit={handleRegisterSubmit}>
-              {/* Section: Shop Details */}
+              {/* Section: Business Details */}
               <div style={{ marginBottom: 18 }}>
                 <h4 style={{ fontSize: '0.75rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
                   <Store size={12} /> Store Information
@@ -1499,7 +1499,7 @@ const Landing = () => {
                   <input 
                     type="text" 
                     className="form-control" 
-                    placeholder="Official Shop Name (Ex: Apex Hardware)" 
+                    placeholder="Official Business Name (Ex: Apex Store)" 
                     required 
                     value={registerData.shop_name} 
                     onChange={e => setRegisterData({...registerData, shop_name: e.target.value})} 

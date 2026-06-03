@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BelongsToShop;
+use App\Traits\BelongsToBusiness;
 
 class Setting extends Model
 {
-    use BelongsToShop;
+    use BelongsToBusiness;
 
     protected $fillable = [
-        'shop_id',
+        'business_id',
         'company_name',
         'company_phone',
         'company_address',

@@ -7,22 +7,39 @@ const Reports = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [plData, setPlData] = useState(null);
+
   useEffect(() => {
-    // Calling the stock report endpoint for a general overview report
-    api.get('/reports/stock')
-      .then(res => {
-         if (res.data && res.data.overview) {
-           setData(res.data);
-         } else {
-           setError('Invalid report data received.');
+    Promise.all([
+      api.get('/reports/stock'),
+      api.get('/reports/profit-loss')
+    ]).then(([stockRes, plRes]) => {
+         if (stockRes.data && stockRes.data.overview) {
+           setData(stockRes.data);
          }
-      })
-      .catch(err => {
+         if (plRes.data) {
+           setPlData(plRes.data);
+         }
+    }).catch(err => {
          console.error(err);
          setError('Failed to fetch reports.');
-      })
-      .finally(() => setLoading(false));
+    }).finally(() => setLoading(false));
   }, []);
+
+  const handleGSTExport = async () => {
+     try {
+       const res = await api.get('/reports/gst-export', { responseType: 'blob' });
+       const url = window.URL.createObjectURL(new Blob([res.data]));
+       const link = document.createElement('a');
+       link.href = url;
+       link.setAttribute('download', `gstr1_export_${new Date().getTime()}.csv`);
+       document.body.appendChild(link);
+       link.click();
+       link.remove();
+     } catch (err) {
+       alert("Failed to export GST report.");
+     }
+  };
 
   if (loading) return <div style={{ padding: '32px', textAlign: 'center' }}>Loading reports...</div>;
   if (error || !data) return (
@@ -35,11 +52,42 @@ const Reports = () => {
 
   return (
     <div>
-      <div style={{ marginBottom: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 12 }}>
-          <FileText color="var(--primary)"/> Business & Stock Reports
+          <FileText color="var(--primary)"/> Business & Financial Reports
         </h2>
+        <button onClick={handleGSTExport} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+           <FileText size={18} /> Export GSTR-1 (CSV)
+        </button>
       </div>
+
+      {plData && (
+        <>
+          <h3 style={{ marginBottom: 16 }}>This Month's Profit & Loss</h3>
+          <div className="stats-grid" style={{ marginBottom: 32 }}>
+            <div className="stat-card">
+              <div className="stat-title">Total Revenue</div>
+              <div className="stat-value" style={{ color: 'var(--success)' }}>₹{plData.revenue}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-title">Cost of Goods (COGS)</div>
+              <div className="stat-value" style={{ color: 'var(--danger)' }}>₹{plData.cogs}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-title">Gross Profit</div>
+              <div className="stat-value" style={{ color: 'var(--primary)' }}>₹{plData.gross_profit}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-title">Net Profit</div>
+              <div className="stat-value" style={{ color: plData.net_profit >= 0 ? 'var(--success)' : 'var(--danger)' }}>
+                ₹{plData.net_profit}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      <h3 style={{ marginBottom: 16 }}>Inventory Overview</h3>
 
       <div className="stats-grid">
         <div className="stat-card">

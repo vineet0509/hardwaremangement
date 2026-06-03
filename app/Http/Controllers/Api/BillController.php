@@ -241,7 +241,7 @@ class BillController extends Controller
             'items.*.product_id' => [
                 'required',
                 \Illuminate\Validation\Rule::exists('products', 'id')->where(function ($query) {
-                    return $query->where('shop_id', auth()->user()->shop_id);
+                    return $query->where('business_id', auth()->user()->business_id);
                 }),
             ],
             'items.*.quantity' => 'required|integer|min:1',
@@ -331,7 +331,7 @@ class BillController extends Controller
 
             foreach ($itemsData as $item) {
                 $item['bill_id'] = $bill->id;
-                $item['shop_id'] = $bill->shop_id;
+                $item['business_id'] = $bill->business_id;
                 BillItem::create($item);
             }
 
@@ -356,7 +356,7 @@ class BillController extends Controller
             'items.*.product_id' => [
                 'required',
                 \Illuminate\Validation\Rule::exists('products', 'id')->where(function ($query) {
-                    return $query->where('shop_id', auth()->user()->shop_id);
+                    return $query->where('business_id', auth()->user()->business_id);
                 }),
             ],
             'items.*.quantity' => 'required|integer|min:1',
@@ -441,7 +441,7 @@ class BillController extends Controller
             ]);
 
             foreach ($itemsData as $item) {
-                $item['shop_id'] = $bill->shop_id;
+                $item['business_id'] = $bill->business_id;
                 BillItem::create($item);
             }
 
@@ -571,10 +571,10 @@ class BillController extends Controller
     public function downloadPDF(Bill $bill)
     {
         $bill->load('items');
-        $settings = Setting::where('shop_id', $bill->shop_id)->first();
-        $shop = \App\Models\Shop::find($bill->shop_id);
+        $settings = Setting::where('business_id', $bill->business_id)->first();
+        $business = \App\Models\Business::find($bill->business_id);
         
-        $pdf = Pdf::loadView('pdf.bill', compact('bill', 'settings', 'shop'));
+        $pdf = Pdf::loadView('pdf.bill', compact('bill', 'settings', 'business'));
         return $pdf->download("bill-{$bill->bill_number}.pdf");
     }
 }

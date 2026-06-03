@@ -2,9 +2,9 @@
 
 namespace App\Traits;
 
-use App\Models\Shop;
+use App\Models\Business;
 
-trait RestrictsChildShops
+trait RestrictsChildBusinesses
 {
     /**
      * Determine if the current request is operating within a child shop context.
@@ -18,16 +18,16 @@ trait RestrictsChildShops
             return false;
         }
 
-        $shopId = auth('sanctum')->user()->shop_id;
-        $requestedShopId = request()->header('X-Shop-Id');
+        $businessId = auth('sanctum')->user()->business_id;
+        $requestedBusinessId = request()->header('X-Business-Id');
 
-        if ($requestedShopId && $requestedShopId != $shopId) {
-            $childShop = Shop::where('id', $requestedShopId)->where('parent_id', $shopId)->first();
-            if ($childShop) {
+        if ($requestedBusinessId && $requestedBusinessId != $businessId) {
+            $childBusiness = Business::where('id', $requestedBusinessId)->where('parent_id', $businessId)->first();
+            if ($childBusiness) {
                 return true;
             }
         } else {
-            $currentShop = Shop::find($shopId);
+            $currentShop = Business::find($businessId);
             if ($currentShop && $currentShop->parent_id !== null) {
                 return true;
             }

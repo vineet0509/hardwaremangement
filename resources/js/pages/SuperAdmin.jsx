@@ -3,16 +3,16 @@ import api from '../utils/api';
 import { Shield, Store, Users, Calendar, CheckCircle, XCircle, ToggleLeft, ToggleRight } from 'lucide-react';
 
 const SuperAdmin = () => {
-  const [shops, setShops] = useState([]);
+  const [shops, setBusinesses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedShopUsers, setSelectedShopUsers] = useState(null);
-  const [activeTab, setActiveTab] = useState('shops');
+  const [activeTab, setActiveTab] = useState('businesses');
   const [loginLogs, setLoginLogs] = useState([]);
   const [subscriptionRequests, setSubscriptionRequests] = useState([]);
   const [logsPagination, setLogsPagination] = useState({ current: 1, last: 1 });
 
   useEffect(() => {
-    fetchShops();
+    fetchBusinesses();
     fetchLogs(1);
     fetchSubscriptionRequests();
   }, []);
@@ -35,10 +35,10 @@ const SuperAdmin = () => {
       .catch(console.error);
   };
 
-  const fetchShops = () => {
+  const fetchBusinesses = () => {
     api.get('/super-admin/shops')
       .then(res => {
-        setShops(res.data);
+        setBusinesses(res.data);
         setLoading(false);
       })
       .catch(err => {
@@ -47,22 +47,22 @@ const SuperAdmin = () => {
       });
   };
 
-  const handleToggleStatus = (shopId) => {
-    api.post(`/super-admin/shops/${shopId}/toggle-status`)
+  const handleToggleStatus = (businessId) => {
+    api.post(`/super-admin/shops/${businessId}/toggle-status`)
       .then(res => {
         alert(res.data.message);
-        fetchShops();
+        fetchBusinesses();
       })
       .catch(err => alert(err.response?.data?.message || 'Error updating shop status'));
   };
 
-  const handleExtendPlan = (shopId) => {
+  const handleExtendPlan = (businessId) => {
     const days = prompt("How many days to extend the trial/plan by?");
     if (days && !isNaN(days) && parseInt(days) > 0) {
-      api.post(`/super-admin/shops/${shopId}/extend-plan`, { days: parseInt(days) })
+      api.post(`/super-admin/shops/${businessId}/extend-plan`, { days: parseInt(days) })
         .then(res => {
           alert(res.data.message);
-          fetchShops();
+          fetchBusinesses();
         })
         .catch(err => alert(err.response?.data?.message || 'Error extending plan'));
     }
@@ -74,7 +74,7 @@ const SuperAdmin = () => {
         .then(res => {
           alert(res.data.message);
           fetchSubscriptionRequests();
-          fetchShops();
+          fetchBusinesses();
         })
         .catch(err => alert(err.response?.data?.message || 'Error approving request'));
     }
@@ -105,20 +105,20 @@ const SuperAdmin = () => {
         <Shield color="var(--primary)" size={32} />
         <div>
           <h2 style={{ margin: 0 }}>Super Admin Dashboard</h2>
-          <p style={{ color: 'var(--text-muted)', margin: 0, fontSize: '0.9rem' }}>Manage all registered hardware shops and their system access.</p>
+          <p style={{ color: 'var(--text-muted)', margin: 0, fontSize: '0.9rem' }}>Manage all registered retail businesses and their system access.</p>
         </div>
       </div>
 
       <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
         <button 
-          onClick={() => setActiveTab('shops')} 
+          onClick={() => setActiveTab('businesses')} 
           style={{ 
             padding: '10px 20px', borderRadius: 8, border: '1px solid var(--border)', 
-            background: activeTab === 'shops' ? 'var(--primary)' : 'var(--surface)', 
-            color: activeTab === 'shops' ? 'white' : 'var(--text-main)', cursor: 'pointer', fontWeight: 600 
+            background: activeTab === 'businesses' ? 'var(--primary)' : 'var(--surface)', 
+            color: activeTab === 'businesses' ? 'white' : 'var(--text-main)', cursor: 'pointer', fontWeight: 600 
           }}
         >
-          Registered Shops
+          Registered Businesses
         </button>
         <button 
           onClick={() => setActiveTab('requests')} 
@@ -148,18 +148,18 @@ const SuperAdmin = () => {
       </div>
 
       <div style={{ display: 'flex', gap: 24, flexDirection: 'column' }}>
-        {activeTab === 'shops' ? (
+        {activeTab === 'businesses' ? (
           <div className="stat-card" style={{ overflowX: 'auto' }}>
             <h3 style={{ borderBottom: '1px solid var(--border)', paddingBottom: 12, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
               <Store size={20} color="var(--primary)" />
-              Registered Shops ({shops.length})
+              Registered Businesses ({shops.length})
             </h3>
           
           <div className="table-responsive"><table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
               <tr style={{ borderBottom: '2px solid var(--border)', color: 'var(--text-muted)' }}>
                 <th style={{ padding: '12px 16px' }}>ID</th>
-                <th style={{ padding: '12px 16px' }}>Shop Name</th>
+                <th style={{ padding: '12px 16px' }}>Business Name</th>
                 <th style={{ padding: '12px 16px' }}>Domain</th>
                 <th style={{ padding: '12px 16px' }}>Users</th>
                 <th style={{ padding: '12px 16px' }}>Plan</th>
@@ -255,7 +255,7 @@ const SuperAdmin = () => {
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                 <thead>
                   <tr style={{ borderBottom: '2px solid var(--border)', color: 'var(--text-muted)' }}>
-                    <th style={{ padding: '12px 16px' }}>Shop</th>
+                    <th style={{ padding: '12px 16px' }}>Business</th>
                     <th style={{ padding: '12px 16px' }}>Plan Type</th>
                     <th style={{ padding: '12px 16px' }}>Amount</th>
                     <th style={{ padding: '12px 16px' }}>Status</th>
@@ -321,7 +321,7 @@ const SuperAdmin = () => {
                 <thead>
                   <tr style={{ borderBottom: '2px solid var(--border)', color: 'var(--text-muted)' }}>
                     <th style={{ padding: '12px 16px' }}>User</th>
-                    <th style={{ padding: '12px 16px' }}>Shop</th>
+                    <th style={{ padding: '12px 16px' }}>Business</th>
                     <th style={{ padding: '12px 16px' }}>IP Address</th>
                     <th style={{ padding: '12px 16px' }}>User Agent</th>
                     <th style={{ padding: '12px 16px' }}>Login Time</th>
@@ -331,7 +331,7 @@ const SuperAdmin = () => {
                   {loginLogs.map(log => (
                     <tr key={log.id} style={{ borderBottom: '1px solid var(--border)' }}>
                       <td style={{ padding: '16px' }}>{log.user?.name || 'Unknown User'} ({log.user?.email || 'N/A'})</td>
-                      <td style={{ padding: '16px' }}>{log.shop?.name || 'Unknown Shop'}</td>
+                      <td style={{ padding: '16px' }}>{log.shop?.name || 'Unknown Business'}</td>
                       <td style={{ padding: '16px' }}>{log.ip_address}</td>
                       <td style={{ padding: '16px', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={log.user_agent}>
                         {log.user_agent}
@@ -379,7 +379,7 @@ const SuperAdmin = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border)', paddingBottom: 12, marginBottom: 16 }}>
               <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Users size={20} color="var(--primary)" />
-                Shop Users
+                Business Users
               </h3>
               <button 
                 className="btn btn-secondary" 

@@ -3,21 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BelongsToShop;
+use App\Traits\BelongsToBusiness;
 
 class SubscriptionRequest extends Model
 {
-    use BelongsToShop;
+    use BelongsToBusiness;
 
     protected $fillable = [
-        'shop_id',
+        'business_id',
         'plan_type',
         'amount',
         'status',
     ];
 
-    public function shop()
+    public function business()
     {
-        return $this->belongsTo(Shop::class);
+        return $this->belongsTo(Business::class);
     }
 }

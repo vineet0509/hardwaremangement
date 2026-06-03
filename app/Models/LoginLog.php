@@ -10,7 +10,7 @@ class LoginLog extends Model
 
     protected $fillable = [
         'user_id',
-        'shop_id',
+        'business_id',
         'ip_address',
         'user_agent',
         'login_at'
@@ -25,8 +25,8 @@ class LoginLog extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function shop()
+    public function business()
     {
-        return $this->belongsTo(Shop::class);
+        return $this->belongsTo(Business::class);
     }
 }

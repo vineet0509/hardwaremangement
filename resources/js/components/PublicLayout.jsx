@@ -187,7 +187,7 @@ const PublicLayout = ({ children }) => {
               background: 'linear-gradient(to right, #ffffff, #94a3b8)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
-            }}>Hardware Pro</span>
+            }}>VyaparSync</span>
           </Link>
 
           {/* Desktop Navigation Links */}
@@ -328,10 +328,10 @@ const PublicLayout = ({ children }) => {
                 <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', color: 'white', padding: '6px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Package size={18} strokeWidth={2.5} />
                 </div>
-                <span style={{ fontSize: '1.1rem', fontWeight: 900, color: '#fff' }}>Hardware Pro</span>
+                <span style={{ fontSize: '1.1rem', fontWeight: 900, color: '#fff' }}>VyaparSync</span>
               </div>
               <p style={{ fontSize: '0.85rem', lineHeight: 1.6 }}>
-                Advanced Multi-Tenant SaaS solution tailored for hardware shops, wholesalers, and retail building materials counters.
+                Advanced Multi-Tenant SaaS solution tailored for retail businesses, wholesalers, and retail building materials counters.
               </p>
               <div style={{ fontSize: '0.75rem', opacity: 0.8 }}>
                 SaaS Version 2.0.4. Active, safe and isolated.
@@ -382,7 +382,7 @@ const PublicLayout = ({ children }) => {
             gap: 16,
             fontSize: '0.8rem'
           }}>
-            <span>&copy; {new Date().getFullYear()} Hardware Shop Manager. All rights reserved.</span>
+            <span>&copy; {new Date().getFullYear()} VyaparSync. All rights reserved.</span>
             <span>
               Powered by <a href="https://vynkra.in" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none' }}>Vynkra Technologies</a>
             </span>
@@ -440,7 +440,7 @@ const PublicLayout = ({ children }) => {
               <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 54, height: 54, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', color: 'white', boxShadow: '0 8px 16px rgba(79,70,229,0.2)' }}>
                 <Package size={28} strokeWidth={2.5} />
               </div>
-              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)', margin: '0 0 4px' }}>Hardware Pro</h3>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)', margin: '0 0 4px' }}>VyaparSync</h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>Management Dashboard Login</p>
             </div>
 
@@ -552,7 +552,7 @@ const PublicLayout = ({ children }) => {
                 <Package size={28} strokeWidth={2.5} />
               </div>
               <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)', margin: '0 0 4px' }}>Register Store</h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>Start managing your hardware business today.</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>Start managing your business today.</p>
               
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold', marginTop: '10px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
                 <BadgeCheck size={14} /> 30-Day Trial Period Included
@@ -574,7 +574,7 @@ const PublicLayout = ({ children }) => {
                   <input 
                     type="text" 
                     className="form-control" 
-                    placeholder="Official Shop Name (Ex: Apex Hardware)" 
+                    placeholder="Official Business Name (Ex: Apex Store)" 
                     required 
                     value={registerData.shop_name} 
                     onChange={e => setRegisterData({...registerData, shop_name: e.target.value})} 

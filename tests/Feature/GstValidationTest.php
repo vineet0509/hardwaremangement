@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\User;
-use App\Models\Shop;
+use App\Models\Business;
 use App\Models\Setting;
 
 class GstValidationTest extends TestCase
@@ -27,7 +27,7 @@ class GstValidationTest extends TestCase
         $response = $this->postJson('/api/register', $payload);
 
         $response->assertStatus(200);
-        $this->assertDatabaseHas('shops', [
+        $this->assertDatabaseHas('businesses', [
             'name' => 'Apex Hardware',
             'gst_number' => '27AAPFU0939F1ZV',
         ]);
@@ -48,7 +48,7 @@ class GstValidationTest extends TestCase
         $response = $this->postJson('/api/register', $payload);
 
         $response->assertStatus(200);
-        $this->assertDatabaseHas('shops', [
+        $this->assertDatabaseHas('businesses', [
             'name' => 'Apex Hardware',
             'gst_number' => '27AAPFU0939F1ZV',
         ]);
@@ -74,7 +74,7 @@ class GstValidationTest extends TestCase
 
     public function test_settings_update_succeeds_with_valid_gstin(): void
     {
-        $shop = Shop::create([
+        $business = Business::create([
             'name' => 'Original Shop',
             'gst_number' => null,
             'is_active' => true,
@@ -85,11 +85,11 @@ class GstValidationTest extends TestCase
             'email' => 'owner@example.com',
             'mobile' => '9999999999',
             'password' => bcrypt('password123'),
-            'shop_id' => $shop->id,
+            'business_id' => $business->id,
         ]);
 
         $settings = Setting::create([
-            'shop_id' => $shop->id,
+            'business_id' => $business->id,
             'company_name' => 'Original Shop',
             'subscription_plan' => 'full_time',
         ]);
@@ -104,15 +104,15 @@ class GstValidationTest extends TestCase
         $response = $this->actingAs($user)->postJson('/api/settings', $payload);
 
         $response->assertStatus(200);
-        $this->assertDatabaseHas('shops', [
-            'id' => $shop->id,
+        $this->assertDatabaseHas('businesses', [
+            'id' => $business->id,
             'gst_number' => '07AAAAA1111A1ZY',
         ]);
     }
 
     public function test_settings_update_fails_with_invalid_gstin(): void
     {
-        $shop = Shop::create([
+        $business = Business::create([
             'name' => 'Original Shop',
             'gst_number' => null,
             'is_active' => true,
@@ -123,11 +123,11 @@ class GstValidationTest extends TestCase
             'email' => 'owner@example.com',
             'mobile' => '9999999999',
             'password' => bcrypt('password123'),
-            'shop_id' => $shop->id,
+            'business_id' => $business->id,
         ]);
 
         $settings = Setting::create([
-            'shop_id' => $shop->id,
+            'business_id' => $business->id,
             'company_name' => 'Original Shop',
             'subscription_plan' => 'full_time',
         ]);

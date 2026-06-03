@@ -33,7 +33,7 @@ const ContactUs = () => {
             <HelpCircle size={40} />
           </div>
           <h1 style={{ fontSize: '2.5rem', color: 'var(--text-main)', marginBottom: 12 }}>Contact Us</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>We are here to help your hardware business succeed.</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>We are here to help your business succeed.</p>
         </div>
 
         <div style={{ color: 'var(--text-main)', lineHeight: '1.7', fontSize: '1.05rem', display: 'flex', gap: 40, flexWrap: 'wrap' }}>

@@ -3,15 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\BelongsToShop;
+use App\Traits\BelongsToBusiness;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Expense extends Model
 {
-    use BelongsToShop, SoftDeletes;
+    use BelongsToBusiness, SoftDeletes;
 
     protected $fillable = [
-        'shop_id',
+        'business_id',
         'expense_date',
         'amount',
         'description',

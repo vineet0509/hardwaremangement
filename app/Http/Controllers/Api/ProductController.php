@@ -12,11 +12,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use App\Traits\RestrictsChildShops;
+use App\Traits\RestrictsChildBusinesses;
 
 class ProductController extends Controller
 {
-    use RestrictsChildShops;
+    use RestrictsChildBusinesses;
     public function index(Request $request): JsonResponse
     {
         $query = Product::with('category');
@@ -48,7 +48,7 @@ class ProductController extends Controller
             'category_id'     => [
                 'required',
                 Rule::exists('categories', 'id')->where(function ($query) {
-                    return $query->where('shop_id', auth('sanctum')->user()->shop_id);
+                    return $query->where('business_id', auth('sanctum')->user()->business_id);
                 })
             ],
             'supplier_id'     => 'nullable|exists:suppliers,id',
@@ -77,7 +77,7 @@ class ProductController extends Controller
 
             if ($product->quantity > 0 && $product->supplier_id) {
                 SupplierTransaction::create([
-                    'shop_id' => $product->shop_id,
+                    'business_id' => $product->business_id,
                     'supplier_id' => $product->supplier_id,
                     'type' => 'purchase',
                     'amount' => $product->quantity * $product->purchase_price,
@@ -106,7 +106,7 @@ class ProductController extends Controller
             'category_id'     => [
                 'sometimes',
                 Rule::exists('categories', 'id')->where(function ($query) {
-                    return $query->where('shop_id', auth('sanctum')->user()->shop_id);
+                    return $query->where('business_id', auth('sanctum')->user()->business_id);
                 })
             ],
             'supplier_id'     => 'nullable|exists:suppliers,id',
@@ -159,7 +159,7 @@ class ProductController extends Controller
             if ($product->supplier_id) {
                 $buyPrice = $data['price'] ?? $product->purchase_price;
                 SupplierTransaction::create([
-                    'shop_id' => $product->shop_id,
+                    'business_id' => $product->business_id,
                     'supplier_id' => $product->supplier_id,
                     'type' => 'purchase',
                     'amount' => $data['quantity'] * $buyPrice,
@@ -219,7 +219,7 @@ class ProductController extends Controller
                 'string',
                 'max:255',
                 Rule::unique('categories')->where(function ($query) {
-                    return $query->where('shop_id', auth('sanctum')->user()->shop_id);
+                    return $query->where('business_id', auth('sanctum')->user()->business_id);
                 })
             ],
             'description' => 'nullable|string',
@@ -305,7 +305,7 @@ class ProductController extends Controller
                 if (!$name) continue;
 
                 $category = Category::withoutGlobalScopes()->firstOrCreate(
-                    ['name' => $categoryName, 'shop_id' => auth('sanctum')->user()->shop_id]
+                    ['name' => $categoryName, 'business_id' => auth('sanctum')->user()->business_id]
                 );
 
                 Product::create([
@@ -318,7 +318,7 @@ class ProductController extends Controller
                     'quantity' => $quantity,
                     'min_stock_alert' => $minStock,
                     'unit' => $unit,
-                    'shop_id' => auth('sanctum')->user()->shop_id
+                    'business_id' => auth('sanctum')->user()->business_id
                 ]);
                 
                 $count++;

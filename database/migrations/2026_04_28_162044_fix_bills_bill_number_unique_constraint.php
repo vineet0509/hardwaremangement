@@ -10,14 +10,14 @@ return new class extends Migration
     {
         Schema::table('bills', function (Blueprint $table) {
             $table->dropUnique(['bill_number']);
-            $table->unique(['shop_id', 'bill_number']);
+            $table->unique(['business_id', 'bill_number']);
         });
     }
 
     public function down(): void
     {
         Schema::table('bills', function (Blueprint $table) {
-            $table->dropUnique(['shop_id', 'bill_number']);
+            $table->dropUnique(['business_id', 'bill_number']);
             $table->unique(['bill_number']);
         });
     }
