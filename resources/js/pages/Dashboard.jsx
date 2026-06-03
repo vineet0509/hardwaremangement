@@ -53,6 +53,15 @@ const Dashboard = () => {
       });
   }, []);
 
+  // ✅ All hooks must be called before any early returns (Rules of Hooks)
+  const statCards = loading || !data ? [] : [
+    { title: "Today's Revenue", value: `₹${data.today_sales}`, icon: IndianRupee, color: "var(--primary)" },
+    { title: "Est. Gross Profit", value: `₹${data.today_profit}`, icon: TrendingUp, color: "var(--success)" },
+    { title: "Total Due (Customers)", value: `₹${data.total_customer_due || 0}`, icon: Clock, color: "var(--warning)" },
+    { title: "Total Given (Supplier)", value: `₹${data.total_given_to_supplier || 0}`, icon: Users, color: "var(--primary)" },
+    { title: "Low Stock Items", value: data.low_stock_count, icon: AlertCircle, color: "var(--danger)" },
+  ];
+
   if (loading) return <div style={{ padding: '32px', textAlign: 'center' }}>Loading robust dashboard data...</div>;
   if (error || !data) return (
     <div style={{ padding: '32px', textAlign: 'center', color: 'var(--danger)' }}>
@@ -62,13 +71,6 @@ const Dashboard = () => {
     </div>
   );
 
-  const statCards = [
-    { title: "Today's Revenue", value: `₹${data.today_sales}`, icon: IndianRupee, color: "var(--primary)" },
-    { title: "Est. Gross Profit", value: `₹${data.today_profit}`, icon: TrendingUp, color: "var(--success)" },
-    { title: "Total Due (Customers)", value: `₹${data.total_customer_due || 0}`, icon: Clock, color: "var(--warning)" },
-    { title: "Total Given (Supplier)", value: `₹${data.total_given_to_supplier || 0}`, icon: Users, color: "var(--primary)" },
-    { title: "Low Stock Items", value: data.low_stock_count, icon: AlertCircle, color: "var(--danger)" },
-  ];
 
   const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444'];
 

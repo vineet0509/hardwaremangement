@@ -52,6 +52,9 @@ const Settings = () => {
     fetchSettings();
   }, []);
 
+  // ✅ Early return must come after ALL hooks (Rules of Hooks)
+  if (loading) return <div>Loading settings...</div>;
+
   const handleSave = (e) => {
     e.preventDefault();
     
@@ -120,8 +123,6 @@ const Settings = () => {
       }
     });
   };
-
-  if (loading) return <div>Loading settings...</div>;
 
   return (
     <div>
