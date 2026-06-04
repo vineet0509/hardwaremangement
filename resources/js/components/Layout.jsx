@@ -106,6 +106,9 @@ const Layout = ({ children }) => {
         if (res.data.role === 'staff') {
           fetchAttendanceStatus();
         }
+        if (!localStorage.getItem('onboarding_complete')) {
+          setShowTour(true);
+        }
       })
       .catch(console.error)
       .finally(() => setAuthLoading(false));
@@ -228,7 +231,7 @@ const Layout = ({ children }) => {
   return (
     <div className="app-container">
       {/* Onboarding Tour Overlay */}
-      {showTour && <OnboardingTour onComplete={() => setShowTour(false)} />}
+      {showTour && <OnboardingTour onComplete={() => setShowTour(false)} user={user} />}
       {/* Sidebar Overlay for Mobile */}
       {isMobileMenuOpen && (
         <div 

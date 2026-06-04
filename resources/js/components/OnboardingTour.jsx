@@ -121,12 +121,24 @@ const STEPS = [
   },
 ];
 
-const OnboardingTour = ({ onComplete }) => {
+const OnboardingTour = ({ onComplete, user }) => {
   const [step, setStep] = useState(0);
   const [animating, setAnimating] = useState(false);
   const navigate = useNavigate();
-  const current = STEPS[step];
-  const isLast = step === STEPS.length - 1;
+
+  const activeSteps = React.useMemo(() => {
+    if (!user || user.role !== 'staff') return STEPS;
+    
+    const perms = user.permissions || {};
+    return STEPS.filter(s => {
+      if (s.id === 'welcome' || s.id === 'billing' || s.id === 'done') return true;
+      if ((s.id === 'products' || s.id === 'suppliers') && perms.can_manage_inventory) return true;
+      return false; // customers, settings hidden from staff
+    });
+  }, [user]);
+
+  const current = activeSteps[step];
+  const isLast = step === activeSteps.length - 1;
   const isFirst = step === 0;
 
   const goTo = (nextStep) => {
@@ -215,7 +227,7 @@ const OnboardingTour = ({ onComplete }) => {
 
         {/* Step Progress Dots */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 32 }}>
-          {STEPS.map((_, i) => (
+          {activeSteps.map((_, i) => (
             <div
               key={i}
               onClick={() => goTo(i)}
