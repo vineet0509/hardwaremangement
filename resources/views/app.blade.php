@@ -45,8 +45,8 @@
          TWITTER / X CARD
     ═══════════════════════════════════════════════════════ -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@VyaparSync">
-    <meta name="twitter:creator" content="@VynkraTech">
+    <meta name="twitter:site" content="@@VyaparSync">
+    <meta name="twitter:creator" content="@@VynkraTech">
     <meta name="twitter:title" content="VyaparSync – Free Billing & POS for Indian Shops">
     <meta name="twitter:description" content="GST invoices, khata book, stock control, staff payroll — all free for Indian small businesses.">
     <meta name="twitter:image" content="{{ asset('logo.png') }}">
@@ -56,8 +56,8 @@
     ═══════════════════════════════════════════════════════ -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
+      "@@context": "https://schema.org",
+      "@@type": "SoftwareApplication",
       "name": "VyaparSync",
       "url": "{{ url('/') }}",
       "logo": "{{ asset('logo.png') }}",
@@ -65,7 +65,7 @@
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web, Android, iOS",
       "offers": {
-        "@type": "Offer",
+        "@@type": "Offer",
         "price": "0",
         "priceCurrency": "INR"
       },
@@ -82,12 +82,12 @@
         "Business Reports & Analytics"
       ],
       "aggregateRating": {
-        "@type": "AggregateRating",
+        "@@type": "AggregateRating",
         "ratingValue": "4.8",
         "reviewCount": "120"
       },
       "publisher": {
-        "@type": "Organization",
+        "@@type": "Organization",
         "name": "Vynkra Technologies",
         "url": "{{ url('/') }}"
       }
