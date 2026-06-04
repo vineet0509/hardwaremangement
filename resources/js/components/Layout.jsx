@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingCart, Users, FileText, Receipt, LogOut, Settings as SettingsIcon, Banknote, Languages, Lock, Shield, Menu, X, Truck, AlertTriangle, Sun, Moon, ClipboardList, Info, HelpCircle, Compass, Building } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, Users, FileText, Receipt, LogOut, Settings as SettingsIcon, Banknote, Languages, Lock, Shield, Menu, X, Truck, AlertTriangle, Sun, Moon, ClipboardList, Info, HelpCircle, Compass, Building, ChevronDown, ChevronRight } from 'lucide-react';
 import api from '../utils/api';
 import OnboardingTour from './OnboardingTour';
 
@@ -10,17 +10,41 @@ const Layout = ({ children }) => {
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Products & Stock', path: '/products', icon: Package },
-    { name: 'Suppliers', path: '/suppliers', icon: Truck },
-    { name: 'Point of Sale (Billing)', path: '/billing', icon: ShoppingCart },
-    { name: 'Quotations', path: '/quotations', icon: ClipboardList },
-    { name: 'Customers', path: '/customers', icon: Users },
-    { name: 'Bill History', path: '/bills', icon: Receipt },
-    { name: 'Other Expenses', path: '/expenses', icon: Banknote },
-    { name: 'Staff Advances', path: '/advances', icon: Banknote },
-    { name: 'Staff Management', path: '/staff', icon: Users },
-    { name: 'Branches (Businesses)', path: '/child-businesses', icon: Building },
+    { 
+      name: 'Inventory', icon: Package, 
+      subItems: [
+        { name: 'Products & Stock', path: '/products' },
+        { name: 'Suppliers', path: '/suppliers' },
+      ]
+    },
+    { 
+      name: 'Sales & Billing', icon: ShoppingCart, 
+      subItems: [
+        { name: 'Point of Sale', path: '/billing' },
+        { name: 'Quotations', path: '/quotations' },
+        { name: 'Bill History', path: '/bills' },
+        { name: 'Customers', path: '/customers' },
+      ]
+    },
+    { 
+      name: 'Management', icon: Users, 
+      subItems: [
+        { name: 'Staff', path: '/staff' },
+        { name: 'Advances', path: '/advances' },
+        { name: 'Expenses', path: '/expenses' },
+        { name: 'Branches', path: '/child-businesses' },
+      ]
+    },
     { name: 'Reports', path: '/reports', icon: FileText },
+    {
+      name: 'Profile', icon: SettingsIcon,
+      subItems: [
+        { name: 'Settings', path: '/settings', role: 'admin' },
+        { name: 'Privacy Policy', path: '/privacy-policy' },
+        { name: 'Terms & Conditions', path: '/terms' },
+        { name: 'Logout', action: 'logout' },
+      ]
+    }
   ];
 
   const [settings, setSettings] = useState(null);
@@ -30,6 +54,15 @@ const Layout = ({ children }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('app_theme') || 'dark');
   const [showTour, setShowTour] = useState(false);
+  const [openCategories, setOpenCategories] = useState({
+    'Inventory': false,
+    'Sales & Billing': false,
+    'Management': false
+  });
+
+  const toggleCategory = (catName) => {
+    setOpenCategories(prev => ({ ...prev, [catName]: !prev[catName] }));
+  };
 
   const handleStartTour = () => {
     localStorage.removeItem('onboarding_complete');
@@ -105,7 +138,15 @@ const Layout = ({ children }) => {
 
   let allNavItems = [...navItems];
   if (user && user.role === 'staff') {
-    allNavItems = navItems.filter(item => ['/billing', '/bills', '/quotations'].includes(item.path));
+    const allowed = ['/billing', '/bills', '/quotations', '/privacy-policy', '/terms'];
+    allNavItems = navItems.map(item => {
+      if (item.subItems) {
+        const filteredSubs = item.subItems.filter(sub => allowed.includes(sub.path) || sub.action === 'logout');
+        if (filteredSubs.length > 0) return { ...item, subItems: filteredSubs };
+        return null;
+      }
+      return allowed.includes(item.path) ? item : null;
+    }).filter(Boolean);
   }
   if (user && (user.is_super_admin === true || user.is_super_admin == 1)) {
     allNavItems.push({ name: 'Super Admin', path: '/super-admin', icon: Shield });
@@ -172,28 +213,67 @@ const Layout = ({ children }) => {
         
         <nav className="nav-links">
           {allNavItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`nav-item ${location.pathname.startsWith(item.path) ? 'active' : ''}`}
-            >
-              <item.icon size={20} />
-              {item.name}
-            </NavLink>
+            <React.Fragment key={item.name}>
+              {item.subItems ? (
+                <>
+                  <div 
+                    className="nav-item" 
+                    onClick={() => toggleCategory(item.name)}
+                    style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', paddingRight: '12px' }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                      <item.icon size={20} />
+                      {item.name}
+                    </div>
+                    {openCategories[item.name] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                  </div>
+                  {openCategories[item.name] && (
+                    <div style={{ paddingLeft: '34px', display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '2px', marginBottom: '6px' }}>
+                      {item.subItems.map(sub => {
+                        if (sub.role === 'admin' && user?.role === 'staff') return null;
+                        
+                        if (sub.action === 'logout') {
+                          return (
+                            <button
+                              key="logout"
+                              onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }}
+                              className="nav-item"
+                              style={{ padding: '8px 12px', fontSize: '0.85rem', width: '100%', textAlign: 'left', background: 'transparent', color: '#ef4444', border: 'none', cursor: 'pointer', display: 'flex', gap: '10px', alignItems: 'center' }}
+                            >
+                              <LogOut size={16} /> {sub.name}
+                            </button>
+                          );
+                        }
+                        return (
+                          <NavLink
+                            key={sub.path}
+                            to={sub.path}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={`nav-item ${location.pathname.startsWith(sub.path) ? 'active' : ''}`}
+                            style={{ padding: '8px 12px', fontSize: '0.85rem' }}
+                          >
+                            {sub.name}
+                          </NavLink>
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <NavLink
+                  key={item.path || item.name}
+                  to={item.path}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`nav-item ${location.pathname.startsWith(item.path) ? 'active' : ''}`}
+                >
+                  <item.icon size={20} />
+                  {item.name}
+                </NavLink>
+              )}
+            </React.Fragment>
           ))}
 
           <div style={{ margin: '12px 0', borderTop: '1px solid rgba(255,255,255,0.08)' }}></div>
-
-          {user?.role !== 'staff' && (
-            <NavLink 
-              to="/settings" 
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`nav-item ${location.pathname === '/settings' ? 'active' : ''}`}
-            >
-              <SettingsIcon size={20} /> Settings
-            </NavLink>
-          )}
 
           <NavLink 
             to="/about-us" 
@@ -229,22 +309,6 @@ const Layout = ({ children }) => {
           >
             <Compass size={20} /> Product Tour
           </button>
-
-          <NavLink 
-            to="/privacy-policy" 
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={`nav-item ${location.pathname === '/privacy-policy' ? 'active' : ''}`}
-          >
-            <Shield size={20} /> Privacy Policy
-          </NavLink>
-
-          <NavLink 
-            to="/terms" 
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={`nav-item ${location.pathname === '/terms' ? 'active' : ''}`}
-          >
-            <FileText size={20} /> Terms & Conditions
-          </NavLink>
 
           <div style={{ padding: '12px 16px', marginTop: 8 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(255,255,255,0.05)', padding: '10px 14px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.1)' }}>
@@ -300,40 +364,6 @@ const Layout = ({ children }) => {
                 <Shield size={16} /> Super Admin Dashboard
               </button>
             )}
-            {user?.role !== 'staff' && (
-              <button 
-                onClick={() => { setIsMobileMenuOpen(false); navigate('/settings'); }}
-                style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(255, 255, 255, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
-              >
-                <SettingsIcon size={16} /> Settings
-              </button>
-            )}
-            <button 
-              onClick={() => { setIsMobileMenuOpen(false); navigate('/privacy-policy'); }}
-              style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(255, 255, 255, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
-            >
-              <Shield size={16} /> Privacy Policy
-            </button>
-            <button 
-              onClick={() => { setIsMobileMenuOpen(false); navigate('/terms'); }}
-              style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(255, 255, 255, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
-            >
-              <FileText size={16} /> Terms & Conditions
-            </button>
-            <button 
-              onClick={() => {
-                if(confirm("Are you sure you want to log out?")) {
-                   api.post('/logout').catch(console.error).finally(() => {
-                      localStorage.removeItem('auth_token');
-                      localStorage.removeItem('login_date');
-                      window.location.href = '/';
-                   });
-                }
-              }}
-              style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#ef4444', background: 'rgba(239, 68, 68, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
-            >
-              <LogOut size={16} /> Logout
-            </button>
           </div>
         </div>
       </aside>
