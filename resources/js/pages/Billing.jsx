@@ -452,22 +452,52 @@ const Billing = () => {
             </button>
           ))}
         </div>
-        <div className="panel-body" style={{ background: 'var(--surface-hover)' }}>
-          <div className="product-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
+        <div className="panel-body" style={{ background: 'var(--bg-color)', padding: '16px' }}>
+          <div className="product-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '16px' }}>
             {(!products || !Array.isArray(products) || products.length === 0) ? (
                <div style={{ color: 'var(--text-muted)', textAlign: 'center', gridColumn: '1 / -1', padding: '40px' }}>No products found matching your criteria.</div>
             ) : products.map(p => (
-              <div key={p.id} className="product-card" onClick={() => addToCart(p)} style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: '24px' }}>
-                <span className="stock" style={{ color: p.quantity > p.min_stock_alert ? 'var(--success)' : 'var(--danger)', background: p.quantity > p.min_stock_alert ? '#dcfce7' : '#fee2e2', fontSize: '0.85rem' }}>
-                  {p.quantity} {p.unit}
-                </span>
-                <h4 style={{ fontSize: '1.25rem', marginBottom: '8px', lineHeight: '1.3' }}>{p.name}</h4>
-                <div style={{ fontSize: '0.95rem', color: 'var(--text-muted)', marginBottom: 'auto' }}>SKU: {p.sku}</div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px' }}>
-                   <div className="price" style={{ fontSize: '1.4rem', color: 'var(--text-main)' }}>₹{p.selling_price}</div>
-                   <div style={{ background: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)', padding: '8px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                     <PlusCircle size={22} />
-                   </div>
+              <div 
+                key={p.id} 
+                className="product-card" 
+                onClick={() => addToCart(p)} 
+                style={{ 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  background: 'var(--surface)', 
+                  border: '1px solid var(--border)', 
+                  borderRadius: '16px', 
+                  padding: '16px', 
+                  cursor: 'pointer',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
+                }}
+                onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--primary)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)'; }}
+                onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                  <span style={{ 
+                    color: p.quantity > p.min_stock_alert ? 'var(--success)' : 'var(--danger)', 
+                    background: p.quantity > p.min_stock_alert ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)', 
+                    padding: '4px 8px', 
+                    borderRadius: '8px', 
+                    fontSize: '0.75rem', 
+                    fontWeight: '700',
+                    letterSpacing: '0.02em'
+                  }}>
+                    {p.quantity} {p.unit}
+                  </span>
+                  <div style={{ background: 'var(--primary-light)', color: 'var(--primary)', padding: '6px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <PlusCircle size={18} />
+                  </div>
+                </div>
+                <h4 style={{ fontSize: '1.05rem', fontWeight: '600', color: 'var(--text-main)', marginBottom: '4px', lineHeight: '1.3', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                  {p.name}
+                </h4>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '12px' }}>{p.sku}</div>
+                <div style={{ marginTop: 'auto', paddingTop: '8px', borderTop: '1px dashed var(--border)' }}>
+                   <div style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--primary)' }}>₹{p.selling_price}</div>
                 </div>
               </div>
             ))}
