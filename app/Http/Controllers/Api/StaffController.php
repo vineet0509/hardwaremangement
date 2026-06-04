@@ -160,14 +160,15 @@ class StaffController extends Controller
     public function storeSalary(Request $request, Staff $staff): JsonResponse
     {
         $data = $request->validate([
-            'month'        => 'required|integer|between:1,12',
-            'year'         => 'required|integer|min:2020',
-            'basic_salary' => 'required|numeric|min:0',
-            'bonus'        => 'nullable|numeric|min:0',
-            'deductions'   => 'nullable|numeric|min:0',
-            'paid_amount'  => 'nullable|numeric|min:0',
-            'payment_date' => 'nullable|date',
-            'notes'        => 'nullable|string',
+            'month'          => 'required|integer|between:1,12',
+            'year'           => 'required|integer|min:2020',
+            'basic_salary'   => 'required|numeric|min:0',
+            'bonus'          => 'nullable|numeric|min:0',
+            'deductions'     => 'nullable|numeric|min:0',
+            'paid_amount'    => 'nullable|numeric|min:0',
+            'payment_date'   => 'nullable|date',
+            'notes'          => 'nullable|string',
+            'clear_advances' => 'nullable|boolean',
         ]);
 
         $bonus      = $data['bonus'] ?? 0;
@@ -188,6 +189,10 @@ class StaffController extends Controller
             'payment_date' => $data['payment_date'] ?? null,
             'notes'        => $data['notes'] ?? null,
         ]);
+
+        if (!empty($data['clear_advances']) && $data['clear_advances'] === true) {
+            $staff->advancePayments()->where('status', 'pending')->update(['status' => 'deducted']);
+        }
 
         return response()->json($record, 201);
     }

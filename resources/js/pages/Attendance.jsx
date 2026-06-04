@@ -5,6 +5,7 @@ import { Calendar, MapPin, Clock } from 'lucide-react';
 const Attendance = ({ user }) => {
   const [attendances, setAttendances] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filterDate, setFilterDate] = useState('');
 
   useEffect(() => {
     api.get('/attendance/all')
@@ -15,10 +16,25 @@ const Attendance = ({ user }) => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center" style={{ marginBottom: 24 }}>
+      <div className="d-flex justify-content-between align-items-center" style={{ marginBottom: 24, flexWrap: 'wrap', gap: 16 }}>
         <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 12 }}>
           <Calendar color="var(--primary)"/> Attendance History
         </h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <label style={{ margin: 0, fontWeight: 600, color: 'var(--text-muted)' }}>Filter Date:</label>
+          <input 
+            type="date" 
+            className="form-control" 
+            style={{ width: 'auto' }}
+            value={filterDate} 
+            onChange={(e) => setFilterDate(e.target.value)} 
+          />
+          {filterDate && (
+            <button className="btn btn-outline" style={{ padding: '6px 12px' }} onClick={() => setFilterDate('')}>
+              Clear
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="card" style={{ padding: 24 }}>
@@ -37,7 +53,12 @@ const Attendance = ({ user }) => {
               </tr>
             </thead>
             <tbody>
-              {attendances.map(record => (
+              {attendances
+                .filter(record => {
+                  if (!filterDate) return true;
+                  return record.date.startsWith(filterDate);
+                })
+                .map(record => (
                 <tr key={record.id}>
                   {user?.role !== 'staff' && (
                     <td>
@@ -68,6 +89,13 @@ const Attendance = ({ user }) => {
                   </td>
                 </tr>
               ))}
+              {attendances.filter(record => !filterDate || record.date.startsWith(filterDate)).length === 0 && (
+                <tr>
+                  <td colSpan={user?.role !== 'staff' ? 4 : 3} style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)' }}>
+                    No records found for the selected date.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         )}

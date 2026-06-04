@@ -12,6 +12,21 @@ const Staff = () => {
   const [selectedStaff, setSelectedStaff] = useState(null);
   const [performanceData, setPerformanceData] = useState(null);
   const [attendanceData, setAttendanceData] = useState([]);
+  
+  const [showSalaryModal, setShowSalaryModal] = useState(false);
+  const [showSalaryHistoryModal, setShowSalaryHistoryModal] = useState(false);
+  const [salaryHistory, setSalaryHistory] = useState([]);
+  const [salaryData, setSalaryData] = useState({
+    month: new Date().getMonth() + 1,
+    year: new Date().getFullYear(),
+    basic_salary: 0,
+    bonus: 0,
+    deductions: 0,
+    paid_amount: 0,
+    payment_date: new Date().toISOString().slice(0, 10),
+    notes: '',
+    clear_advances: false
+  });
 
   const [formData, setFormData] = useState({
     name: '', phone: '', role: 'Labour', monthly_salary: 0, 
@@ -110,20 +125,40 @@ const Staff = () => {
   };
 
   const paySalary = (s) => {
-    // Basic simplified logic to pay current month salary 
-    const isConfirmed = confirm(`Pay salary for ${s.name}? Basic: ₹${s.monthly_salary}`);
-    if(isConfirmed) {
-      api.post(`/staff/${s.id}/salary-records`, {
-        month: new Date().getMonth() + 1,
-        year: new Date().getFullYear(),
-        basic_salary: s.monthly_salary,
-        paid_amount: s.monthly_salary,
-        status: 'paid',
-        payment_date: new Date().toISOString().slice(0, 10)
+    setSelectedStaff(s);
+    setSalaryData({
+      month: new Date().getMonth() + 1,
+      year: new Date().getFullYear(),
+      basic_salary: s.monthly_salary || 0,
+      bonus: 0,
+      deductions: 0, // Admin can manually enter, but we could default to min(s.monthly_salary, s.pending_advance)
+      paid_amount: s.monthly_salary || 0,
+      payment_date: new Date().toISOString().slice(0, 10),
+      notes: '',
+      clear_advances: false
+    });
+    setShowSalaryModal(true);
+  };
+
+  const handleProcessSalary = (e) => {
+    e.preventDefault();
+    api.post(`/staff/${selectedStaff.id}/salary-records`, salaryData)
+      .then(() => {
+        alert('Salary processed successfully!');
+        setShowSalaryModal(false);
+        fetchStaff();
       })
-      .then(() => { alert('Salary marked as paid!'); fetchStaff(); })
-      .catch(err => alert(err.response?.data?.message || 'Error occurred.'));
-    }
+      .catch(err => alert(err.response?.data?.message || 'Error processing salary.'));
+  };
+
+  const fetchSalaryHistory = (staff) => {
+    setSelectedStaff(staff);
+    api.get(`/staff/${staff.id}/salary-records`)
+      .then(res => {
+        setSalaryHistory(res.data);
+        setShowSalaryHistoryModal(true);
+      })
+      .catch(err => alert('Failed to fetch salary history.'));
   };
 
   const handleToggleStatus = (s) => {
@@ -182,6 +217,11 @@ const Staff = () => {
               </button>
               <button className="btn btn-primary" style={{ flex: 1, padding: '8px', fontSize: '0.8rem' }} onClick={() => paySalary(s)}>
                 <CheckCircle size={16} /> Salary
+              </button>
+            </div>
+            <div className="d-flex gap-2 mb-2">
+              <button className="btn btn-outline" style={{ flex: 1, padding: '8px', fontSize: '0.8rem' }} onClick={() => fetchSalaryHistory(s)}>
+                <Calendar size={16} /> Salary History
               </button>
             </div>
             <div className="d-flex gap-2">
@@ -414,6 +454,137 @@ const Staff = () => {
             </div>
             <div className="modal-footer">
               <button className="btn btn-outline" onClick={() => setShowAttendanceModal(false)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showSalaryModal && selectedStaff && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>Process Salary ({selectedStaff.name})</h3>
+              <button className="close-btn" onClick={() => setShowSalaryModal(false)}>×</button>
+            </div>
+            <form onSubmit={handleProcessSalary}>
+              <div className="modal-body">
+                <div className="d-flex gap-2 mb-3">
+                  <div className="form-group flex-1">
+                    <label className="form-label">Month</label>
+                    <select className="form-control" value={salaryData.month} onChange={e => setSalaryData({...salaryData, month: parseInt(e.target.value)})}>
+                      {Array.from({length: 12}, (_, i) => <option key={i+1} value={i+1}>{new Date(0, i).toLocaleString('default', { month: 'long' })}</option>)}
+                    </select>
+                  </div>
+                  <div className="form-group flex-1">
+                    <label className="form-label">Year</label>
+                    <input type="number" className="form-control" value={salaryData.year} onChange={e => setSalaryData({...salaryData, year: parseInt(e.target.value)})} />
+                  </div>
+                </div>
+                
+                <div className="form-group">
+                  <label className="form-label">Basic Salary</label>
+                  <input type="number" className="form-control" required value={salaryData.basic_salary} onChange={e => setSalaryData({...salaryData, basic_salary: parseFloat(e.target.value) || 0})} />
+                </div>
+                
+                <div className="form-group">
+                  <label className="form-label">Bonus / Commission</label>
+                  <input type="number" className="form-control" value={salaryData.bonus} onChange={e => setSalaryData({...salaryData, bonus: parseFloat(e.target.value) || 0})} />
+                </div>
+
+                <div className="form-group" style={{ position: 'relative' }}>
+                  <label className="form-label d-flex justify-content-between">
+                    <span>Deductions</span>
+                    {selectedStaff.pending_advance > 0 && (
+                      <span style={{ fontSize: '0.75rem', color: 'var(--danger)', cursor: 'pointer', textDecoration: 'underline' }} 
+                            onClick={() => setSalaryData({...salaryData, deductions: selectedStaff.pending_advance, clear_advances: true})}>
+                        Apply Pending Advance (₹{selectedStaff.pending_advance})
+                      </span>
+                    )}
+                  </label>
+                  <input type="number" className="form-control" value={salaryData.deductions} onChange={e => setSalaryData({...salaryData, deductions: parseFloat(e.target.value) || 0})} />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.9rem', cursor: 'pointer' }}>
+                    <input type="checkbox" checked={salaryData.clear_advances} onChange={e => setSalaryData({...salaryData, clear_advances: e.target.checked})} />
+                    Mark all pending advances as deducted
+                  </label>
+                </div>
+
+                <div className="stat-card" style={{ background: 'rgba(16, 185, 129, 0.1)', borderColor: 'rgba(16, 185, 129, 0.3)', padding: '12px 16px', marginBottom: 16 }}>
+                  <div className="d-flex justify-content-between" style={{ fontSize: '1.1rem', fontWeight: 600 }}>
+                    <span>Net Salary:</span>
+                    <span>₹{(salaryData.basic_salary + salaryData.bonus - salaryData.deductions).toFixed(2)}</span>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Paid Amount (Now)</label>
+                  <input type="number" className="form-control" required value={salaryData.paid_amount} onChange={e => setSalaryData({...salaryData, paid_amount: parseFloat(e.target.value) || 0})} />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Payment Date</label>
+                  <input type="date" className="form-control" value={salaryData.payment_date} onChange={e => setSalaryData({...salaryData, payment_date: e.target.value})} />
+                </div>
+                
+                <div className="form-group">
+                  <label className="form-label">Notes</label>
+                  <input type="text" className="form-control" value={salaryData.notes} onChange={e => setSalaryData({...salaryData, notes: e.target.value})} placeholder="Optional notes" />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-outline" onClick={() => setShowSalaryModal(false)}>Cancel</button>
+                <button type="submit" className="btn btn-primary">Process Salary</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showSalaryHistoryModal && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: 700 }}>
+            <div className="modal-header">
+              <h3>Salary History ({selectedStaff?.name})</h3>
+              <button className="close-btn" onClick={() => setShowSalaryHistoryModal(false)}>×</button>
+            </div>
+            <div className="modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+              {salaryHistory.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)' }}>No salary records found.</div>
+              ) : (
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Period</th>
+                      <th>Basic</th>
+                      <th>Bonus</th>
+                      <th>Ded.</th>
+                      <th>Net</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {salaryHistory.map(record => (
+                      <tr key={record.id}>
+                        <td>
+                          <div style={{ fontWeight: 600 }}>{new Date(0, record.month - 1).toLocaleString('default', { month: 'short' })} {record.year}</div>
+                          {record.payment_date && <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Paid on {new Date(record.payment_date).toLocaleDateString()}</div>}
+                        </td>
+                        <td>₹{record.basic_salary}</td>
+                        <td><span className="text-success">+₹{record.bonus}</span></td>
+                        <td><span className="text-danger">-₹{record.deductions}</span></td>
+                        <td style={{ fontWeight: 600 }}>₹{record.net_salary}</td>
+                        <td>
+                          <span className={`badge badge-${record.status === 'paid' ? 'success' : (record.status === 'partial' ? 'warning' : 'danger')}`}>
+                            {record.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         </div>
