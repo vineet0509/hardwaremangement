@@ -16,6 +16,7 @@ class Bill extends Model
         'subtotal', 'discount', 'tax', 'total',
         'paid_amount', 'due_amount',
         'payment_method', 'status', 'notes', 'is_gst', 'user_id',
+        'type', 'parent_bill_id',
     ];
 
     protected $casts = [

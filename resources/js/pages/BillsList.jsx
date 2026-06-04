@@ -376,8 +376,11 @@ const BillsList = () => {
             ) : (!bills || !Array.isArray(bills) || bills.length === 0) ? (
               <tr><td colSpan="8" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No bills found.</td></tr>
             ) : bills.map(b => (
-              <tr key={b.id}>
-                <td style={{ fontWeight: 600, color: 'var(--primary)' }}>{b.bill_number}</td>
+              <tr key={b.id} style={{ background: b.type === 'return' ? 'rgba(239, 68, 68, 0.05)' : 'transparent' }}>
+                <td style={{ fontWeight: 600, color: b.type === 'return' ? 'var(--danger)' : 'var(--primary)' }}>
+                  {b.bill_number}
+                  {b.type === 'return' && <span className="badge badge-danger" style={{ marginLeft: 8, fontSize: '0.7rem' }}>RETURN</span>}
+                </td>
                 <td>{new Date(b.created_at).toLocaleString()}</td>
                 <td>
                   <div style={{ fontWeight: 600 }}>{b.customer_name || 'Walk-in'}</div>
@@ -412,13 +415,15 @@ const BillsList = () => {
                         <Banknote size={16} />
                       </button>
                     )}
-                    <button className="btn btn-outline" style={{ padding: '6px 10px', borderColor: 'var(--warning)', color: 'var(--warning)' }} onClick={() => {
-                        setReturnBill(b);
-                        setReturnItemsState({});
-                        setShowReturnModal(true);
-                    }} title="Return Items / Refund">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline><path d="M10 16l-3 3 3 3"></path><path d="M7 19h10"></path></svg>
-                    </button>
+                    {b.type !== 'return' && (
+                      <button className="btn btn-outline" style={{ padding: '6px 10px', borderColor: 'var(--warning)', color: 'var(--warning)' }} onClick={() => {
+                          setReturnBill(b);
+                          setReturnItemsState({});
+                          setShowReturnModal(true);
+                      }} title="Return Items / Refund">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline><path d="M10 16l-3 3 3 3"></path><path d="M7 19h10"></path></svg>
+                      </button>
+                    )}
                     <button className="btn btn-outline" style={{ padding: '6px 10px' }} onClick={() => navigate('/billing', { state: { editBillId: b.id } })} title="Edit Bill">
                       <Edit2 size={16} color="var(--primary)" />
                     </button>

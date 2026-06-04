@@ -21,8 +21,8 @@ class DashboardController extends Controller
 
         // Sales stats consolidated
         $salesStats = Bill::selectRaw("
-            SUM(CASE WHEN DATE(created_at) = ? THEN total ELSE 0 END) as today_sales,
-            SUM(CASE WHEN MONTH(created_at) = ? AND YEAR(created_at) = ? THEN total ELSE 0 END) as month_sales,
+            SUM(CASE WHEN DATE(created_at) = ? THEN CASE WHEN type = 'return' THEN -total ELSE total END ELSE 0 END) as today_sales,
+            SUM(CASE WHEN MONTH(created_at) = ? AND YEAR(created_at) = ? THEN CASE WHEN type = 'return' THEN -total ELSE total END ELSE 0 END) as month_sales,
             COUNT(id) as total_bills
         ", [$today, $thisMonth, $thisYear])->first();
 
@@ -41,7 +41,7 @@ class DashboardController extends Controller
         $pendingAdvances = AdvancePayment::where('status', 'pending')->sum('amount');
 
         // Monthly sales chart (last 6 months)
-        $monthlySales = Bill::selectRaw('MONTH(created_at) as month, YEAR(created_at) as year, SUM(total) as total')
+        $monthlySales = Bill::selectRaw("MONTH(created_at) as month, YEAR(created_at) as year, SUM(CASE WHEN type = 'return' THEN -total ELSE total END) as total")
             ->where('created_at', '>=', now()->subMonths(6))
             ->groupBy('year', 'month')
             ->orderBy('year')->orderBy('month')
@@ -51,10 +51,12 @@ class DashboardController extends Controller
                 'total' => (float) $r->total,
             ]);
 
-        // Top selling products
+        // Top selling products (exclude returns)
         $topProducts = DB::table('bill_items')
             ->join('products', 'bill_items.product_id', '=', 'products.id')
+            ->join('bills', 'bill_items.bill_id', '=', 'bills.id')
             ->where('bill_items.business_id', auth('sanctum')->user()->business_id)
+            ->where('bills.type', 'sale')
             ->selectRaw('products.name, SUM(bill_items.quantity) as sold, SUM(bill_items.total) as revenue')
             ->groupBy('products.id', 'products.name')
             ->orderByDesc('sold')
@@ -69,10 +71,11 @@ class DashboardController extends Controller
             ->join('products', 'bill_items.product_id', '=', 'products.id')
             ->where('bill_items.business_id', auth('sanctum')->user()->business_id)
             ->whereDate('bills.created_at', $today)
-            ->selectRaw('SUM((bill_items.price - products.purchase_price) * bill_items.quantity - bill_items.discount) as profit')
+            ->selectRaw("SUM(CASE WHEN bills.type = 'return' THEN -1 ELSE 1 END * ((bill_items.price - products.purchase_price) * bill_items.quantity - bill_items.discount)) as profit")
             ->value('profit') ?? 0;
 
         $paymentBreakdown = Bill::whereDate('created_at', $today)
+            ->where('type', 'sale')
             ->selectRaw('payment_method, SUM(total) as amount')
             ->groupBy('payment_method')
             ->get();
@@ -92,8 +95,10 @@ class DashboardController extends Controller
 
         $topCategories = DB::table('bill_items')
             ->join('products', 'bill_items.product_id', '=', 'products.id')
+            ->join('bills', 'bill_items.bill_id', '=', 'bills.id')
             ->join('categories', 'products.category_id', '=', 'categories.id')
             ->where('bill_items.business_id', auth('sanctum')->user()->business_id)
+            ->where('bills.type', 'sale')
             ->selectRaw('categories.name, SUM(bill_items.quantity) as sold, SUM(bill_items.total) as revenue')
             ->groupBy('categories.id', 'categories.name')
             ->orderByDesc('revenue')

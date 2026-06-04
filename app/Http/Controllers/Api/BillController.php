@@ -254,6 +254,8 @@ class BillController extends Controller
             'payment_method'   => 'required|in:cash,card,upi,credit',
             'notes'            => 'nullable|string',
             'is_gst'           => 'nullable|boolean',
+            'type'             => 'nullable|in:sale,return',
+            'parent_bill_id'   => 'nullable|exists:bills,id',
         ]);
 
         if (!empty($data['customer_phone']) && !empty($data['customer_name'])) {
@@ -291,14 +293,25 @@ class BillController extends Controller
                     'total'        => $lineTotal,
                 ];
 
-                // Deduct from stock
-                $product->decrement('quantity', $item['quantity']);
-                StockTransaction::create([
-                    'product_id' => $product->id,
-                    'type'       => 'sale',
-                    'quantity'   => -$item['quantity'],
-                    'price'      => $item['price'],
-                ]);
+                $isReturn = ($data['type'] ?? 'sale') === 'return';
+                if ($isReturn) {
+                    $product->increment('quantity', $item['quantity']);
+                    StockTransaction::create([
+                        'product_id' => $product->id,
+                        'type'       => 'return',
+                        'quantity'   => $item['quantity'],
+                        'price'      => $item['price'],
+                        'notes'      => 'Return against bill #' . ($data['parent_bill_id'] ?? ''),
+                    ]);
+                } else {
+                    $product->decrement('quantity', $item['quantity']);
+                    StockTransaction::create([
+                        'product_id' => $product->id,
+                        'type'       => 'sale',
+                        'quantity'   => -$item['quantity'],
+                        'price'      => $item['price'],
+                    ]);
+                }
             }
 
             $discount = $data['discount'] ?? 0;
@@ -329,6 +342,8 @@ class BillController extends Controller
                 'notes'          => $data['notes'] ?? null,
                 'is_gst'         => $data['is_gst'] ?? false,
                 'user_id'        => auth()->id(),
+                'type'           => $data['type'] ?? 'sale',
+                'parent_bill_id' => $data['parent_bill_id'] ?? null,
             ]);
 
             foreach ($itemsData as $item) {
@@ -559,26 +574,52 @@ class BillController extends Controller
                     $discountRatio = $bill->discount / $bill->subtotal;
                     $billDiscountDeduction = $totalDeduction * $discountRatio;
                 }
-
-                $bill->subtotal -= $totalDeduction;
-                $bill->tax -= $taxDeduction;
-                $bill->discount -= $billDiscountDeduction;
                 
                 $finalDeduction = $totalDeduction - $billDiscountDeduction + $taxDeduction;
-                $bill->total -= $finalDeduction;
 
-                if ($bill->total < $bill->paid_amount) {
-                    $bill->paid_amount = $bill->total; 
-                    $bill->due_amount = 0;
-                } else {
-                    $bill->due_amount = $bill->total - $bill->paid_amount;
+                // Create a new return bill
+                $returnBill = Bill::create([
+                    'bill_number'    => Bill::generateBillNumber(),
+                    'customer_name'  => $bill->customer_name,
+                    'customer_phone' => $bill->customer_phone,
+                    'customer_address'=> $bill->customer_address,
+                    'subtotal'       => $totalDeduction,
+                    'discount'       => $billDiscountDeduction,
+                    'tax'            => $taxDeduction,
+                    'total'          => $finalDeduction,
+                    'paid_amount'    => $finalDeduction, // assume fully refunded
+                    'due_amount'     => 0,
+                    'payment_method' => 'cash', // Default refund method
+                    'status'         => 'paid',
+                    'notes'          => 'Return/Refund against Bill #' . $bill->bill_number,
+                    'is_gst'         => $bill->is_gst,
+                    'user_id'        => auth()->id(),
+                    'type'           => 'return',
+                    'parent_bill_id' => $bill->id,
+                ]);
+
+                // Create items for the return bill
+                foreach ($data['items'] as $returnItem) {
+                    $billItem = $bill->items->firstWhere('id', $returnItem['id']);
+                    if (!$billItem) continue;
+
+                    \App\Models\BillItem::create([
+                        'bill_id'      => $returnBill->id,
+                        'product_id'   => $billItem->product_id,
+                        'product_name' => $billItem->product_name,
+                        'description'  => $billItem->description,
+                        'unit'         => $billItem->unit,
+                        'price'        => $billItem->price,
+                        'quantity'     => $returnItem['return_qty'],
+                        'discount'     => ($billItem->quantity > 0 ? ($billItem->discount / $billItem->quantity) : 0) * $returnItem['return_qty'],
+                        'total'        => ($billItem->price * $returnItem['return_qty']) - (($billItem->quantity > 0 ? ($billItem->discount / $billItem->quantity) : 0) * $returnItem['return_qty']),
+                        'business_id'  => $bill->business_id,
+                    ]);
                 }
-                
-                $bill->status = $bill->due_amount <= 0 ? 'paid' : ($bill->paid_amount > 0 && $bill->due_amount > 0 ? 'partial' : 'pending');
-                $bill->save();
+
             });
 
-            return response()->json(['message' => 'Items returned successfully, stock restored.', 'bill' => $bill->fresh('items')]);
+            return response()->json(['message' => 'Items returned successfully. A Return Bill has been generated and stock has been restored.', 'bill' => $bill->fresh('items')]);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 422);
         }
