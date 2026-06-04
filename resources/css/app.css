@@ -644,8 +644,8 @@ tr:hover td { background: var(--surface-hover); }
   .mobile-profile-footer { display: block !important; }
 }
 
-.mobile-profile-footer { display: none; }
-.show-on-mobile { display: none; }
+.mobile-profile-footer { display: none !important; }
+.show-on-mobile { display: none !important; }
 
 @media (max-width: 480px) {
   h1, .responsive-h1 { font-size: 1.4rem !important; }
