@@ -52,7 +52,10 @@ const Login = () => {
             <div style={{ display: 'none', background: 'linear-gradient(135deg, var(--primary), #059669)', width: 60, height: 60, borderRadius: 16, alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: 'white' }}>
                <Package size={32} strokeWidth={2.5} />
             </div>
-             <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary)', marginBottom: 4 }}>VyaparSync</h2>
+             <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: 4 }}>
+                <span style={{ color: '#111827' }}>Vyapar</span>
+                <span style={{ color: '#00a8ff' }}>Sync</span>
+             </h2>
              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Management Dashboard Login</p>
           </div>
 

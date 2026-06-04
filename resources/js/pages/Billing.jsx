@@ -96,6 +96,34 @@ const Billing = () => {
     }
   }, []);
 
+  // Load draft
+  useEffect(() => {
+    if (!editBillId && !location.state?.fromQuotation) {
+      try {
+        const draft = JSON.parse(localStorage.getItem('billing_draft'));
+        if (draft && draft.cart && draft.cart.length > 0) {
+          setCart(draft.cart);
+          if (draft.customerInfo) setCustomerInfo(draft.customerInfo);
+          if (draft.payment) setPayment(draft.payment);
+          if (draft.isGstBill !== undefined) setIsGstBill(draft.isGstBill);
+        }
+      } catch (e) {}
+    }
+  }, []);
+
+  // Save draft
+  useEffect(() => {
+    if (!editBillId && !location.state?.fromQuotation) {
+      if (cart.length > 0 || customerInfo.name) {
+        localStorage.setItem('billing_draft', JSON.stringify({
+          cart, customerInfo, payment, isGstBill
+        }));
+      } else {
+        localStorage.removeItem('billing_draft');
+      }
+    }
+  }, [cart, customerInfo, payment, isGstBill]);
+
   const addToCart = (product) => {
     if (product.quantity <= 0) return Swal.fire('Stock Out', 'Product is out of stock!', 'warning');
     setCart(prev => {
@@ -319,7 +347,7 @@ const Billing = () => {
              }).catch(console.error);
         }
         
-        handlePrint(res.data);
+        // Removed handlePrint(res.data) as per user request
         
         Swal.fire({
           title: 'Success!',
@@ -328,6 +356,7 @@ const Billing = () => {
           timer: 3000
         });
         
+        localStorage.removeItem('billing_draft');
         setCart([]);
         setCustomerInfo({ name: '', phone: '', address: '' });
         setPayment({ method: 'cash', paid: 0, discount: 0, upi_digits: '' });
@@ -454,7 +483,7 @@ const Billing = () => {
           </div>
           {cart.length > 0 && (
             <button
-              onClick={() => Swal.fire({ title: 'Clear Cart?', text: 'All items will be removed.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Yes, clear it' }).then(r => { if (r.isConfirmed) { setCart([]); setCustomerInfo({ name: '', phone: '', address: '' }); setPayment({ method: 'cash', paid: 0, discount: 0, upi_digits: '' }); } })}
+              onClick={() => Swal.fire({ title: 'Clear Cart?', text: 'All items will be removed.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Yes, clear it' }).then(r => { if (r.isConfirmed) { setCart([]); localStorage.removeItem('billing_draft'); setCustomerInfo({ name: '', phone: '', address: '' }); setPayment({ method: 'cash', paid: 0, discount: 0, upi_digits: '' }); } })}
               style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', color: 'var(--danger)', borderRadius: 8, padding: '6px 12px', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}
               onMouseOver={e => e.currentTarget.style.background = 'rgba(239,68,68,0.2)'}
               onMouseOut={e => e.currentTarget.style.background = 'rgba(239,68,68,0.1)'}

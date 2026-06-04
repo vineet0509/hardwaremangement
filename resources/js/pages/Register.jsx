@@ -66,7 +66,10 @@ const Register = () => {
             <div style={{ display: 'none', background: 'linear-gradient(135deg, var(--primary), #059669)', width: 64, height: 64, borderRadius: 16, alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: 'white', boxShadow: '0 10px 15px -3px rgba(79, 70, 229, 0.3)' }}>
                <Package size={36} strokeWidth={2.5} />
             </div>
-             <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#111827', marginBottom: 8, letterSpacing: '-0.02em' }}>Register Store</h2>
+             <h2 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: 8, letterSpacing: '-0.02em' }}>
+                <span style={{ color: '#111827' }}>Vyapar</span>
+                <span style={{ color: '#00a8ff' }}>Sync</span>
+             </h2>
              <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Start managing your business today.</p>
              
              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#ecfdf5', color: '#059669', padding: '6px 14px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold', marginTop: '16px', border: '1px solid #d1fae5' }}>

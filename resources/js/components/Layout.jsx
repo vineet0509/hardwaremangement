@@ -250,8 +250,15 @@ const Layout = ({ children }) => {
                <Package size={26} strokeWidth={2.5} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-              <span style={{ fontSize: '1.05rem', fontWeight: 800, color: '#ffffff', lineHeight: '1.2', textTransform: 'uppercase', letterSpacing: '0.02em', wordBreak: 'break-word' }}>
-                 {settings?.company_name || 'VyaparSync'}
+              <span style={{ fontSize: '1.05rem', fontWeight: 800, lineHeight: '1.2', letterSpacing: '0.02em', wordBreak: 'break-word' }}>
+                 {settings?.company_name ? (
+                   <span style={{ color: '#ffffff' }}>{settings.company_name}</span>
+                 ) : (
+                   <>
+                     <span style={{ color: '#ffffff' }}>Vyapar</span>
+                     <span style={{ color: '#00a8ff' }}>Sync</span>
+                   </>
+                 )}
               </span>
               <span style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginTop: 3 }}>
                  Management System

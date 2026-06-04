@@ -68,6 +68,35 @@ const QuotationCreate = () => {
     }
   }, [editQuotationId]);
 
+  // Load draft
+  useEffect(() => {
+    if (!editQuotationId) {
+      try {
+        const draft = JSON.parse(localStorage.getItem('quotation_draft'));
+        if (draft && draft.cart && draft.cart.length > 0) {
+          setCart(draft.cart);
+          if (draft.customerInfo) setCustomerInfo(draft.customerInfo);
+          if (draft.discount !== undefined) setDiscount(draft.discount);
+          if (draft.notes) setNotes(draft.notes);
+          if (draft.isGst !== undefined) setIsGst(draft.isGst);
+        }
+      } catch (e) {}
+    }
+  }, []);
+
+  // Save draft
+  useEffect(() => {
+    if (!editQuotationId) {
+      if (cart.length > 0 || customerInfo.name) {
+        localStorage.setItem('quotation_draft', JSON.stringify({
+          cart, customerInfo, discount, notes, isGst
+        }));
+      } else {
+        localStorage.removeItem('quotation_draft');
+      }
+    }
+  }, [cart, customerInfo, discount, notes, isGst]);
+
   const addToCart = (product) => {
     setCart(prev => {
       const existing = prev.find(item => item.product_id === product.id);
@@ -244,6 +273,7 @@ const QuotationCreate = () => {
           timer: 3000
         });
         
+        localStorage.removeItem('quotation_draft');
         setCart([]);
         setCustomerInfo({ name: '', phone: '', address: '' });
         setDiscount(0);
@@ -318,7 +348,7 @@ const QuotationCreate = () => {
             {editQuotationId ? `Editing Quotation #${editQuotationId}` : <>New Quotation {cart.length > 0 && <span style={{ background: '#3b82f6', color: '#fff', borderRadius: '50%', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800, marginLeft: 6 }}>{cart.reduce((s,i) => s+i.quantity, 0)}</span>}</>}
           </div>
           {cart.length > 0 && (
-            <button onClick={() => setCart([])} style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', color: 'var(--danger)', borderRadius: 8, padding: '5px 10px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}>
+            <button onClick={() => { setCart([]); localStorage.removeItem('quotation_draft'); }} style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', color: 'var(--danger)', borderRadius: 8, padding: '5px 10px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}>
               <XCircle size={14} /> Clear
             </button>
           )}

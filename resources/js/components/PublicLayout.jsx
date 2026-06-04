@@ -183,12 +183,11 @@ const PublicLayout = ({ children }) => {
             <span style={{
               fontSize: '1.25rem',
               fontWeight: 900,
-              color: 'white',
               letterSpacing: '-0.02em',
-              background: 'linear-gradient(to right, #ffffff, #94a3b8)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}>VyaparSync</span>
+            }}>
+              <span style={{ color: '#ffffff' }}>Vyapar</span>
+              <span style={{ color: '#00a8ff' }}>Sync</span>
+            </span>
           </Link>
 
           {/* Desktop Navigation Links */}

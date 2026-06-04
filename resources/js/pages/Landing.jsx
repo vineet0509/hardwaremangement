@@ -216,8 +216,9 @@ const Landing = () => {
               <Package size={22} strokeWidth={2.5} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontSize: '1.25rem', fontWeight: 900, letterSpacing: '-0.02em', background: 'linear-gradient(90deg, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                VyaparSync
+              <span style={{ fontSize: '1.25rem', fontWeight: 900, letterSpacing: '-0.02em' }}>
+                <span style={{ color: '#ffffff' }}>Vyapar</span>
+                <span style={{ color: '#00a8ff' }}>Sync</span>
               </span>
               <span style={{ fontSize: '0.6rem', color: '#10b981', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                 BY VYNKRA
