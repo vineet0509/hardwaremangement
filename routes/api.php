@@ -82,6 +82,7 @@ Route::get('/staff/{staff}/performance',                [StaffController::class,
 Route::get('/attendance/status', [AttendanceController::class, 'status']);
 Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn']);
 Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut']);
+Route::get('/attendance/all', [AttendanceController::class, 'allAttendances']);
 Route::get('/staff/{staff}/attendances', [AttendanceController::class, 'index']);
     
     // Suppliers

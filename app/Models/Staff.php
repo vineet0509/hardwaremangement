@@ -38,5 +38,10 @@ class Staff extends Model
     {
         return $this->advancePayments()->where('status', 'pending')->sum('amount');
     }
+
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(Attendance::class);
+    }
 }
 

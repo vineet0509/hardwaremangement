@@ -30,6 +30,7 @@ const Layout = ({ children }) => {
       name: 'Management', icon: Users, 
       subItems: [
         { name: 'Staff', path: '/staff' },
+        { name: 'Attendance', path: '/attendance' },
         { name: 'Advances', path: '/advances' },
         { name: 'Expenses', path: '/expenses' },
         { name: 'Branches', path: '/child-businesses' },
@@ -164,7 +165,7 @@ const Layout = ({ children }) => {
   useEffect(() => {
     if (user && user.role === 'staff') {
       const perms = user.permissions || {};
-      const allowedPaths = ['/billing', '/quotations', '/privacy-policy', '/terms', '/about-us', '/contact-us'];
+      const allowedPaths = ['/billing', '/quotations', '/privacy-policy', '/terms', '/about-us', '/contact-us', '/attendance'];
       
       if (perms.can_edit_bills) allowedPaths.push('/bills');
       if (perms.can_manage_inventory) {
@@ -202,7 +203,7 @@ const Layout = ({ children }) => {
   let allNavItems = [...navItems];
   if (user && user.role === 'staff') {
     const perms = user.permissions || {};
-    const allowed = ['/billing', '/quotations', '/about-us', '/contact-us'];
+    const allowed = ['/billing', '/quotations', '/about-us', '/contact-us', '/attendance'];
     if (perms.can_edit_bills) allowed.push('/bills');
     if (perms.can_manage_inventory) {
       allowed.push('/products');

@@ -16,6 +16,28 @@ class AttendanceController extends Controller
         return response()->json($staff->attendances()->orderBy('date', 'desc')->get());
     }
 
+    public function allAttendances(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        if ($user->role === 'staff') {
+            $staff = Staff::where('user_id', $user->id)->first();
+            if (!$staff) return response()->json([]);
+            return response()->json(
+                Attendance::where('staff_id', $staff->id)
+                    ->orderBy('date', 'desc')
+                    ->get()
+            );
+        }
+
+        // Admin view: all attendances with staff details
+        $attendances = Attendance::with('staff:id,name,role')
+            ->where('business_id', $user->business_id)
+            ->orderBy('date', 'desc')
+            ->get();
+            
+        return response()->json($attendances);
+    }
+
     public function clockIn(Request $request): JsonResponse
     {
         $user = $request->user();
