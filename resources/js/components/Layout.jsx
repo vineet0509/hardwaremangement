@@ -35,14 +35,12 @@ const Layout = ({ children }) => {
         { name: 'Branches', path: '/child-businesses' },
       ]
     },
-    { name: 'Reports', path: '/reports', icon: FileText },
     {
-      name: 'Profile', icon: SettingsIcon,
+      name: 'Help & Info', icon: Info,
       subItems: [
-        { name: 'Settings', path: '/settings', role: 'admin' },
-        { name: 'Privacy Policy', path: '/privacy-policy' },
-        { name: 'Terms & Conditions', path: '/terms' },
-        { name: 'Logout', action: 'logout' },
+        { name: 'About Us', path: '/about-us' },
+        { name: 'Contact Us', path: '/contact-us' },
+        { name: 'Product Tour', action: 'tour' }
       ]
     }
   ];
@@ -51,6 +49,7 @@ const Layout = ({ children }) => {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showMobileProfileMenu, setShowMobileProfileMenu] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('app_theme') || 'dark');
   const [showTour, setShowTour] = useState(false);
@@ -138,10 +137,10 @@ const Layout = ({ children }) => {
 
   let allNavItems = [...navItems];
   if (user && user.role === 'staff') {
-    const allowed = ['/billing', '/bills', '/quotations', '/privacy-policy', '/terms'];
+    const allowed = ['/billing', '/bills', '/quotations', '/about-us', '/contact-us'];
     allNavItems = navItems.map(item => {
       if (item.subItems) {
-        const filteredSubs = item.subItems.filter(sub => allowed.includes(sub.path) || sub.action === 'logout');
+        const filteredSubs = item.subItems.filter(sub => allowed.includes(sub.path) || sub.action === 'tour');
         if (filteredSubs.length > 0) return { ...item, subItems: filteredSubs };
         return null;
       }
@@ -230,17 +229,15 @@ const Layout = ({ children }) => {
                   {openCategories[item.name] && (
                     <div style={{ paddingLeft: '34px', display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '2px', marginBottom: '6px' }}>
                       {item.subItems.map(sub => {
-                        if (sub.role === 'admin' && user?.role === 'staff') return null;
-                        
-                        if (sub.action === 'logout') {
+                        if (sub.action === 'tour') {
                           return (
                             <button
-                              key="logout"
-                              onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }}
+                              key="tour"
+                              onClick={() => { setIsMobileMenuOpen(false); handleStartTour(); }}
                               className="nav-item"
-                              style={{ padding: '8px 12px', fontSize: '0.85rem', width: '100%', textAlign: 'left', background: 'transparent', color: '#ef4444', border: 'none', cursor: 'pointer', display: 'flex', gap: '10px', alignItems: 'center' }}
+                              style={{ padding: '8px 12px', fontSize: '0.85rem', width: '100%', textAlign: 'left', background: 'transparent', color: '#a78bfa', border: 'none', cursor: 'pointer', display: 'flex', gap: '10px', alignItems: 'center' }}
                             >
-                              <LogOut size={16} /> {sub.name}
+                              <Compass size={16} /> {sub.name}
                             </button>
                           );
                         }
@@ -274,41 +271,6 @@ const Layout = ({ children }) => {
           ))}
 
           <div style={{ margin: '12px 0', borderTop: '1px solid rgba(255,255,255,0.08)' }}></div>
-
-          <NavLink 
-            to="/about-us" 
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={`nav-item ${location.pathname === '/about-us' ? 'active' : ''}`}
-          >
-            <Info size={20} /> About Us
-          </NavLink>
-
-          <NavLink 
-            to="/contact-us" 
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={`nav-item ${location.pathname === '/contact-us' ? 'active' : ''}`}
-          >
-            <HelpCircle size={20} /> Contact Us
-          </NavLink>
-
-          {/* Product Tour Button */}
-          <button
-            onClick={handleStartTour}
-            className="nav-item"
-            style={{ 
-              width: '100%', 
-              textAlign: 'left', 
-              background: 'rgba(139, 92, 246, 0.08)', 
-              border: '1px solid rgba(139, 92, 246, 0.18)',
-              color: '#a78bfa',
-              cursor: 'pointer',
-              borderRadius: 10,
-              marginTop: 4,
-              fontWeight: 600,
-            }}
-          >
-            <Compass size={20} /> Product Tour
-          </button>
 
           <div style={{ padding: '12px 16px', marginTop: 8 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(255,255,255,0.05)', padding: '10px 14px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.1)' }}>
@@ -345,26 +307,68 @@ const Layout = ({ children }) => {
         </nav>
 
         <div style={{ marginTop: 'auto', padding: '20px', borderTop: '1px solid rgba(255,255,255,0.08)' }} className="mobile-profile-footer">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-            <div style={{ width: 36, height: 36, borderRadius: '50%', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
-              {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
+          <div 
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
+            onClick={() => setShowMobileProfileMenu(!showMobileProfileMenu)}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 36, height: 36, borderRadius: '50%', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+                {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ color: 'white', fontSize: '0.9rem', fontWeight: 600 }}>{user?.name || 'Admin User'}</span>
+                <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>{user?.is_super_admin ? 'Super Admin' : (user?.role === 'staff' ? 'Cashier / Staff' : 'Business Manager')}</span>
+              </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ color: 'white', fontSize: '0.9rem', fontWeight: 600 }}>{user?.name || 'Admin User'}</span>
-              <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>{user?.is_super_admin ? 'Super Admin' : (user?.role === 'staff' ? 'Cashier / Staff' : 'Business Manager')}</span>
-            </div>
+            {showMobileProfileMenu ? <ChevronDown size={18} color="#94a3b8" /> : <ChevronRight size={18} color="#94a3b8" />}
           </div>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {(user?.is_super_admin === true || user?.is_super_admin == 1) && (
+          {showMobileProfileMenu && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
+              {(user?.is_super_admin === true || user?.is_super_admin == 1) && (
+                <button 
+                  onClick={() => { setIsMobileMenuOpen(false); navigate('/super-admin'); }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(79, 70, 229, 0.4)', border: '1px solid var(--primary)', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left', fontWeight: 600 }}
+                >
+                  <Shield size={16} /> Super Admin Dashboard
+                </button>
+              )}
+              {user?.role !== 'staff' && (
+                <button 
+                  onClick={() => { setIsMobileMenuOpen(false); navigate('/settings'); }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(255, 255, 255, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
+                >
+                  <SettingsIcon size={16} /> Settings
+                </button>
+              )}
               <button 
-                onClick={() => { setIsMobileMenuOpen(false); navigate('/super-admin'); }}
-                style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(79, 70, 229, 0.4)', border: '1px solid var(--primary)', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left', fontWeight: 600 }}
+                onClick={() => { setIsMobileMenuOpen(false); navigate('/privacy-policy'); }}
+                style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(255, 255, 255, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
               >
-                <Shield size={16} /> Super Admin Dashboard
+                <Shield size={16} /> Privacy Policy
               </button>
-            )}
-          </div>
+              <button 
+                onClick={() => { setIsMobileMenuOpen(false); navigate('/terms'); }}
+                style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(255, 255, 255, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
+              >
+                <FileText size={16} /> Terms & Conditions
+              </button>
+              <button 
+                onClick={() => {
+                  if(confirm("Are you sure you want to log out?")) {
+                     api.post('/logout').catch(console.error).finally(() => {
+                        localStorage.removeItem('auth_token');
+                        localStorage.removeItem('login_date');
+                        window.location.href = '/';
+                     });
+                  }
+                }}
+                style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#ef4444', background: 'rgba(239, 68, 68, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
+              >
+                <LogOut size={16} /> Logout
+              </button>
+            </div>
+          )}
         </div>
       </aside>
 
