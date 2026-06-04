@@ -54,18 +54,19 @@
     <!-- ═══════════════════════════════════════════════════════
          SCHEMA.ORG JSON-LD — Structured Data for Google Rich Results
     ═══════════════════════════════════════════════════════ -->
+    @verbatim
     <script type="application/ld+json">
     {
-      "@@context": "https://schema.org",
-      "@@type": "SoftwareApplication",
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
       "name": "VyaparSync",
-      "url": "{{ url('/') }}",
-      "logo": "{{ asset('logo.png') }}",
+      "url": "https://vyaparsync.vynkra.in/",
+      "logo": "https://vyaparsync.vynkra.in/logo.png",
       "description": "VyaparSync is a free billing, POS and inventory management software designed for Indian hardware shops, kirana stores and small businesses. Features include GST invoicing, digital khata book, stock management, staff payroll, and multi-branch support.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web, Android, iOS",
       "offers": {
-        "@@type": "Offer",
+        "@type": "Offer",
         "price": "0",
         "priceCurrency": "INR"
       },
@@ -82,17 +83,18 @@
         "Business Reports & Analytics"
       ],
       "aggregateRating": {
-        "@@type": "AggregateRating",
+        "@type": "AggregateRating",
         "ratingValue": "4.8",
         "reviewCount": "120"
       },
       "publisher": {
-        "@@type": "Organization",
+        "@type": "Organization",
         "name": "Vynkra Technologies",
-        "url": "{{ url('/') }}"
+        "url": "https://vyaparsync.vynkra.in/"
       }
     }
     </script>
+    @endverbatim
 
     <!-- ═══════════════════════════════════════════════════════
          FONTS & ASSETS
