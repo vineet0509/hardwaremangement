@@ -382,8 +382,10 @@ const Layout = ({ children }) => {
             >
               <Menu size={24} />
             </button>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 600, margin: 0 }}>
-              {allNavItems.find(item => location.pathname.startsWith(item.path))?.name || 'VyaparSync'}
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>
+              {allNavItems.find(item => location.pathname.startsWith(item.path))?.name || (
+                <span style={{ color: 'var(--primary)', letterSpacing: '-0.3px' }}>VyaparSync</span>
+              )}
             </h2>
           </div>
           
