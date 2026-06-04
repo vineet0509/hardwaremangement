@@ -245,7 +245,8 @@ const Layout = ({ children }) => {
       <aside className={`sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', color: 'white', padding: '10px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(0,0,0,0.2)' }}>
+            <img src="/logo.png" alt="Logo" style={{ height: '40px', width: '40px', objectFit: 'contain', borderRadius: '8px' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'flex'; }} />
+            <div style={{ display: 'none', background: 'linear-gradient(135deg, var(--primary), #059669)', color: 'white', padding: '10px', borderRadius: '12px', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(0,0,0,0.2)' }}>
                <Package size={26} strokeWidth={2.5} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
