@@ -633,7 +633,11 @@ const Layout = ({ children }) => {
               </div>
             )
           )}
-          {user?.role === 'staff' && attendanceStatus !== 'clocked_in' && !['/attendance', '/privacy-policy', '/terms', '/about-us', '/contact-us'].some(p => location.pathname.startsWith(p)) ? (
+          {user?.role === 'staff' && attendanceStatus !== 'clocked_in' && !(
+             ['/attendance', '/privacy-policy', '/terms', '/about-us', '/contact-us',
+              ...(attendanceStatus === 'clocked_out' ? ['/billing', '/quotations'] : [])
+             ].some(p => location.pathname.startsWith(p))
+          ) ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '80vh', textAlign: 'center', padding: 20 }}>
               <AlertTriangle size={64} color="var(--warning)" style={{ marginBottom: 20 }} />
               <h2 style={{ fontSize: '2rem', marginBottom: 12 }}>
@@ -641,7 +645,7 @@ const Layout = ({ children }) => {
               </h2>
               <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', maxWidth: 500 }}>
                 {attendanceStatus === 'clocked_out' 
-                  ? 'Your shift for today has ended. You can still view your attendance history, privacy policy, and terms from the sidebar.' 
+                  ? 'Your shift for today has ended. You can still view your attendance history, privacy policy, terms, and continue to create new Bills or Quotations from the sidebar.' 
                   : <>You must clock in to access the system and perform operations. Please click the <strong>Clock In</strong> button in the top bar.</>}
               </p>
             </div>
