@@ -57,68 +57,70 @@ const Attendance = ({ user }) => {
         ) : attendances.length === 0 ? (
           <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No attendance records found.</div>
         ) : (
-          <table className="table">
-            <thead>
-              <tr>
-                {user?.role !== 'staff' && <th>Staff Member</th>}
-                <th>Date</th>
-                <th>Clock In</th>
-                <th>Clock Out</th>
-              </tr>
-            </thead>
-            <tbody>
-              {attendances
-                .filter(record => {
-                  const recordDateStr = record.date.substring(0, 10);
-                  if (fromDate && recordDateStr < fromDate) return false;
-                  if (toDate && recordDateStr > toDate) return false;
-                  return true;
-                })
-                .map(record => (
-                <tr key={record.id}>
-                  {user?.role !== 'staff' && (
-                    <td>
-                      <div style={{ fontWeight: 600, color: 'var(--text-main)' }}>{record.staff?.name}</div>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{record.staff?.role}</div>
-                    </td>
-                  )}
-                  <td>{new Date(record.date).toLocaleDateString()}</td>
-                  <td>
-                    {record.clock_in_time ? new Date(record.clock_in_time).toLocaleTimeString() : '-'}
-                    {record.clock_in_location && (
-                      <div style={{ fontSize: '0.75rem', marginTop: 8 }}>
-                        <button className="btn btn-outline btn-sm" onClick={() => setMapLocation(record.clock_in_location)} style={{ padding: '4px 8px', display: 'flex', alignItems: 'center', gap: 4 }}>
-                          <MapPin size={12} /> View Map
-                        </button>
-                      </div>
-                    )}
-                  </td>
-                  <td>
-                    {record.clock_out_time ? new Date(record.clock_out_time).toLocaleTimeString() : '-'}
-                    {record.clock_out_location && (
-                      <div style={{ fontSize: '0.75rem', marginTop: 8 }}>
-                        <button className="btn btn-outline btn-sm" onClick={() => setMapLocation(record.clock_out_location)} style={{ padding: '4px 8px', display: 'flex', alignItems: 'center', gap: 4 }}>
-                          <MapPin size={12} /> View Map
-                        </button>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              ))}
-              {attendances.filter(record => {
-                  const recordDateStr = record.date.substring(0, 10);
-                  if (fromDate && recordDateStr < fromDate) return false;
-                  if (toDate && recordDateStr > toDate) return false;
-                  return true;
-              }).length === 0 && (
+          <div className="table-responsive">
+            <table className="table" style={{ minWidth: '600px' }}>
+              <thead>
                 <tr>
-                  <td colSpan={user?.role !== 'staff' ? 4 : 3} style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)' }}>
-                    No records found for the selected date.
-                  </td>
+                  {user?.role !== 'staff' && <th>Staff Member</th>}
+                  <th>Date</th>
+                  <th>Clock In</th>
+                  <th>Clock Out</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {attendances
+                  .filter(record => {
+                    const recordDateStr = record.date.substring(0, 10);
+                    if (fromDate && recordDateStr < fromDate) return false;
+                    if (toDate && recordDateStr > toDate) return false;
+                    return true;
+                  })
+                  .map(record => (
+                  <tr key={record.id}>
+                    {user?.role !== 'staff' && (
+                      <td>
+                        <div style={{ fontWeight: 600, color: 'var(--text-main)' }}>{record.staff?.name}</div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{record.staff?.role}</div>
+                      </td>
+                    )}
+                    <td>{new Date(record.date).toLocaleDateString()}</td>
+                    <td>
+                      {record.clock_in_time ? new Date(record.clock_in_time).toLocaleTimeString() : '-'}
+                      {record.clock_in_location && (
+                        <div style={{ fontSize: '0.75rem', marginTop: 8 }}>
+                          <button className="btn btn-outline btn-sm" onClick={() => setMapLocation(record.clock_in_location)} style={{ padding: '4px 8px', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <MapPin size={12} /> View Map
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                    <td>
+                      {record.clock_out_time ? new Date(record.clock_out_time).toLocaleTimeString() : '-'}
+                      {record.clock_out_location && (
+                        <div style={{ fontSize: '0.75rem', marginTop: 8 }}>
+                          <button className="btn btn-outline btn-sm" onClick={() => setMapLocation(record.clock_out_location)} style={{ padding: '4px 8px', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <MapPin size={12} /> View Map
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+                {attendances.filter(record => {
+                    const recordDateStr = record.date.substring(0, 10);
+                    if (fromDate && recordDateStr < fromDate) return false;
+                    if (toDate && recordDateStr > toDate) return false;
+                    return true;
+                }).length === 0 && (
+                  <tr>
+                    <td colSpan={user?.role !== 'staff' ? 4 : 3} style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)' }}>
+                      No records found for the selected date.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
