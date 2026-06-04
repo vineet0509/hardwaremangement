@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\SuperAdminController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\ChildBusinessController;
+use App\Http\Controllers\Api\AttendanceController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -75,6 +76,13 @@ Route::post('/staff/{staff}/advance-payments',          [StaffController::class,
 Route::patch('/advance-payments/{advance}/deducted',    [StaffController::class, 'markAdvanceDeducted']);
 Route::delete('/advance-payments/{advance}',            [StaffController::class, 'destroyAdvance']);
 Route::get('/salary-records',                           [StaffController::class, 'allSalaryRecords']);
+Route::get('/staff/{staff}/performance',                [StaffController::class, 'performance']);
+
+// Attendance
+Route::get('/attendance/status', [AttendanceController::class, 'status']);
+Route::post('/attendance/clock-in', [AttendanceController::class, 'clockIn']);
+Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut']);
+Route::get('/staff/{staff}/attendances', [AttendanceController::class, 'index']);
     
     // Suppliers
     Route::apiResource('suppliers', SupplierController::class);

@@ -14,11 +14,13 @@ class Staff extends Model
     protected $fillable = [
         'name', 'phone', 'role', 'address',
         'aadhar_number', 'monthly_salary',
-        'joining_date', 'status', 'user_id'
+        'joining_date', 'status', 'user_id',
+        'emergency_contact', 'commission_percent'
     ];
 
     protected $casts = [
         'monthly_salary' => 'float',
+        'commission_percent' => 'float',
         'joining_date'   => 'date',
     ];
 

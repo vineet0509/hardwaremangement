@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Staff;
 use App\Models\SalaryRecord;
 use App\Models\AdvancePayment;
+use App\Models\Bill;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class StaffController extends Controller
 {
@@ -36,11 +38,14 @@ class StaffController extends Controller
             'monthly_salary' => 'required|numeric|min:0',
             'joining_date'   => 'required|date',
             'status'         => 'in:active,inactive',
+            'emergency_contact'  => 'nullable|string|max:50',
+            'commission_percent' => 'nullable|numeric|min:0|max:100',
+            'permissions'    => 'nullable|array',
             'enable_login'   => 'boolean',
             'password'       => 'required_if:enable_login,true|nullable|string|min:6',
         ]);
 
-        $staffData = collect($data)->except(['enable_login', 'password'])->toArray();
+        $staffData = collect($data)->except(['enable_login', 'password', 'permissions'])->toArray();
         $staff = Staff::create($staffData);
 
         if ($request->enable_login && $request->phone) {
@@ -50,6 +55,7 @@ class StaffController extends Controller
                 'mobile'      => $request->phone,
                 'password'    => \Illuminate\Support\Facades\Hash::make($request->password),
                 'role'        => 'staff',
+                'permissions' => $request->permissions ?? [],
                 'business_id' => $request->user()->business_id,
             ]);
             $staff->update(['user_id' => $user->id]);
@@ -60,7 +66,12 @@ class StaffController extends Controller
 
     public function show(Staff $staff): JsonResponse
     {
-        return response()->json($staff->load(['salaryRecords' => fn($q) => $q->latest(), 'advancePayments' => fn($q) => $q->latest()]));
+        $staff->load(['salaryRecords' => fn($q) => $q->latest(), 'advancePayments' => fn($q) => $q->latest()]);
+        if ($staff->user_id) {
+            $user = \App\Models\User::find($staff->user_id);
+            $staff->permissions = $user ? $user->permissions : [];
+        }
+        return response()->json($staff);
     }
 
     public function update(Request $request, Staff $staff): JsonResponse
@@ -74,16 +85,69 @@ class StaffController extends Controller
             'monthly_salary' => 'sometimes|numeric|min:0',
             'joining_date'   => 'sometimes|date',
             'status'         => 'in:active,inactive',
+            'emergency_contact'  => 'nullable|string|max:50',
+            'commission_percent' => 'nullable|numeric|min:0|max:100',
+            'permissions'    => 'nullable|array',
         ]);
 
-        $staff->update($data);
+        $staffData = collect($data)->except(['permissions'])->toArray();
+        $staff->update($staffData);
+
+        if ($staff->user_id && isset($data['permissions'])) {
+            $user = \App\Models\User::find($staff->user_id);
+            if ($user) {
+                $user->update(['permissions' => $data['permissions']]);
+            }
+        }
+
         return response()->json($staff);
     }
 
     public function destroy(Staff $staff): JsonResponse
     {
+        if ($staff->user_id) {
+            \App\Models\User::where('id', $staff->user_id)->delete();
+        }
         $staff->delete();
         return response()->json(['message' => 'Staff deleted.']);
+    }
+
+    public function performance(Staff $staff): JsonResponse
+    {
+        $today = Carbon::today();
+        $startOfMonth = Carbon::now()->startOfMonth();
+
+        if (!$staff->user_id) {
+            return response()->json([
+                'bills_today' => 0,
+                'bills_month' => 0,
+                'revenue_today' => 0,
+                'revenue_month' => 0,
+                'commission_earned_month' => 0,
+            ]);
+        }
+
+        $billsToday = Bill::where('user_id', $staff->user_id)
+            ->whereDate('created_at', $today)
+            ->get();
+            
+        $billsMonth = Bill::where('user_id', $staff->user_id)
+            ->where('created_at', '>=', $startOfMonth)
+            ->get();
+
+        $revenueToday = $billsToday->sum('net_amount');
+        $revenueMonth = $billsMonth->sum('net_amount');
+        
+        $commissionPercent = $staff->commission_percent ?? 0;
+        $commissionEarned = ($revenueMonth * $commissionPercent) / 100;
+
+        return response()->json([
+            'bills_today' => $billsToday->count(),
+            'bills_month' => $billsMonth->count(),
+            'revenue_today' => $revenueToday,
+            'revenue_month' => $revenueMonth,
+            'commission_earned_month' => $commissionEarned,
+        ]);
     }
 
     // ─── Salary Records ───────────────────────────────────────────────────────

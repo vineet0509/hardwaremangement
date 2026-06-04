@@ -33,6 +33,7 @@ class User extends Authenticatable
         'business_id',
         'is_super_admin',
         'role',
+        'permissions',
     ];
 
     /**
@@ -56,6 +57,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_super_admin' => 'boolean',
+            'permissions' => 'array',
         ];
     }
 }

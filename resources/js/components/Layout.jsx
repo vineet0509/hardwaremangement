@@ -53,6 +53,7 @@ const Layout = ({ children }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('app_theme') || 'dark');
   const [showTour, setShowTour] = useState(false);
+  const [attendanceStatus, setAttendanceStatus] = useState('pending');
   const [openCategories, setOpenCategories] = useState({
     'Inventory': false,
     'Sales & Billing': false,
@@ -99,16 +100,79 @@ const Layout = ({ children }) => {
     }).catch(console.error);
     
     api.get('/me')
-      .then(res => setUser(res.data))
+      .then(res => {
+        setUser(res.data);
+        if (res.data.role === 'staff') {
+          fetchAttendanceStatus();
+        }
+      })
       .catch(console.error)
       .finally(() => setAuthLoading(false));
   }, []);
 
+  const [locationLoading, setLocationLoading] = useState(false);
+
+  const fetchAttendanceStatus = () => {
+    api.get('/attendance/status')
+      .then(res => setAttendanceStatus(res.data.status))
+      .catch(console.error);
+  };
+
+  const handleClockIn = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser.');
+      return;
+    }
+    setLocationLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        api.post('/attendance/clock-in', { latitude, longitude })
+          .then(() => fetchAttendanceStatus())
+          .catch(err => alert(err.response?.data?.message || 'Error clocking in.'))
+          .finally(() => setLocationLoading(false));
+      },
+      (error) => {
+        setLocationLoading(false);
+        alert('You must allow location access to clock in.');
+      }
+    );
+  };
+
+  const handleClockOut = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser.');
+      return;
+    }
+    setLocationLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        api.post('/attendance/clock-out', { latitude, longitude })
+          .then(() => fetchAttendanceStatus())
+          .catch(err => alert(err.response?.data?.message || 'Error clocking out.'))
+          .finally(() => setLocationLoading(false));
+      },
+      (error) => {
+        setLocationLoading(false);
+        alert('You must allow location access to clock out.');
+      }
+    );
+  };
+
   // ✅ This useEffect must be ABOVE any early returns to follow the Rules of Hooks
   useEffect(() => {
     if (user && user.role === 'staff') {
-      const allowedPaths = ['/billing', '/bills', '/quotations', '/privacy-policy', '/terms'];
-      if (!allowedPaths.some(p => location.pathname.startsWith(p))) {
+      const perms = user.permissions || {};
+      const allowedPaths = ['/billing', '/quotations', '/privacy-policy', '/terms', '/about-us', '/contact-us'];
+      
+      if (perms.can_edit_bills) allowedPaths.push('/bills');
+      if (perms.can_manage_inventory) {
+        allowedPaths.push('/products');
+        allowedPaths.push('/suppliers');
+      }
+      
+      if (location.pathname !== '/' && !allowedPaths.some(p => location.pathname.startsWith(p))) {
         navigate('/billing', { replace: true });
       }
     }
@@ -137,7 +201,14 @@ const Layout = ({ children }) => {
 
   let allNavItems = [...navItems];
   if (user && user.role === 'staff') {
-    const allowed = ['/billing', '/bills', '/quotations', '/about-us', '/contact-us'];
+    const perms = user.permissions || {};
+    const allowed = ['/billing', '/quotations', '/about-us', '/contact-us'];
+    if (perms.can_edit_bills) allowed.push('/bills');
+    if (perms.can_manage_inventory) {
+      allowed.push('/products');
+      allowed.push('/suppliers');
+    }
+
     allNavItems = navItems.map(item => {
       if (item.subItems) {
         const filteredSubs = item.subItems.filter(sub => allowed.includes(sub.path) || sub.action === 'tour');
@@ -357,6 +428,24 @@ const Layout = ({ children }) => {
           </div>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                {user?.role === 'staff' && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginRight: 12 }}>
+                    {attendanceStatus === 'pending' && (
+                      <button className="btn btn-primary" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={handleClockIn} disabled={locationLoading}>
+                        {locationLoading ? 'Locating...' : 'Clock In'}
+                      </button>
+                    )}
+                    {attendanceStatus === 'clocked_in' && (
+                      <button className="btn btn-outline" style={{ padding: '6px 12px', fontSize: '0.85rem', borderColor: 'var(--danger)', color: 'var(--danger)' }} onClick={handleClockOut} disabled={locationLoading}>
+                        {locationLoading ? 'Locating...' : 'Clock Out'}
+                      </button>
+                    )}
+                    {attendanceStatus === 'clocked_out' && (
+                      <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Shift Ended</span>
+                    )}
+                  </div>
+                )}
+                
                 <button 
                   onClick={toggleTheme} 
                   style={{ 
@@ -534,7 +623,17 @@ const Layout = ({ children }) => {
               </div>
             )
           )}
-          {children}
+          {user?.role === 'staff' && attendanceStatus !== 'clocked_in' ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '80vh', textAlign: 'center', padding: 20 }}>
+              <AlertTriangle size={64} color="var(--warning)" style={{ marginBottom: 20 }} />
+              <h2 style={{ fontSize: '2rem', marginBottom: 12 }}>Shift Not Started</h2>
+              <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', maxWidth: 500 }}>
+                You must clock in to access the system and perform operations. Please click the <strong>Clock In</strong> button in the top bar.
+              </p>
+            </div>
+          ) : (
+            children
+          )}
           
           {!['/billing', '/quotations/create'].includes(location.pathname) && (
             <footer style={{ 
