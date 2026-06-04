@@ -118,6 +118,16 @@ const QuotationCreate = () => {
     }));
   };
 
+  const updateRate = (id, rate) => {
+    setCart(prev => prev.map(item => {
+      if (item.product_id === id) {
+        const newRate = parseFloat(rate);
+        return { ...item, price: isNaN(newRate) || newRate < 0 ? 0 : newRate };
+      }
+      return item;
+    }));
+  };
+
   const removeFromCart = (id) => setCart(prev => prev.filter(item => item.product_id !== id));
 
   const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
@@ -398,16 +408,40 @@ const QuotationCreate = () => {
               <div style={{ fontSize: '0.85rem' }}>Add products from the left panel</div>
             </div>
           ) : cart.map(item => (
-            <div key={item.product_id} className="cart-item" style={{ padding: '14px 0' }}>
-              <div className="cart-item-info">
-                <div className="cart-item-title" style={{ fontSize: '1rem', marginBottom: 4 }}>{item.name}</div>
-                <div className="cart-item-price">₹{item.price} × {item.quantity} {item.unit || ''} = <span style={{ color: 'var(--text-main)', fontWeight: 800 }}>₹{(item.price * item.quantity).toFixed(2)}</span></div>
+            <div key={item.product_id} className="cart-item" style={{ padding: '14px 0', flexDirection: 'column', alignItems: 'flex-start', gap: 8 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                <div className="cart-item-title" style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)' }}>{item.name}</div>
+                <button onClick={() => removeFromCart(item.product_id)} style={{ background: 'var(--danger)', color: 'white', border: 'none', width: 26, height: 26, borderRadius: 5, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}><Trash2 size={12} /></button>
               </div>
-              <div className="cart-item-controls" style={{ background: 'var(--surface)', padding: '6px', borderRadius: 10, border: '1px solid var(--border)' }}>
-                <button onClick={() => updateQuantity(item.product_id, item.quantity - 1)} style={{ width: 30, height: 30, borderRadius: 6, fontSize: '1.1rem' }}>-</button>
-                <input type="number" min="0" value={item.quantity} onChange={(e) => updateQuantity(item.product_id, e.target.value)} style={{ width: 46, textAlign: 'center', background: 'transparent', border: 'none', color: 'var(--text-main)', fontWeight: 800, fontSize: '1rem', outline: 'none' }} />
-                <button onClick={() => updateQuantity(item.product_id, item.quantity + 1)} style={{ width: 30, height: 30, borderRadius: 6, fontSize: '1.1rem' }}>+</button>
-                <button onClick={() => removeFromCart(item.product_id)} style={{ background: 'var(--danger)', color: 'white', borderColor: 'var(--danger)', marginLeft: 10, width: 30, height: 30, borderRadius: 6 }}><Trash2 size={14} /></button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', flexWrap: 'wrap' }}>
+                {/* Editable Rate */}
+                <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(59,130,246,0.06)', border: '1.5px solid rgba(59,130,246,0.25)', borderRadius: 8, padding: '4px 10px', gap: 3 }}>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#3b82f6' }}>₹</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={item.price}
+                    onChange={e => updateRate(item.product_id, e.target.value)}
+                    title="Edit rate"
+                    style={{ width: 68, border: 'none', outline: 'none', background: 'transparent', fontWeight: 700, fontSize: '0.95rem', color: '#3b82f6', textAlign: 'center' }}
+                  />
+                  <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600 }}>rate</span>
+                </div>
+
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>×</span>
+
+                {/* Quantity Controls */}
+                <div className="cart-item-controls" style={{ background: 'var(--surface)', padding: '5px', borderRadius: 9, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <button onClick={() => updateQuantity(item.product_id, item.quantity - 1)} style={{ width: 28, height: 28, borderRadius: 6, fontSize: '1.1rem', cursor: 'pointer' }}>-</button>
+                  <input type="number" min="0" value={item.quantity} onChange={e => updateQuantity(item.product_id, e.target.value)} style={{ width: 42, textAlign: 'center', background: 'transparent', border: 'none', color: 'var(--text-main)', fontWeight: 800, fontSize: '1rem', outline: 'none' }} />
+                  <button onClick={() => updateQuantity(item.product_id, item.quantity + 1)} style={{ width: 28, height: 28, borderRadius: 6, fontSize: '1.1rem', cursor: 'pointer' }}>+</button>
+                </div>
+
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>=</span>
+
+                {/* Line Total */}
+                <span style={{ fontWeight: 800, color: 'var(--success)', fontSize: '1rem', marginLeft: 'auto' }}>₹{(item.price * item.quantity).toFixed(2)}</span>
               </div>
             </div>
           ))}

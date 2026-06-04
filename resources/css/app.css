@@ -645,6 +645,7 @@ tr:hover td { background: var(--surface-hover); }
 }
 
 .mobile-profile-footer { display: none; }
+.show-on-mobile { display: none; }
 
 @media (max-width: 480px) {
   h1, .responsive-h1 { font-size: 1.4rem !important; }
@@ -668,6 +669,9 @@ tr:hover td { background: var(--surface-hover); }
 @media (max-width: 992px) {
   .hide-on-mobile {
     display: none !important;
+  }
+  .show-on-mobile {
+    display: flex !important;
   }
   .products-actions-wrapper {
     flex-direction: column;

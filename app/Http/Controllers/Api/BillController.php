@@ -20,12 +20,21 @@ class BillController extends Controller
         $query = $request->query('q');
         if (!$query) return response()->json([]);
 
-        $customers = Bill::select('customer_name', 'customer_phone', 'customer_address')
+        $user = auth()->user();
+
+        $billQuery = Bill::select('customer_name', 'customer_phone', 'customer_address')
             ->whereNotNull('customer_name')
             ->where(function($q) use ($query) {
                 $q->where('customer_phone', 'like', "%{$query}%")
                   ->orWhere('customer_name', 'like', "%{$query}%");
-            })
+            });
+
+        // Staff only see customers from their own bills
+        if ($user->role === 'staff') {
+            $billQuery->where('user_id', $user->id);
+        }
+
+        $customers = $billQuery
             ->groupBy('customer_name', 'customer_phone', 'customer_address')
             ->limit(10)
             ->get();
@@ -35,6 +44,8 @@ class BillController extends Controller
 
     public function customersList(Request $request): JsonResponse
     {
+        $user = auth()->user();
+
         $query = Bill::select(
                 'customer_phone',
                 DB::raw('MAX(customer_name) as customer_name'),
@@ -45,8 +56,14 @@ class BillController extends Controller
                 DB::raw('SUM(due_amount) as current_due')
             )
             ->whereNotNull('customer_phone')
-            ->where('customer_phone', '!=', '')
-            ->groupBy('customer_phone');
+            ->where('customer_phone', '!=', '');
+
+        // Staff only see their own customers
+        if ($user->role === 'staff') {
+            $query->where('user_id', $user->id);
+        }
+
+        $query->groupBy('customer_phone');
 
         if ($request->search) {
             $query->where(function($q) use ($request) {
@@ -87,14 +104,20 @@ class BillController extends Controller
 
     public function udharList(): JsonResponse
     {
-        $udhar = Bill::select('customer_name', 'customer_phone', DB::raw('SUM(due_amount) as total_due'))
+        $user = auth()->user();
+
+        $query = Bill::select('customer_name', 'customer_phone', DB::raw('SUM(due_amount) as total_due'))
             ->where('due_amount', '!=', 0)
             ->whereNotNull('customer_name')
             ->groupBy('customer_name', 'customer_phone')
-            ->orderByDesc('total_due')
-            ->get();
-            
-        return response()->json($udhar);
+            ->orderByDesc('total_due');
+
+        // Staff only see udhar from their own bills
+        if ($user->role === 'staff') {
+            $query->where('user_id', $user->id);
+        }
+
+        return response()->json($query->get());
     }
 
     public function advancesList(Request $request): JsonResponse

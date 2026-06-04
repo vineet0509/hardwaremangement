@@ -148,6 +148,16 @@ const Billing = () => {
     }));
   };
 
+  const updateRate = (id, rate) => {
+    setCart(prev => prev.map(item => {
+      if (item.product_id === id) {
+        const newRate = parseFloat(rate);
+        return { ...item, price: isNaN(newRate) || newRate < 0 ? 0 : newRate };
+      }
+      return item;
+    }));
+  };
+
   const removeFromCart = (id) => setCart(prev => prev.filter(item => item.product_id !== id));
 
   const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
@@ -583,23 +593,47 @@ const Billing = () => {
               <div style={{ fontSize: '0.8rem', marginTop: 2 }}>Add products from the left menu</div>
             </div>
           ) : cart.map(item => (
-            <div key={item.product_id} className="cart-item" style={{ padding: '12px 0', borderBottom: '1px dashed var(--border)' }}>
-              <div className="cart-item-info">
-                <div className="cart-item-title" style={{ fontSize: '0.95rem', color: 'var(--text-main)', marginBottom: '4px', fontWeight: 700 }}>{item.name}</div>
-                <div className="cart-item-price" style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>₹{item.price} × {item.quantity} = <span style={{color: 'var(--text-main)', fontWeight: 800}}>₹{(item.price * item.quantity).toFixed(2)}</span></div>
+            <div key={item.product_id} className="cart-item" style={{ padding: '12px 0', borderBottom: '1px dashed var(--border)', flexDirection: 'column', alignItems: 'flex-start', gap: 8 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                <div className="cart-item-title" style={{ fontSize: '0.95rem', color: 'var(--text-main)', fontWeight: 700 }}>{item.name}</div>
+                <button onClick={() => removeFromCart(item.product_id)} style={{ background: 'var(--danger)', color: 'white', border: 'none', width: 24, height: 24, borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}><Trash2 size={11} /></button>
               </div>
-              <div className="cart-item-controls" style={{ background: 'var(--surface)', padding: '4px', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                <button onClick={() => updateQuantity(item.product_id, item.quantity - 1)} style={{ width: 26, height: 26, borderRadius: 4, fontSize: '1rem', cursor: 'pointer' }}>-</button>
-                <input 
-                  type="number" 
-                  min="0"
-                  max={item.stock}
-                  value={item.quantity} 
-                  onChange={(e) => updateQuantity(item.product_id, e.target.value)}
-                  style={{ width: 38, textAlign: 'center', background: 'transparent', border: 'none', color: 'var(--text-main)', fontWeight: 800, fontSize: '0.9rem', outline: 'none' }}
-                />
-                <button onClick={() => updateQuantity(item.product_id, item.quantity + 1)} style={{ width: 26, height: 26, borderRadius: 4, fontSize: '1rem', cursor: 'pointer' }}>+</button>
-                <button onClick={() => removeFromCart(item.product_id)} style={{ background: 'var(--danger)', color: 'white', borderColor: 'var(--danger)', marginLeft: 8, width: 26, height: 26, borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><Trash2 size={12} /></button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', flexWrap: 'wrap' }}>
+                {/* Editable Rate */}
+                <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(79,70,229,0.05)', border: '1.5px solid rgba(79,70,229,0.2)', borderRadius: 7, padding: '3px 8px', gap: 3 }}>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--primary)', letterSpacing: '0.02em' }}>₹</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={item.price}
+                    onChange={e => updateRate(item.product_id, e.target.value)}
+                    title="Edit rate"
+                    style={{ width: 64, border: 'none', outline: 'none', background: 'transparent', fontWeight: 700, fontSize: '0.9rem', color: 'var(--primary)', textAlign: 'center' }}
+                  />
+                  <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600 }}>rate</span>
+                </div>
+
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>×</span>
+
+                {/* Quantity Controls */}
+                <div className="cart-item-controls" style={{ background: 'var(--surface)', padding: '3px', borderRadius: '7px', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <button onClick={() => updateQuantity(item.product_id, item.quantity - 1)} style={{ width: 24, height: 24, borderRadius: 4, fontSize: '1rem', cursor: 'pointer' }}>-</button>
+                  <input
+                    type="number"
+                    min="0"
+                    max={item.stock}
+                    value={item.quantity}
+                    onChange={e => updateQuantity(item.product_id, e.target.value)}
+                    style={{ width: 34, textAlign: 'center', background: 'transparent', border: 'none', color: 'var(--text-main)', fontWeight: 800, fontSize: '0.88rem', outline: 'none' }}
+                  />
+                  <button onClick={() => updateQuantity(item.product_id, item.quantity + 1)} style={{ width: 24, height: 24, borderRadius: 4, fontSize: '1rem', cursor: 'pointer' }}>+</button>
+                </div>
+
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>=</span>
+
+                {/* Line Total */}
+                <span style={{ fontWeight: 800, color: 'var(--success)', fontSize: '0.95rem', marginLeft: 'auto' }}>₹{(item.price * item.quantity).toFixed(2)}</span>
               </div>
             </div>
           ))}

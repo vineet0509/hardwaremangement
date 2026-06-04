@@ -571,6 +571,59 @@ const Layout = ({ children }) => {
                  </div>
                )}
              </div>
+
+             {/* Mobile Profile Button — only shown on mobile (replaces hide-on-mobile profile) */}
+             <div className="show-on-mobile" style={{ position: 'relative' }}>
+               <div
+                 onClick={() => setShowProfileMenu(!showProfileMenu)}
+                 style={{ width: 38, height: 38, borderRadius: '50%', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 2px 8px rgba(0,168,255,0.35)' }}
+               >
+                 {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
+               </div>
+               {showProfileMenu && (
+                 <div style={{
+                   position: 'fixed', top: 60, right: 16,
+                   width: 210,
+                   background: 'var(--surface)', border: '1px solid var(--border)',
+                   borderRadius: 12, boxShadow: '0 10px 30px rgba(0,0,0,0.18)', overflow: 'hidden', zIndex: 200
+                 }}>
+                   <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', background: 'var(--surface-hover)' }}>
+                     <div style={{ fontWeight: 700, fontSize: '0.92rem' }}>{user?.name || 'Admin User'}</div>
+                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{user?.is_super_admin ? 'Super Admin' : (user?.role === 'staff' ? 'Cashier / Staff' : 'Business Manager')}</div>
+                   </div>
+                   {(user?.is_super_admin === true || user?.is_super_admin == 1) && (
+                     <button onClick={() => { setShowProfileMenu(false); navigate('/super-admin'); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', background: 'rgba(79,70,229,0.08)', border: 'none', borderBottom: '1px solid var(--border)', cursor: 'pointer', color: 'var(--primary)', fontSize: '0.88rem', fontWeight: 600 }}>
+                       <Shield size={15} /> Super Admin
+                     </button>
+                   )}
+                   {user?.role !== 'staff' && (
+                     <button onClick={() => { setShowProfileMenu(false); navigate('/settings'); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.88rem' }}>
+                       <SettingsIcon size={15} /> Settings
+                     </button>
+                   )}
+                   <button onClick={() => { setShowProfileMenu(false); navigate('/settings'); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.88rem' }}>
+                     <Lock size={15} /> Change Password
+                   </button>
+                   <button onClick={() => { setShowProfileMenu(false); navigate('/privacy-policy'); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.88rem' }}>
+                     <Shield size={15} /> Privacy Policy
+                   </button>
+                   <button onClick={() => { setShowProfileMenu(false); navigate('/terms'); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', background: 'none', border: 'none', borderBottom: '1px solid var(--border)', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.88rem' }}>
+                     <FileText size={15} /> Terms & Conditions
+                   </button>
+                   <button onClick={() => {
+                     if(confirm('Are you sure you want to log out?')) {
+                       api.post('/logout').catch(console.error).finally(() => {
+                         localStorage.removeItem('auth_token');
+                         localStorage.removeItem('login_date');
+                         window.location.href = '/';
+                       });
+                     }
+                   }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '0.88rem' }}>
+                     <LogOut size={15} /> Logout
+                   </button>
+                 </div>
+               )}
+             </div>
           </div>
         </header>
 
