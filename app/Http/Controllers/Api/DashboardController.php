@@ -21,8 +21,8 @@ class DashboardController extends Controller
 
         // Sales stats consolidated
         $salesStats = Bill::selectRaw("
-            SUM(CASE WHEN DATE(created_at) = ? THEN CASE WHEN type = 'return' THEN -total ELSE total END ELSE 0 END) as today_sales,
-            SUM(CASE WHEN MONTH(created_at) = ? AND YEAR(created_at) = ? THEN CASE WHEN type = 'return' THEN -total ELSE total END ELSE 0 END) as month_sales,
+            SUM(CASE WHEN DATE(created_at) = ? THEN total ELSE 0 END) as today_sales,
+            SUM(CASE WHEN MONTH(created_at) = ? AND YEAR(created_at) = ? THEN total ELSE 0 END) as month_sales,
             COUNT(id) as total_bills
         ", [$today, $thisMonth, $thisYear])->first();
 
@@ -41,7 +41,7 @@ class DashboardController extends Controller
         $pendingAdvances = AdvancePayment::where('status', 'pending')->sum('amount');
 
         // Monthly sales chart (last 6 months)
-        $monthlySales = Bill::selectRaw("MONTH(created_at) as month, YEAR(created_at) as year, SUM(CASE WHEN type = 'return' THEN -total ELSE total END) as total")
+        $monthlySales = Bill::selectRaw("MONTH(created_at) as month, YEAR(created_at) as year, SUM(total) as total")
             ->where('created_at', '>=', now()->subMonths(6))
             ->groupBy('year', 'month')
             ->orderBy('year')->orderBy('month')

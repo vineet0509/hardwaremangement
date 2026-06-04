@@ -583,11 +583,11 @@ class BillController extends Controller
                     'customer_name'  => $bill->customer_name,
                     'customer_phone' => $bill->customer_phone,
                     'customer_address'=> $bill->customer_address,
-                    'subtotal'       => $totalDeduction,
-                    'discount'       => $billDiscountDeduction,
-                    'tax'            => $taxDeduction,
-                    'total'          => $finalDeduction,
-                    'paid_amount'    => $finalDeduction, // assume fully refunded
+                    'subtotal'       => -$totalDeduction,
+                    'discount'       => -$billDiscountDeduction,
+                    'tax'            => -$taxDeduction,
+                    'total'          => -$finalDeduction,
+                    'paid_amount'    => -$finalDeduction, // assume fully refunded
                     'due_amount'     => 0,
                     'payment_method' => 'cash', // Default refund method
                     'status'         => 'paid',
