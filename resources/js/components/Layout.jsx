@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Package, ShoppingCart, Users, FileText, Receipt, LogOut, Settings as SettingsIcon, Banknote, Languages, Lock, Shield, Menu, X, Truck, AlertTriangle, Sun, Moon, ClipboardList, Info, HelpCircle, Compass, Building, ChevronDown, ChevronRight } from 'lucide-react';
 import api from '../utils/api';
@@ -50,7 +50,6 @@ const Layout = ({ children }) => {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [showMobileProfileMenu, setShowMobileProfileMenu] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('app_theme') || 'dark');
   const [showTour, setShowTour] = useState(false);
@@ -60,6 +59,7 @@ const Layout = ({ children }) => {
     'Sales & Billing': false,
     'Management': false
   });
+  const profileRef = useRef(null);
 
   const toggleCategory = (catName) => {
     setOpenCategories(prev => ({ ...prev, [catName]: !prev[catName] }));
@@ -75,6 +75,19 @@ const Layout = ({ children }) => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('app_theme', theme);
   }, [theme]);
+
+  // Close profile dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setShowProfileMenu(false);
+      }
+    };
+    if (showProfileMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showProfileMenu]);
 
   const toggleTheme = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
@@ -355,70 +368,7 @@ const Layout = ({ children }) => {
 
         </nav>
 
-        <div style={{ marginTop: 'auto', padding: '20px', borderTop: '1px solid rgba(255,255,255,0.08)' }} className="mobile-profile-footer">
-          <div 
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
-            onClick={() => setShowMobileProfileMenu(!showMobileProfileMenu)}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 36, height: 36, borderRadius: '50%', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
-                {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ color: 'white', fontSize: '0.9rem', fontWeight: 600 }}>{user?.name || 'Admin User'}</span>
-                <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>{user?.is_super_admin ? 'Super Admin' : (user?.role === 'staff' ? 'Cashier / Staff' : 'Business Manager')}</span>
-              </div>
-            </div>
-            {showMobileProfileMenu ? <ChevronDown size={18} color="#94a3b8" /> : <ChevronRight size={18} color="#94a3b8" />}
-          </div>
-          
-          {showMobileProfileMenu && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
-              {(user?.is_super_admin === true || user?.is_super_admin == 1) && (
-                <button 
-                  onClick={() => { setIsMobileMenuOpen(false); navigate('/super-admin'); }}
-                  style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(79, 70, 229, 0.4)', border: '1px solid var(--primary)', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left', fontWeight: 600 }}
-                >
-                  <Shield size={16} /> Super Admin Dashboard
-                </button>
-              )}
-              {user?.role !== 'staff' && (
-                <button 
-                  onClick={() => { setIsMobileMenuOpen(false); navigate('/settings'); }}
-                  style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(255, 255, 255, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
-                >
-                  <SettingsIcon size={16} /> Settings
-                </button>
-              )}
-              <button 
-                onClick={() => { setIsMobileMenuOpen(false); navigate('/privacy-policy'); }}
-                style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(255, 255, 255, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
-              >
-                <Shield size={16} /> Privacy Policy
-              </button>
-              <button 
-                onClick={() => { setIsMobileMenuOpen(false); navigate('/terms'); }}
-                style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'white', background: 'rgba(255, 255, 255, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
-              >
-                <FileText size={16} /> Terms & Conditions
-              </button>
-              <button 
-                onClick={() => {
-                  if(confirm("Are you sure you want to log out?")) {
-                     api.post('/logout').catch(console.error).finally(() => {
-                        localStorage.removeItem('auth_token');
-                        localStorage.removeItem('login_date');
-                        window.location.href = '/';
-                     });
-                  }
-                }}
-                style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#ef4444', background: 'rgba(239, 68, 68, 0.1)', border: 'none', cursor: 'pointer', fontSize: '0.85rem', padding: '10px 12px', borderRadius: 8, width: '100%', textAlign: 'left' }}
-              >
-                <LogOut size={16} /> Logout
-              </button>
-            </div>
-          )}
-        </div>
+        {/* Sidebar profile removed — profile lives in topbar header only */}
       </aside>
 
       {/* Main Content Area */}
@@ -496,134 +446,154 @@ const Layout = ({ children }) => {
                   <Shield size={18} /> Privacy
                 </button>
 
-              <div className="hide-on-mobile" style={{ position: 'relative' }}>
-               <div 
-                 className="user-profile d-flex align-items-center" 
-                 style={{ gap: 12, cursor: 'pointer', padding: '4px 8px', borderRadius: 8 }}
-                 onClick={() => setShowProfileMenu(!showProfileMenu)}
-               >
-                 <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                   <div style={{ fontWeight: 600, fontSize: '0.9rem', lineHeight: 1.2 }}>{user?.name || 'Admin User'}</div>
-                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{user?.is_super_admin ? 'Super Admin' : (user?.role === 'staff' ? 'Cashier / Staff' : 'Business Manager')}</div>
-                 </div>
-                 <div style={{ width: 40, height: 40, borderRadius: '50%', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
-                   {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
-                 </div>
-               </div>
+              {/* ── Unified Profile Button (Desktop + Mobile) ── */}
+              <div ref={profileRef} style={{ position: 'relative' }}>
 
-               {showProfileMenu && (
-                 <div style={{ 
-                   position: 'absolute', top: '110%', right: 0, width: 200, 
-                   background: 'var(--surface)', border: '1px solid var(--border)', 
-                   borderRadius: 12, boxShadow: '0 10px 25px rgba(0,0,0,0.1)', overflow: 'hidden', zIndex: 100 
-                 }}>
-                   {(user?.is_super_admin === true || user?.is_super_admin == 1) && (
-                     <button 
-                       onClick={() => navigate('/super-admin')} 
-                       style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'rgba(79, 70, 229, 0.1)', border: 'none', borderBottom: '1px solid var(--border)', cursor: 'pointer', color: 'var(--primary)', fontSize: '0.9rem', fontWeight: 600 }}
-                     >
-                       <Shield size={16} /> Super Admin
-                     </button>
-                   )}
-                   {user?.role !== 'staff' && (
-                     <button 
-                       onClick={() => navigate('/settings')} 
-                       style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.9rem' }}
-                     >
-                       <SettingsIcon size={16} /> Settings
-                     </button>
-                   )}
-                   <button 
-                     onClick={() => navigate('/settings')} 
-                     title="Scroll to Security in Settings"
-                     style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.9rem' }}
-                   >
-                     <Lock size={16} /> Change Password
-                   </button>
-                   <button 
-                     onClick={() => navigate('/privacy-policy')} 
-                     style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.9rem' }}
-                   >
-                     <Shield size={16} /> Privacy Policy
-                    </button>
-                    <button 
-                      onClick={() => navigate('/terms')} 
-                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'none', border: 'none', borderBottom: '1px solid var(--border)', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.9rem' }} 
-                    >
-                      <FileText size={16} /> Terms & Conditions
-                    </button>
-                    <button style={{ display: 'none' }}>
-                   </button>
-                    <button 
-                     onClick={() => {
-                       if(confirm("Are you sure you want to log out?")) {
-                          api.post('/logout').catch(console.error).finally(() => {
-                             localStorage.removeItem('auth_token');
-                             localStorage.removeItem('login_date');
-                             window.location.href = '/';
-                          });
-                       }
-                     }} 
-                    style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '0.9rem' }}
-                   >
-                     <LogOut size={16} /> Logout
-                   </button>
-                 </div>
-               )}
-             </div>
+                {/* Desktop trigger: avatar + name */}
+                <div
+                  className="hide-on-mobile"
+                  onClick={() => setShowProfileMenu(v => !v)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', padding: '5px 10px', borderRadius: 12, transition: 'background 0.2s', background: showProfileMenu ? 'var(--surface-hover)' : 'transparent' }}
+                  onMouseOver={e => e.currentTarget.style.background = 'var(--surface-hover)'}
+                  onMouseOut={e => e.currentTarget.style.background = showProfileMenu ? 'var(--surface-hover)' : 'transparent'}
+                >
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontWeight: 700, fontSize: '0.88rem', lineHeight: 1.2, color: 'var(--text-main)' }}>{user?.name || 'Admin'}</div>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 500 }}>{user?.is_super_admin ? 'Super Admin' : (user?.role === 'staff' ? 'Cashier / Staff' : 'Business Manager')}</div>
+                  </div>
+                  <div style={{ width: 38, height: 38, borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary), #059669)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1rem', boxShadow: '0 2px 8px rgba(0,168,255,0.4)', flexShrink: 0 }}>
+                    {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
+                  </div>
+                  <ChevronDown size={15} color="var(--text-muted)" style={{ transition: 'transform 0.2s', transform: showProfileMenu ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+                </div>
 
-             {/* Mobile Profile Button — only shown on mobile (replaces hide-on-mobile profile) */}
-             <div className="show-on-mobile" style={{ position: 'relative' }}>
-               <div
-                 onClick={() => setShowProfileMenu(!showProfileMenu)}
-                 style={{ width: 38, height: 38, borderRadius: '50%', backgroundColor: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 2px 8px rgba(0,168,255,0.35)' }}
-               >
-                 {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
-               </div>
-               {showProfileMenu && (
-                 <div style={{
-                   position: 'fixed', top: 60, right: 16,
-                   width: 210,
-                   background: 'var(--surface)', border: '1px solid var(--border)',
-                   borderRadius: 12, boxShadow: '0 10px 30px rgba(0,0,0,0.18)', overflow: 'hidden', zIndex: 200
-                 }}>
-                   <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', background: 'var(--surface-hover)' }}>
-                     <div style={{ fontWeight: 700, fontSize: '0.92rem' }}>{user?.name || 'Admin User'}</div>
-                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{user?.is_super_admin ? 'Super Admin' : (user?.role === 'staff' ? 'Cashier / Staff' : 'Business Manager')}</div>
-                   </div>
-                   {(user?.is_super_admin === true || user?.is_super_admin == 1) && (
-                     <button onClick={() => { setShowProfileMenu(false); navigate('/super-admin'); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', background: 'rgba(79,70,229,0.08)', border: 'none', borderBottom: '1px solid var(--border)', cursor: 'pointer', color: 'var(--primary)', fontSize: '0.88rem', fontWeight: 600 }}>
-                       <Shield size={15} /> Super Admin
-                     </button>
-                   )}
-                   {user?.role !== 'staff' && (
-                     <button onClick={() => { setShowProfileMenu(false); navigate('/settings'); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.88rem' }}>
-                       <SettingsIcon size={15} /> Settings
-                     </button>
-                   )}
-                   <button onClick={() => { setShowProfileMenu(false); navigate('/settings'); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.88rem' }}>
-                     <Lock size={15} /> Change Password
-                   </button>
-                   <button onClick={() => { setShowProfileMenu(false); navigate('/privacy-policy'); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.88rem' }}>
-                     <Shield size={15} /> Privacy Policy
-                   </button>
-                   <button onClick={() => { setShowProfileMenu(false); navigate('/terms'); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', background: 'none', border: 'none', borderBottom: '1px solid var(--border)', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.88rem' }}>
-                     <FileText size={15} /> Terms & Conditions
-                   </button>
-                   <button onClick={() => {
-                     if(confirm('Are you sure you want to log out?')) {
-                       api.post('/logout').catch(console.error).finally(() => {
-                         localStorage.removeItem('auth_token');
-                         localStorage.removeItem('login_date');
-                         window.location.href = '/';
-                       });
-                     }
-                   }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '0.88rem' }}>
-                     <LogOut size={15} /> Logout
-                   </button>
-                 </div>
-               )}
-             </div>
+                {/* Mobile trigger: avatar only */}
+                <div
+                  className="show-on-mobile"
+                  onClick={() => setShowProfileMenu(v => !v)}
+                  style={{ width: 38, height: 38, borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary), #059669)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,168,255,0.4)' }}
+                >
+                  {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
+                </div>
+
+                {/* Dropdown — shared for both desktop and mobile */}
+                {showProfileMenu && (
+                  <div style={{
+                    position: 'fixed',
+                    top: 70,
+                    right: 16,
+                    width: 240,
+                    background: 'var(--surface)',
+                    border: '1px solid var(--border)',
+                    borderRadius: 16,
+                    boxShadow: '0 20px 50px rgba(0,0,0,0.18)',
+                    zIndex: 500,
+                    overflow: 'hidden',
+                    animation: 'slideUp 0.18s cubic-bezier(0.16,1,0.3,1)'
+                  }}>
+
+                    {/* Header */}
+                    <div style={{ padding: '16px 18px', background: 'linear-gradient(135deg, rgba(0,168,255,0.12), rgba(5,150,105,0.08))', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary), #059669)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1.1rem', flexShrink: 0, boxShadow: '0 4px 12px rgba(0,168,255,0.35)' }}>
+                        {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
+                      </div>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-main)', lineHeight: 1.2 }}>{user?.name || 'Admin User'}</div>
+                        <div style={{ fontSize: '0.72rem', color: 'var(--primary)', fontWeight: 600, marginTop: 2 }}>{user?.is_super_admin ? '⚡ Super Admin' : (user?.role === 'staff' ? '👤 Cashier / Staff' : '🏪 Business Manager')}</div>
+                      </div>
+                    </div>
+
+                    {/* Menu Items */}
+                    <div style={{ padding: '8px 0' }}>
+
+                      {(user?.is_super_admin === true || user?.is_super_admin == 1) && (
+                        <button
+                          onClick={() => { setShowProfileMenu(false); navigate('/super-admin'); }}
+                          className="profile-menu-item"
+                          style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '11px 18px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.88rem', fontWeight: 500, transition: 'all 0.15s', textAlign: 'left' }}
+                          onMouseOver={e => { e.currentTarget.style.background = 'rgba(79,70,229,0.08)'; e.currentTarget.style.color = 'var(--primary)'; }}
+                          onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--text-main)'; }}
+                        >
+                          <span style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(79,70,229,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Shield size={15} color="#6c63ff" /></span>
+                          Super Admin Panel
+                        </button>
+                      )}
+
+                      {user?.role !== 'staff' && (
+                        <button
+                          onClick={() => { setShowProfileMenu(false); navigate('/settings'); }}
+                          className="profile-menu-item"
+                          style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '11px 18px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.88rem', fontWeight: 500, transition: 'all 0.15s', textAlign: 'left' }}
+                          onMouseOver={e => { e.currentTarget.style.background = 'rgba(0,168,255,0.07)'; e.currentTarget.style.color = 'var(--primary)'; }}
+                          onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--text-main)'; }}
+                        >
+                          <span style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(0,168,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><SettingsIcon size={15} color="var(--primary)" /></span>
+                          Settings
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() => { setShowProfileMenu(false); navigate('/settings'); }}
+                        className="profile-menu-item"
+                        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '11px 18px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.88rem', fontWeight: 500, transition: 'all 0.15s', textAlign: 'left' }}
+                        onMouseOver={e => { e.currentTarget.style.background = 'rgba(16,185,129,0.07)'; e.currentTarget.style.color = 'var(--success)'; }}
+                        onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--text-main)'; }}
+                      >
+                        <span style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(16,185,129,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Lock size={15} color="var(--success)" /></span>
+                        Change Password
+                      </button>
+
+                      {/* Divider */}
+                      <div style={{ height: 1, background: 'var(--border)', margin: '6px 18px' }} />
+
+                      <button
+                        onClick={() => { setShowProfileMenu(false); navigate('/privacy-policy'); }}
+                        className="profile-menu-item"
+                        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '10px 18px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.82rem', fontWeight: 500, transition: 'all 0.15s', textAlign: 'left' }}
+                        onMouseOver={e => { e.currentTarget.style.background = 'var(--surface-hover)'; e.currentTarget.style.color = 'var(--text-main)'; }}
+                        onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--text-muted)'; }}
+                      >
+                        <span style={{ width: 28, height: 28, borderRadius: 7, background: 'var(--surface-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Shield size={13} color="var(--text-muted)" /></span>
+                        Privacy Policy
+                      </button>
+
+                      <button
+                        onClick={() => { setShowProfileMenu(false); navigate('/terms'); }}
+                        className="profile-menu-item"
+                        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '10px 18px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.82rem', fontWeight: 500, transition: 'all 0.15s', textAlign: 'left' }}
+                        onMouseOver={e => { e.currentTarget.style.background = 'var(--surface-hover)'; e.currentTarget.style.color = 'var(--text-main)'; }}
+                        onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--text-muted)'; }}
+                      >
+                        <span style={{ width: 28, height: 28, borderRadius: 7, background: 'var(--surface-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><FileText size={13} color="var(--text-muted)" /></span>
+                        Terms & Conditions
+                      </button>
+
+                      {/* Divider before logout */}
+                      <div style={{ height: 1, background: 'var(--border)', margin: '6px 18px' }} />
+
+                      <button
+                        onClick={() => {
+                          setShowProfileMenu(false);
+                          if (confirm('Are you sure you want to log out?')) {
+                            api.post('/logout').catch(console.error).finally(() => {
+                              localStorage.removeItem('auth_token');
+                              localStorage.removeItem('login_date');
+                              window.location.href = '/';
+                            });
+                          }
+                        }}
+                        className="profile-menu-item"
+                        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '11px 18px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '0.88rem', fontWeight: 600, transition: 'all 0.15s', textAlign: 'left' }}
+                        onMouseOver={e => e.currentTarget.style.background = 'rgba(239,68,68,0.07)'}
+                        onMouseOut={e => e.currentTarget.style.background = 'none'}
+                      >
+                        <span style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><LogOut size={15} color="var(--danger)" /></span>
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
           </div>
         </header>
 
