@@ -6,6 +6,7 @@ const Attendance = ({ user }) => {
   const [attendances, setAttendances] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterDate, setFilterDate] = useState('');
+  const [mapLocation, setMapLocation] = useState(null);
 
   useEffect(() => {
     api.get('/attendance/all')
@@ -70,20 +71,20 @@ const Attendance = ({ user }) => {
                   <td>
                     {record.clock_in_time ? new Date(record.clock_in_time).toLocaleTimeString() : '-'}
                     {record.clock_in_location && (
-                      <div style={{ fontSize: '0.75rem', marginTop: 4 }}>
-                        <a href={`https://www.google.com/maps/search/?api=1&query=${record.clock_in_location}`} target="_blank" rel="noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
-                          <MapPin size={12} /> Map
-                        </a>
+                      <div style={{ fontSize: '0.75rem', marginTop: 8 }}>
+                        <button className="btn btn-outline btn-sm" onClick={() => setMapLocation(record.clock_in_location)} style={{ padding: '4px 8px', display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <MapPin size={12} /> View Map
+                        </button>
                       </div>
                     )}
                   </td>
                   <td>
                     {record.clock_out_time ? new Date(record.clock_out_time).toLocaleTimeString() : '-'}
                     {record.clock_out_location && (
-                      <div style={{ fontSize: '0.75rem', marginTop: 4 }}>
-                        <a href={`https://www.google.com/maps/search/?api=1&query=${record.clock_out_location}`} target="_blank" rel="noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
-                          <MapPin size={12} /> Map
-                        </a>
+                      <div style={{ fontSize: '0.75rem', marginTop: 8 }}>
+                        <button className="btn btn-outline btn-sm" onClick={() => setMapLocation(record.clock_out_location)} style={{ padding: '4px 8px', display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <MapPin size={12} /> View Map
+                        </button>
                       </div>
                     )}
                   </td>
@@ -100,6 +101,27 @@ const Attendance = ({ user }) => {
           </table>
         )}
       </div>
+
+      {mapLocation && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: 600 }}>
+            <div className="modal-header">
+              <h3>Location Map</h3>
+              <button className="close-btn" onClick={() => setMapLocation(null)}>×</button>
+            </div>
+            <div className="modal-body" style={{ padding: 0, height: 400 }}>
+              <iframe 
+                width="100%" 
+                height="100%" 
+                frameBorder="0" 
+                style={{ border: 0 }} 
+                src={`https://maps.google.com/maps?q=${mapLocation}&z=15&output=embed`} 
+                allowFullScreen>
+              </iframe>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
