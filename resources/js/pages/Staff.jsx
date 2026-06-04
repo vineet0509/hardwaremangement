@@ -197,8 +197,9 @@ const Staff = () => {
         </div>
       </div>
 
-      <div className="table-responsive" style={{ background: 'var(--surface)', borderRadius: 16, border: '1px solid var(--border)', overflow: 'hidden' }}>
-        <table className="table" style={{ width: '100%', minWidth: '900px', borderCollapse: 'collapse', textAlign: 'left', marginBottom: 0 }}>
+      <div style={{ background: 'var(--surface)', borderRadius: 16, border: '1px solid var(--border)', overflow: 'hidden' }}>
+        <div className="table-responsive">
+          <table className="table" style={{ width: '100%', minWidth: '1000px', borderCollapse: 'collapse', textAlign: 'left', marginBottom: 0 }}>
           <thead style={{ background: 'var(--bg-color)', borderBottom: '1px solid var(--border)' }}>
             <tr>
               <th style={{ padding: '16px', fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Staff Name</th>
@@ -260,6 +261,7 @@ const Staff = () => {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
 
       {showAdvanceModal && selectedStaff && (
