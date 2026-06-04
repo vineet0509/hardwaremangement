@@ -13,14 +13,14 @@
         gtag('config', 'AW-18169650337', {'allow_enhanced_conversions': true});
     </script>
     <title>VyaparSync</title>
-    <meta name="description" content="Launch and scale your hardware business with the most powerful multi-tenant management solution. Manage shops, invoices, khata ledgers, staff payroll, and business audits dynamically.">
-    <meta name="keywords" content="hardware shop software, billing system, khata book for stores, saas retail, multi tenant POS, stock controller, inventory management, staff payments">
+    <meta name="description" content="Launch and scale your hardware business with the most powerful multi-tenant management solution. Manage businesses, invoices, khata ledgers, staff payroll, and business audits dynamically.">
+    <meta name="keywords" content="vyaparsync software, billing system, khata book for stores, saas retail, multi tenant POS, stock controller, inventory management, staff payments">
     <meta name="robots" content="index, follow">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="VyaparSync | Multi-Tenant POS & Inventory Software">
-    <meta property="og:description" content="Complete billing, POS and hardware shop store analytics suite. Multi-tenant access with simple controls.">
+    <meta property="og:description" content="Complete billing, POS and vyaparsync store analytics suite. Multi-tenant access with simple controls.">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">

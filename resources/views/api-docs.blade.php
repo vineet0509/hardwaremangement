@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Documentation - Hardware Shop Manager</title>
+    <title>API Documentation - VyaparSync</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -117,7 +117,7 @@
 <body>
     <header>
         <h1>API Documentation</h1>
-        <p class="subtitle">Hardware Shop Management System - Technical Reference</p>
+        <p class="subtitle">VyaparSync Management System - Technical Reference</p>
     </header>
 
     <div class="container">

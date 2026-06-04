@@ -863,7 +863,7 @@ const Landing = () => {
                   <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#34d399', padding: '6px 12px', borderRadius: '30px', fontSize: '0.75rem', fontWeight: 700, width: 'fit-content' }}>CATALOG MANAGER</div>
                   <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#fff', margin: 0 }}>Smooth Product Catalog Setup</h3>
                   <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.95rem', margin: 0 }}>
-                    Populate your shop's inventory catalog effortlessly. Add brand manufacturers, tax classes, barcode references, raw buy-in rates, custom selling prices, and category tags.
+                    Populate your business's inventory catalog effortlessly. Add brand manufacturers, tax classes, barcode references, raw buy-in rates, custom selling prices, and category tags.
                   </p>
                   <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.95rem', margin: 0 }}>
                     Enable smart threshold indicators: you can set custom alert quantities on every single item. When quantities fall below that mark, glowing red badges dynamically trigger on your dashboard.
@@ -889,7 +889,7 @@ const Landing = () => {
                   <div style={{ background: 'rgba(139, 92, 246, 0.1)', color: '#a78bfa', padding: '6px 12px', borderRadius: '30px', fontSize: '0.75rem', fontWeight: 700, width: 'fit-content' }}>LOCALIZATION SETTING</div>
                   <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#fff', margin: 0 }}>Multi-language & Hindi Translation</h3>
                   <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.95rem', margin: 0 }}>
-                    Bridge the operational gap with native languages. In one click, shop managers and storefront billing operators can translate the entire system interface into Hindi or other native vernaculars.
+                    Bridge the operational gap with native languages. In one click, business managers and storefront billing operators can translate the entire system interface into Hindi or other native vernaculars.
                   </p>
                   <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.95rem', margin: 0 }}>
                     This native localized toggle makes training your store attendants, billing assistants, and warehouse packers incredibly fast and completely effortless!
@@ -1101,7 +1101,7 @@ const Landing = () => {
           </div>
           <h2 style={{ fontSize: '2.25rem', fontWeight: 800, marginBottom: 16 }}>Our Commitment & Vision</h2>
           <p style={{ color: 'var(--text-main)', fontSize: '1.1rem', lineHeight: 1.8, marginBottom: 24 }}>
-            Built by the retail and SaaS engineering team at <strong>Vynkra Technologies</strong>, our VyaparSync was created after observing first-hand the daily hurdles of traditional retail operationsers. Small shops struggle with complicated desktop-only tools, manual stock counting, and lost credit ledger notes.
+            Built by the retail and SaaS engineering team at <strong>Vynkra Technologies</strong>, our VyaparSync was created after observing first-hand the daily hurdles of traditional retail operationsers. Small businesses struggle with complicated desktop-only tools, manual stock counting, and lost credit ledger notes.
           </p>
           <p style={{ color: 'var(--text-muted)', fontSize: '1rem', lineHeight: 1.7, marginBottom: 32 }}>
             Our mission is simple: deliver high-performance, web-based, multi-tenant billing solutions that require zero IT expertise to operate. Your business ledger is securely backed up, completely private, and running on robust modern standards.

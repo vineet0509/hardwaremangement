@@ -133,7 +133,7 @@ const Register = () => {
             </div>
 
             <button type="submit" disabled={loading} className="btn btn-primary" style={{ width: '100%', padding: '16px', fontSize: '1.05rem', fontWeight: 700, borderRadius: 12, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8 }}>
-              {loading ? 'Setting up your shop...' : <>Register Business <UserPlus size={20} /></>}
+              {loading ? 'Setting up your business...' : <>Register Business <UserPlus size={20} /></>}
             </button>
 
             <div style={{ textAlign: 'center', marginTop: '28px', fontSize: '0.9rem', color: 'var(--text-muted)' }}>

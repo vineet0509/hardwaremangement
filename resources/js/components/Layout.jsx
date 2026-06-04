@@ -168,9 +168,8 @@ const Layout = ({ children }) => {
   useEffect(() => {
     if (user && user.role === 'staff') {
       const perms = user.permissions || {};
-      const allowedPaths = ['/billing', '/quotations', '/privacy-policy', '/terms', '/about-us', '/contact-us', '/attendance'];
+      const allowedPaths = ['/billing', '/quotations', '/bills', '/privacy-policy', '/terms', '/about-us', '/contact-us', '/attendance'];
       
-      if (perms.can_edit_bills) allowedPaths.push('/bills');
       if (perms.can_manage_inventory) {
         allowedPaths.push('/products');
         allowedPaths.push('/suppliers');
@@ -206,8 +205,7 @@ const Layout = ({ children }) => {
   let allNavItems = [...navItems];
   if (user && user.role === 'staff') {
     const perms = user.permissions || {};
-    const allowed = ['/billing', '/quotations', '/about-us', '/contact-us', '/attendance'];
-    if (perms.can_edit_bills) allowed.push('/bills');
+    const allowed = ['/billing', '/quotations', '/bills', '/about-us', '/contact-us', '/attendance'];
     if (perms.can_manage_inventory) {
       allowed.push('/products');
       allowed.push('/suppliers');

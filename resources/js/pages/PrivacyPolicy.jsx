@@ -60,7 +60,7 @@ const PrivacyPolicy = () => {
               <Lock color="var(--primary)" /> 4. Data Security & Multi-Tenancy
             </h2>
             <p style={{ color: 'var(--text-muted)' }}>
-              We implement robust security measures to prevent unauthorized access. Our multi-tenant architecture ensures that your shop's data is strictly isolated. Users from one shop cannot access or view data from another shop. We use industry-standard encryption for passwords and sensitive information.
+              We implement robust security measures to prevent unauthorized access. Our multi-tenant architecture ensures that your business's data is strictly isolated. Users from one business cannot access or view data from another business. We use industry-standard encryption for passwords and sensitive information.
             </p>
           </section>
 

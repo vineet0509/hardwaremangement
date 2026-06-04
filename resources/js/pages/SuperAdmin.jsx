@@ -42,7 +42,7 @@ const SuperAdmin = () => {
         setLoading(false);
       })
       .catch(err => {
-        alert(err.response?.data?.message || 'Error fetching shops');
+        alert(err.response?.data?.message || 'Error fetching businesses');
         setLoading(false);
       });
   };
@@ -53,7 +53,7 @@ const SuperAdmin = () => {
         alert(res.data.message);
         fetchBusinesses();
       })
-      .catch(err => alert(err.response?.data?.message || 'Error updating shop status'));
+      .catch(err => alert(err.response?.data?.message || 'Error updating business status'));
   };
 
   const handleExtendPlan = (businessId) => {
@@ -69,7 +69,7 @@ const SuperAdmin = () => {
   };
 
   const handleApproveRequest = (id) => {
-    if(confirm("Are you sure you want to approve this subscription? This will extend the shop's plan.")) {
+    if(confirm("Are you sure you want to approve this subscription? This will extend the business's plan.")) {
       api.post(`/super-admin/subscription-requests/${id}/approve`)
         .then(res => {
           alert(res.data.message);
@@ -242,7 +242,7 @@ const SuperAdmin = () => {
 
           {shops.length === 0 && (
             <div style={{ textAlign: 'center', padding: '32px', color: 'var(--text-muted)' }}>
-              No shops found in the database.
+              No businesses found in the database.
             </div>
           )}
         </div>

@@ -10,6 +10,7 @@ const BillsList = () => {
   const [summary, setSummary] = useState({ total_sale: 0, total_due: 0 });
   const [settings, setSettings] = useState({});
   const [whatsappLoading, setWhatsappLoading] = useState(null);
+  const [user, setUser] = useState(null);
 
   const [showRepayModal, setShowRepayModal] = useState(false);
   const [targetBill, setTargetBill] = useState(null);
@@ -54,6 +55,7 @@ const BillsList = () => {
   useEffect(() => {
     api.get('/udhar').then(res => setUdharCustomers(res.data)).catch(console.error);
     api.get('/settings').then(res => setSettings(res.data)).catch(console.error);
+    api.get('/me').then(res => setUser(res.data)).catch(console.error);
   }, []);
 
   const deleteBill = (id) => {
@@ -444,9 +446,11 @@ const BillsList = () => {
                         {whatsappLoading === b.id ? '...' : <MessageSquare size={16} />}
                       </button>
                     )}
-                    <button className="btn btn-outline" style={{ padding: '6px 10px' }} onClick={() => deleteBill(b.id)} title="Delete Bill & Restore Stock">
-                      <Trash2 size={16} color="var(--danger)" />
-                    </button>
+                    {user?.role !== 'staff' && (
+                      <button className="btn btn-outline" style={{ padding: '6px 10px' }} onClick={() => deleteBill(b.id)} title="Delete Bill & Restore Stock">
+                        <Trash2 size={16} color="var(--danger)" />
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>

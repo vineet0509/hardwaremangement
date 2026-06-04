@@ -28,7 +28,7 @@ const ChildBusinesses = () => {
             setBusinesses(res.data);
             setError(null);
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to fetch child shops.');
+            setError(err.response?.data?.message || 'Failed to fetch child businesses.');
         } finally {
             setLoading(false);
         }

@@ -681,6 +681,8 @@ class BillController extends Controller
 
     public function destroy(Bill $bill): JsonResponse
     {
+        abort_if(auth()->user()->role === 'staff', 403, 'Unauthorized action. Only admins can delete bills.');
+        
         // Restore stock on delete
         DB::transaction(function () use ($bill) {
             foreach ($bill->items as $item) {

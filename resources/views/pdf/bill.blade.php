@@ -24,7 +24,7 @@
 <body>
     <div class="header">
         <div class="shop-info">
-            <h1 style="margin: 0; font-size: 20px;">{{ $settings->company_name ?? 'Hardware Shop' }}</h1>
+            <h1 style="margin: 0; font-size: 20px;">{{ $settings->company_name ?? 'Hardware Business' }}</h1>
             <p style="margin: 5px 0;">{{ $settings->company_address ?? '' }}</p>
             <p style="margin: 5px 0;">Phone: {{ $settings->company_phone ?? '' }}</p>
             @if($bill->is_gst && $shop->gst_number)
