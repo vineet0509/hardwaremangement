@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
-import { Users, Plus, Banknote, Calendar, CheckCircle } from 'lucide-react';
+import { Users, Plus, Banknote, Calendar, CheckCircle, Search, Edit, TrendingUp, Clock, Power } from 'lucide-react';
 
 const Staff = () => {
   const [staff, setStaff] = useState([]);
@@ -13,6 +13,7 @@ const Staff = () => {
   const [performanceData, setPerformanceData] = useState(null);
   const [attendanceData, setAttendanceData] = useState([]);
   const [mapLocation, setMapLocation] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
   
   const [showSalaryModal, setShowSalaryModal] = useState(false);
   const [showSalaryHistoryModal, setShowSalaryHistoryModal] = useState(false);
@@ -173,76 +174,92 @@ const Staff = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center" style={{ marginBottom: 24 }}>
+      <div className="d-flex justify-content-between align-items-center" style={{ marginBottom: 24, flexWrap: 'wrap', gap: 16 }}>
         <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Users color="var(--primary)"/> Staff & Labour Management
+          <Users color="var(--primary)"/> Staff & Labour
         </h2>
-        <button className="btn btn-primary" onClick={() => setShowModal(true)}>
-          <Plus size={18} /> Add Staff
-        </button>
+        <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 24, minWidth: 250 }}>
+            <Search size={18} color="var(--text-muted)" />
+            <input 
+              type="text" placeholder="Search by name or role..." 
+              value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+              style={{ background: 'transparent', border: 'none', color: 'inherit', outline: 'none', width: '100%', fontSize: '0.95rem' }}
+            />
+          </div>
+          <button className="btn btn-primary" onClick={() => { 
+            setSelectedStaff(null);
+            setFormData({ name: '', phone: '', role: 'Labour', monthly_salary: 0, joining_date: new Date().toISOString().slice(0, 16), emergency_contact: '', commission_percent: 0, enable_login: false, password: '', permissions: { can_edit_bills: false, can_manage_inventory: false, can_view_reports: false } });
+            setShowModal(true); 
+          }}>
+            <Plus size={18} /> Add Staff
+          </button>
+        </div>
       </div>
 
-      <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
-        {loading ? (
-          <div style={{ textAlign: 'center', width: '100%', padding: '24px' }}>Loading...</div>
-        ) : (!staff || !Array.isArray(staff) || staff.length === 0) ? (
-          <div style={{ textAlign: 'center', width: '100%', padding: '24px', color: 'var(--text-muted)' }}>No staff members found.</div>
-        ) : staff.map(s => (
-          <div key={s.id} className="stat-card" style={{ padding: '24px 20px' }}>
-            <div className="d-flex justify-content-between align-items-center" style={{ marginBottom: 16 }}>
-              <div>
-                <h3 style={{ margin: 0, color: 'var(--text-main)', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => handleEditStaff(s)}>{s.name}</h3>
-                <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{s.role} | {s.phone}</div>
-              </div>
-              <span className={`badge ${s.status === 'active' ? 'badge-success' : 'badge-danger'}`}>
-                {s.status}
-              </span>
-            </div>
-
-            <div style={{ background: 'rgba(0,0,0,0.2)', padding: '12px 16px', borderRadius: 8, marginBottom: 16 }}>
-              <div className="d-flex justify-content-between" style={{ marginBottom: 8, fontSize: '0.875rem' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Monthly Salary</span>
-                <span style={{ fontWeight: 600 }}>₹{s.monthly_salary}</span>
-              </div>
-              <div className="d-flex justify-content-between" style={{ fontSize: '0.875rem' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Pending Advances</span>
-                <span style={{ fontWeight: 600, color: s.pending_advance > 0 ? 'var(--danger)' : 'var(--success)' }}>
-                  ₹{s.pending_advance || 0}
-                </span>
-              </div>
-            </div>
-
-            <div className="d-flex gap-2 mb-2">
-              <button className="btn btn-outline" style={{ flex: 1, padding: '8px', fontSize: '0.8rem' }} onClick={() => { setSelectedStaff(s); setShowAdvanceModal(true); }}>
-                <Banknote size={16} /> Advance
-              </button>
-              <button className="btn btn-primary" style={{ flex: 1, padding: '8px', fontSize: '0.8rem' }} onClick={() => paySalary(s)}>
-                <CheckCircle size={16} /> Salary
-              </button>
-            </div>
-            <div className="d-flex gap-2 mb-2">
-              <button className="btn btn-outline" style={{ flex: 1, padding: '8px', fontSize: '0.8rem' }} onClick={() => fetchSalaryHistory(s)}>
-                <Calendar size={16} /> Salary History
-              </button>
-            </div>
-            <div className="d-flex gap-2">
-              <button className="btn btn-outline" style={{ flex: 1, padding: '8px', fontSize: '0.8rem' }} onClick={() => fetchPerformance(s)}>
-                Performance
-              </button>
-              <button className="btn btn-outline" style={{ flex: 1, padding: '8px', fontSize: '0.8rem' }} onClick={() => fetchAttendance(s)}>
-                Attendance
-              </button>
-            </div>
-            <div className="d-flex mt-2">
-              <button 
-                className={`btn btn-outline ${s.status === 'active' ? 'btn-danger' : 'btn-success'}`} 
-                style={{ flex: 1, padding: '8px', fontSize: '0.8rem', borderColor: s.status === 'active' ? 'var(--danger)' : 'var(--success)', color: s.status === 'active' ? 'var(--danger)' : 'var(--success)' }} 
-                onClick={() => handleToggleStatus(s)}>
-                {s.status === 'active' ? 'Deactivate' : 'Activate'}
-              </button>
-            </div>
-          </div>
-        ))}
+      <div className="table-responsive" style={{ background: 'var(--surface)', borderRadius: 16, border: '1px solid var(--border)', overflow: 'hidden' }}>
+        <table className="table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', marginBottom: 0 }}>
+          <thead style={{ background: 'var(--bg-color)', borderBottom: '1px solid var(--border)' }}>
+            <tr>
+              <th style={{ padding: '16px', fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Staff Name</th>
+              <th style={{ padding: '16px', fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Role & Phone</th>
+              <th style={{ padding: '16px', fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Salary Info</th>
+              <th style={{ padding: '16px', fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Status</th>
+              <th style={{ padding: '16px', fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right' }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr><td colSpan="5" style={{ textAlign: 'center', padding: '24px' }}>Loading...</td></tr>
+            ) : (!staff || !Array.isArray(staff) || staff.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.role.toLowerCase().includes(searchQuery.toLowerCase())).length === 0) ? (
+              <tr><td colSpan="5" style={{ textAlign: 'center', padding: '24px', color: 'var(--text-muted)' }}>No staff members found.</td></tr>
+            ) : staff.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.role.toLowerCase().includes(searchQuery.toLowerCase())).map(s => (
+              <tr key={s.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                <td style={{ padding: '16px' }}>
+                  <div style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '1.05rem' }}>{s.name}</div>
+                </td>
+                <td style={{ padding: '16px' }}>
+                  <div style={{ color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 600 }}>{s.role}</div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{s.phone}</div>
+                </td>
+                <td style={{ padding: '16px' }}>
+                  <div style={{ fontSize: '0.95rem', fontWeight: 600 }}>₹{s.monthly_salary} <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 'normal' }}>/mo</span></div>
+                  <div style={{ color: s.pending_advance > 0 ? 'var(--danger)' : 'var(--success)', fontSize: '0.8rem', fontWeight: 700 }}>Advance: ₹{s.pending_advance || 0}</div>
+                </td>
+                <td style={{ padding: '16px' }}>
+                  <span className={`badge ${s.status === 'active' ? 'badge-success' : 'badge-danger'}`}>
+                    {s.status}
+                  </span>
+                </td>
+                <td style={{ padding: '16px', textAlign: 'right' }}>
+                  <div className="d-flex justify-content-end gap-2" style={{ flexWrap: 'wrap', width: 220, marginLeft: 'auto' }}>
+                    <button className="btn btn-outline" style={{ padding: '6px 10px', fontSize: '0.8rem' }} onClick={() => handleEditStaff(s)} title="Edit Staff">
+                      <Edit size={16} color="var(--primary)" />
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '6px 10px', fontSize: '0.8rem' }} onClick={() => { setSelectedStaff(s); setShowAdvanceModal(true); }} title="Give Advance">
+                      <Banknote size={16} color="var(--warning)" />
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '6px 10px', fontSize: '0.8rem' }} onClick={() => paySalary(s)} title="Process Salary">
+                      <CheckCircle size={16} color="var(--success)" />
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '6px 10px', fontSize: '0.8rem' }} onClick={() => fetchSalaryHistory(s)} title="Salary History">
+                      <Calendar size={16} color="var(--text-main)" />
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '6px 10px', fontSize: '0.8rem' }} onClick={() => fetchPerformance(s)} title="Performance">
+                      <TrendingUp size={16} color="var(--primary)" />
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '6px 10px', fontSize: '0.8rem' }} onClick={() => fetchAttendance(s)} title="Attendance">
+                      <Clock size={16} color="var(--info)" />
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '6px 10px', fontSize: '0.8rem', borderColor: s.status === 'active' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(16, 185, 129, 0.3)', color: s.status === 'active' ? 'var(--danger)' : 'var(--success)' }} onClick={() => handleToggleStatus(s)} title={s.status === 'active' ? 'Deactivate' : 'Activate'}>
+                      <Power size={16} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {showAdvanceModal && selectedStaff && (
