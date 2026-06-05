@@ -58,6 +58,8 @@ const QuotationsList = () => {
   };
 
   const printQuotation = async (id) => {
+    // Open window immediately in user-gesture context to avoid popup blocker
+    const printWindow = window.open('', '_blank');
     try {
       const [quoteRes, settingsRes] = await Promise.all([
         api.get(`/quotations/${id}`),
@@ -66,7 +68,7 @@ const QuotationsList = () => {
       const quote = quoteRes.data;
       const settings = settingsRes.data;
 
-      const printWindow = window.open('', '_blank');
+
       printWindow.document.write(`
         <html>
           <head>
