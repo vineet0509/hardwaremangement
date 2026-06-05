@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
+import { downloadFile } from '../utils/webview';
 import { FileText, TrendingUp, AlertTriangle } from 'lucide-react';
 
 const Reports = () => {
@@ -26,19 +27,11 @@ const Reports = () => {
     }).finally(() => setLoading(false));
   }, []);
 
-  const handleGSTExport = async () => {
-     try {
-       const res = await api.get('/reports/gst-export', { responseType: 'blob' });
-       const url = window.URL.createObjectURL(new Blob([res.data]));
-       const link = document.createElement('a');
-       link.href = url;
-       link.setAttribute('download', `gstr1_export_${new Date().getTime()}.csv`);
-       document.body.appendChild(link);
-       link.click();
-       link.remove();
-     } catch (err) {
-       alert("Failed to export GST report.");
-     }
+  const handleGSTExport = () => {
+    const token = localStorage.getItem('auth_token');
+    const url = `${window.location.origin}/api/reports/gst-export?token=${token}`;
+    // Use downloadFile helper — works in both browser and Android WebView
+    downloadFile(url, `gstr1_export_${new Date().getTime()}.csv`, 'text/csv');
   };
 
   if (loading) return <div style={{ padding: '32px', textAlign: 'center' }}>Loading reports...</div>;
