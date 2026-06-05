@@ -816,3 +816,43 @@ tr:hover td { background: var(--surface-hover); }
     font-size: 1.05rem !important;
   }
 }
+
+/* =========================================================
+   ACTION BUTTON LABELS — hidden on desktop, shown on mobile
+   ========================================================= */
+
+/* Label text inside icon-only buttons — hidden on desktop */
+.btn-label {
+  display: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+@media (max-width: 992px) {
+  /* Show label text next to icons on mobile */
+  .btn-label {
+    display: inline;
+  }
+
+  /* Action button wrapper: allow flex-wrap so buttons stack cleanly */
+  .action-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* Increase tap target and readable size of each action btn */
+  .action-btns .btn {
+    padding: 7px 10px !important;
+    font-size: 0.78rem !important;
+    gap: 5px !important;
+    min-height: 34px;
+  }
+
+  /* Allow last column (Actions) to wrap */
+  .table-responsive td:last-child {
+    white-space: normal !important;
+  }
+}
+

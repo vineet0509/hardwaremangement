@@ -408,48 +408,49 @@ const BillsList = () => {
                   </span>
                 </td>
                 <td>
-                  <div className="d-flex gap-2">
+                  <div className="action-btns">
                     {b.due_amount > 0 && (
-                      <button className="btn btn-outline" style={{ padding: '6px 10px', borderColor: 'var(--success)', color: 'var(--success)' }} onClick={() => {
+                      <button className="btn btn-outline" style={{ borderColor: 'var(--success)', color: 'var(--success)' }} onClick={() => {
                         setTargetBill(b);
                         setRepayData({ amount: b.due_amount, method: 'cash', upi_digits: '' });
                         setShowRepayModal(true);
                       }} title="Settle Due Amount">
-                        <Banknote size={16} />
+                        <Banknote size={16} /><span className="btn-label">Settle</span>
                       </button>
                     )}
                     {b.type !== 'return' && (
-                      <button className="btn btn-outline" style={{ padding: '6px 10px', borderColor: 'var(--warning)', color: 'var(--warning)' }} onClick={() => {
+                      <button className="btn btn-outline" style={{ borderColor: 'var(--warning)', color: 'var(--warning)' }} onClick={() => {
                           setReturnBill(b);
                           setReturnItemsState({});
                           setShowReturnModal(true);
                       }} title="Return Items / Refund">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline><path d="M10 16l-3 3 3 3"></path><path d="M7 19h10"></path></svg>
+                        <span className="btn-label">Return</span>
                       </button>
                     )}
-                    <button className="btn btn-outline" style={{ padding: '6px 10px' }} onClick={() => navigate('/billing', { state: { editBillId: b.id } })} title="Edit Bill">
-                      <Edit2 size={16} color="var(--primary)" />
+                    <button className="btn btn-outline" onClick={() => navigate('/billing', { state: { editBillId: b.id } })} title="Edit Bill">
+                      <Edit2 size={16} color="var(--primary)" /><span className="btn-label">Edit</span>
                     </button>
-                    <button className="btn btn-outline" style={{ padding: '6px 10px' }} onClick={() => printBill(b.id)} title="View/Print Invoice">
-                      <Printer size={16} color="var(--primary)" />
+                    <button className="btn btn-outline" onClick={() => printBill(b.id)} title="View/Print Invoice">
+                      <Printer size={16} color="var(--primary)" /><span className="btn-label">Print</span>
                     </button>
-                    <button className="btn btn-outline" style={{ padding: '6px 10px', display: 'flex', alignItems: 'center' }} onClick={() => downloadFile(`${window.location.origin}/api/bills/${b.id}/pdf?token=${localStorage.getItem('auth_token')}`, `bill_${b.bill_number}.pdf`, 'application/pdf')} title="Download Official PDF">
-                      <FileText size={16} color="var(--primary)" />
+                    <button className="btn btn-outline" style={{ display: 'flex', alignItems: 'center' }} onClick={() => downloadFile(`${window.location.origin}/api/bills/${b.id}/pdf?token=${localStorage.getItem('auth_token')}`, `bill_${b.bill_number}.pdf`, 'application/pdf')} title="Download Official PDF">
+                      <FileText size={16} color="var(--primary)" /><span className="btn-label">PDF</span>
                     </button>
                     {b.customer_phone && (
                       <button 
                         className="btn btn-outline" 
-                        style={{ padding: '6px 10px', borderColor: '#22c55e', color: '#22c55e', opacity: whatsappLoading === b.id ? 0.5 : 1 }} 
+                        style={{ borderColor: '#22c55e', color: '#22c55e', opacity: whatsappLoading === b.id ? 0.5 : 1 }} 
                         onClick={() => sendWhatsAppReminder(b.id)} 
                         disabled={whatsappLoading === b.id}
                         title={b.due_amount > 0 ? "Send WhatsApp Due Reminder" : "Send WhatsApp Bill Copy"}
                       >
-                        {whatsappLoading === b.id ? '...' : <MessageSquare size={16} />}
+                        {whatsappLoading === b.id ? '...' : <><MessageSquare size={16} /><span className="btn-label">WhatsApp</span></>}
                       </button>
                     )}
                     {user?.role !== 'staff' && (
-                      <button className="btn btn-outline" style={{ padding: '6px 10px' }} onClick={() => deleteBill(b.id)} title="Delete Bill & Restore Stock">
-                        <Trash2 size={16} color="var(--danger)" />
+                      <button className="btn btn-outline" onClick={() => deleteBill(b.id)} title="Delete Bill & Restore Stock">
+                        <Trash2 size={16} color="var(--danger)" /><span className="btn-label">Delete</span>
                       </button>
                     )}
                   </div>

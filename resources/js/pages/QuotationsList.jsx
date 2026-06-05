@@ -208,7 +208,7 @@ const QuotationsList = () => {
                 <td><span className="badge badge-warning">{q.items?.length || 0} items</span></td>
                 <td style={{ color: '#3b82f6', fontWeight: 700, fontSize: '1.05rem' }}>₹{q.total}</td>
                 <td>
-                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  <div className="action-btns">
                     <button className="btn btn-outline" style={{ padding: '6px 10px', gap: 5, fontSize: '0.8rem' }} onClick={() => navigate('/quotations/create', { state: { editQuotationId: q.id } })} title="Edit">
                       <Edit2 size={14} color="var(--primary)" /> Edit
                     </button>
