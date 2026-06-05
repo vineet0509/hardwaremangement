@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
+import { printHtml, downloadFile, openWhatsApp } from '../utils/webview';
 import { Search, Receipt, Printer, Trash2, Banknote, X, Edit2, MessageSquare, FileText } from 'lucide-react';
 
 const BillsList = () => {
@@ -127,8 +128,8 @@ const BillsList = () => {
           msgText = `*${shopName} Invoice* 🧾\n${gstStr}-----------------------------------\nHello ${bill.customer_name},\nHere are the details for *Bill No: ${bill.bill_number}*.\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Amount:* Rs. ${bill.total}\n*Amount Paid:* Rs. ${bill.paid_amount}\n*Balance Due:* Rs. ${bill.due_amount}\n\n*View PDF Bill:* ${pdfLink}\n\nThank you for shopping with us!`;
       }
 
-      const msg = encodeURIComponent(msgText);
-      window.open(`https://wa.me/${wapn}?text=${msg}`, '_blank');
+      // Use openWhatsApp helper — works in both browser and Android WebView
+      openWhatsApp(wapn, msgText);
     } catch (err) {
       alert('Error: ' + (err.response?.data?.message || err.message));
     } finally {
@@ -145,8 +146,8 @@ const BillsList = () => {
       const bill = billRes.data;
       const settings = settingsRes.data;
 
-      const printWindow = window.open('', '_blank');
-      printWindow.document.write(`
+      // Use printHtml helper — works in both browser and Android WebView
+      printHtml(`
         <html>
           <head>
             <title>Invoice - ${bill.bill_number}</title>
@@ -238,18 +239,18 @@ const BillsList = () => {
           </body>
         </html>
       `);
-      printWindow.document.close();
     } catch (err) {
       alert('Error generating print layout: ' + (err.response?.data?.message || err.message));
     }
   };
 
   const handleExport = () => {
-    let url = `/api/bills/export?token=${localStorage.getItem('auth_token')}&search=${search}`;
+    let url = `${window.location.origin}/api/bills/export?token=${localStorage.getItem('auth_token')}&search=${search}`;
     if (customerFilter) url += `&customer=${encodeURIComponent(customerFilter)}`;
     if (dateFrom) url += `&date_from=${dateFrom}`;
     if (dateTo) url += `&date_to=${dateTo}`;
-    window.open(url, '_blank');
+    // Use downloadFile helper — works in both browser and Android WebView
+    downloadFile(url, `bills_export_${dateFrom}_to_${dateTo}.xlsx`, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
   };
 
   const setQuickDate = (type) => {
@@ -432,9 +433,9 @@ const BillsList = () => {
                     <button className="btn btn-outline" style={{ padding: '6px 10px' }} onClick={() => printBill(b.id)} title="View/Print Invoice">
                       <Printer size={16} color="var(--primary)" />
                     </button>
-                    <a className="btn btn-outline" style={{ padding: '6px 10px', display: 'flex', alignItems: 'center' }} href={`${window.location.origin}/api/bills/${b.id}/pdf?token=${localStorage.getItem('auth_token')}`} target="_blank" rel="noreferrer" title="Download Official PDF">
+                    <button className="btn btn-outline" style={{ padding: '6px 10px', display: 'flex', alignItems: 'center' }} onClick={() => downloadFile(`${window.location.origin}/api/bills/${b.id}/pdf?token=${localStorage.getItem('auth_token')}`, `bill_${b.bill_number}.pdf`, 'application/pdf')} title="Download Official PDF">
                       <FileText size={16} color="var(--primary)" />
-                    </a>
+                    </button>
                     {b.customer_phone && (
                       <button 
                         className="btn btn-outline" 

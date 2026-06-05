@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
+import { printHtml } from '../utils/webview';
 import { Search, ShoppingCart, Trash2, IndianRupee, Save, ArrowLeft, Package, User, Phone, MapPin, CreditCard, PlusCircle, XCircle, Banknote, Smartphone, ClipboardList } from 'lucide-react';
 
 import Swal from 'sweetalert2';
@@ -176,10 +177,9 @@ const Billing = () => {
   }, [total, payment.method, editBillId]);
 
   const handlePrint = (billData) => {
-    const printWindow = window.open('', '_blank');
     const isGst = billData.is_gst;
-    
-    printWindow.document.write(`
+    // Use printHtml helper — works in both browser and Android WebView
+    printHtml(`
       <html>
         <head>
           <title>Invoice - ${billData.bill_number}</title>
@@ -301,7 +301,6 @@ const Billing = () => {
         </body>
       </html>
     `);
-    printWindow.document.close();
   };
 
   const handleCheckout = () => {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
+import { printHtml, openWhatsApp } from '../utils/webview';
 import { Search, Printer, Trash2, MessageSquare, Plus, FileText, Edit2, ArrowRightCircle } from 'lucide-react';
 import Swal from 'sweetalert2';
 
@@ -45,7 +46,8 @@ const QuotationsList = () => {
     if (wapn.length === 10) wapn = '91' + wapn;
     const itemListStr = quotation.items?.map(i => `• ${i.product_name} (Qty: ${i.quantity} ${i.unit || ''})`).join('\n') || '';
     const msgText = `*Quotation Details* 📝\n-----------------------------------\nHello ${quotation.customer_name},\nHere are the details for *Quotation No: ${quotation.quotation_number}*.\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Estimate:* Rs. ${quotation.total}\n\nThis is an estimate. Please contact us for more details.`;
-    window.open(`https://wa.me/${wapn}?text=${encodeURIComponent(msgText)}`, '_blank');
+    // Use openWhatsApp helper — works in both browser and Android WebView
+    openWhatsApp(wapn, msgText);
   };
 
   const convertToBill = (quotation) => {
@@ -66,8 +68,8 @@ const QuotationsList = () => {
       const quote = quoteRes.data;
       const settings = settingsRes.data;
 
-      const printWindow = window.open('', '_blank');
-      printWindow.document.write(`
+      // Use printHtml helper — works in both browser and Android WebView
+      printHtml(`
         <html>
           <head>
             <title>Quotation - ${quote.quotation_number}</title>
@@ -149,7 +151,6 @@ const QuotationsList = () => {
           </body>
         </html>
       `);
-      printWindow.document.close();
     } catch (err) {
       alert('Error generating print layout: ' + (err.response?.data?.message || err.message));
     }

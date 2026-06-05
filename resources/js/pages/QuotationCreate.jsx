@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
+import { printHtml, openWhatsApp } from '../utils/webview';
 import { Search, Trash2, Save, ArrowLeft, Package, FileText, User, Phone, MapPin, PlusCircle, XCircle } from 'lucide-react';
 
 import Swal from 'sweetalert2';
@@ -137,8 +138,8 @@ const QuotationCreate = () => {
   const handlePreview = () => {
     if (cart.length === 0) return Swal.fire('Empty Quote', 'Add products to preview.', 'warning');
     
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
+    // Use printHtml helper — works in both browser and Android WebView
+    printHtml(`
       <html>
         <head>
           <title>Quotation - ${settings.company_name}</title>
@@ -239,7 +240,6 @@ const QuotationCreate = () => {
         </body>
       </html>
     `);
-    printWindow.document.close();
   };
 
   const handleCheckout = () => {
@@ -272,8 +272,8 @@ const QuotationCreate = () => {
              
              const msgText = `*VyaparSync Quotation* 📝\n-----------------------------------\n*Quotation No:* ${res.data.quotation_number}\n*Customer:* ${res.data.customer_name || 'Walk-in'}\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Amount:* Rs. ${res.data.total}\n\nThis is an estimate and subject to change. Thank you!`;
 
-             const msg = encodeURIComponent(msgText);
-             window.open(`https://wa.me/${wapn}?text=${msg}`, '_blank');
+             // Use openWhatsApp helper — works in both browser and Android WebView
+             openWhatsApp(wapn, msgText);
         }
         
         Swal.fire({

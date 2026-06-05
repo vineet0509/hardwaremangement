@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
+import { downloadFile, downloadBlob } from '../utils/webview';
 import { Plus, Search, AlertTriangle, ArrowUpCircle, ArrowDownCircle, Edit2, Trash2 } from 'lucide-react';
 
 const Products = () => {
@@ -40,16 +41,10 @@ const Products = () => {
       .catch(err => alert(err.response?.data?.message || 'Error updating stock'));
   };
   const handleExportCSV = () => {
-    api.get('/products/export', { responseType: 'blob' })
-      .then(response => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `products_${new Date().toISOString().split('T')[0]}.csv`);
-        document.body.appendChild(link);
-        link.click();
-      })
-      .catch(err => alert('Export failed'));
+    const token = localStorage.getItem('auth_token');
+    const url = `${window.location.origin}/api/products/export?token=${token}`;
+    // Use downloadFile helper — works in both browser and Android WebView
+    downloadFile(url, `products_${new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
   };
 
   const handleImportCSV = (e) => {
@@ -70,15 +65,8 @@ const Products = () => {
   };
   const handleDownloadSampleCSV = () => {
     const csvContent = "SKU,Product Name,Category,Purchase Price,Selling Price,Quantity,Min Stock Alert,Unit,Description\nSKU-1001,Sample Product,General,10.00,15.00,100,10,piece,Sample description";
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'sample_products.csv');
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Use downloadBlob helper — works in both browser and Android WebView
+    downloadBlob(csvContent, 'sample_products.csv', 'text/csv;charset=utf-8;');
   };
 
   const fetchData = () => {
