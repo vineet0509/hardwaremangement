@@ -824,7 +824,7 @@ tr:hover td { background: var(--surface-hover); }
 /* Label text inside icon-only buttons — hidden on desktop */
 .btn-label {
   display: none;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -835,22 +835,25 @@ tr:hover td { background: var(--surface-hover); }
     display: inline;
   }
 
-  /* Action button wrapper: allow flex-wrap so buttons stack cleanly */
+  /* 3-column grid — compact, no vertical stacking */
   .action-btns {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    min-width: 160px;
   }
 
-  /* Increase tap target and readable size of each action btn */
+  /* Each button: small, icon + label on one line */
   .action-btns .btn {
-    padding: 7px 10px !important;
-    font-size: 0.78rem !important;
-    gap: 5px !important;
-    min-height: 34px;
+    padding: 5px 6px !important;
+    font-size: 0.7rem !important;
+    gap: 4px !important;
+    min-height: 30px;
+    justify-content: center !important;
+    border-radius: 6px !important;
   }
 
-  /* Allow last column (Actions) to wrap */
+  /* Allow Actions column to wrap content */
   .table-responsive td:last-child {
     white-space: normal !important;
   }
