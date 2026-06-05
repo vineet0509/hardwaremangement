@@ -127,6 +127,28 @@ class AuthController extends Controller
         return response()->json($request->user()->load('business'));
     }
 
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+        
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'mobile' => 'nullable|string|max:15|unique:users,mobile,' . $user->id,
+        ]);
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'mobile' => $request->mobile,
+        ]);
+
+        return response()->json([
+            'message' => 'Profile updated successfully!', 
+            'user' => $user
+        ]);
+    }
+
     public function changePassword(Request $request)
     {
         $request->validate([

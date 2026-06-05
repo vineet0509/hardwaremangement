@@ -8,6 +8,9 @@ const Settings = () => {
     company_name: '', company_phone: '', company_address: '', gst_number: '',
     subscription_plan: 'full_time', subscription_expires_at: '', latest_request: null
   });
+  const [userData, setUserData] = useState({
+    name: '', email: '', mobile: ''
+  });
   const [passwordData, setPasswordData] = useState({
     current_password: '', new_password: '', new_password_confirmation: ''
   });
@@ -32,16 +35,24 @@ const Settings = () => {
   };
 
   const fetchSettings = () => {
-    api.get('/settings')
-      .then(res => {
+    Promise.all([
+      api.get('/settings'),
+      api.get('/me')
+    ])
+      .then(([settingsRes, meRes]) => {
         setFormData({
-          company_name: res.data.company_name || '',
-          company_phone: res.data.company_phone || '',
-          company_address: res.data.company_address || '',
-          gst_number: res.data.gst_number || '',
-          subscription_plan: res.data.subscription_plan || 'full_time',
-          subscription_expires_at: res.data.subscription_expires_at ? res.data.subscription_expires_at.split('T')[0] : '',
-          latest_request: res.data.latest_request
+          company_name: settingsRes.data.company_name || '',
+          company_phone: settingsRes.data.company_phone || '',
+          company_address: settingsRes.data.company_address || '',
+          gst_number: settingsRes.data.gst_number || '',
+          subscription_plan: settingsRes.data.subscription_plan || 'full_time',
+          subscription_expires_at: settingsRes.data.subscription_expires_at ? settingsRes.data.subscription_expires_at.split('T')[0] : '',
+          latest_request: settingsRes.data.latest_request
+        });
+        setUserData({
+          name: meRes.data.name || '',
+          email: meRes.data.email || '',
+          mobile: meRes.data.mobile || '',
         });
       })
       .catch(err => Swal.fire('Error', err.response?.data?.message || 'Error fetching settings', 'error'))
@@ -81,6 +92,15 @@ const Settings = () => {
         fetchSettings();
       })
       .catch(err => Swal.fire('Error', err.response?.data?.message || 'Failed to submit request', 'error'));
+  };
+
+  const handleProfileSave = (e) => {
+    e.preventDefault();
+    api.post('/user/profile', userData)
+      .then(res => {
+        Swal.fire('Success', res.data.message || 'Profile updated successfully!', 'success');
+      })
+      .catch(err => Swal.fire('Error', err.response?.data?.message || 'Error updating profile', 'error'));
   };
 
   const handlePasswordChange = (e) => {
@@ -284,6 +304,31 @@ const Settings = () => {
                  </form>
                </div>
             )}
+        </div>
+        {/* Admin Profile Settings */}
+        <div className="stat-card" style={{ flex: 1, minWidth: '300px' }}>
+          <h3 style={{ borderBottom: '1px solid var(--border)', paddingBottom: 12, marginBottom: 16 }}>Admin Profile</h3>
+          <form onSubmit={handleProfileSave}>
+            <div className="form-group">
+              <label className="form-label">Admin Name</label>
+              <input type="text" className="form-control" required
+                value={userData.name} onChange={e => setUserData({...userData, name: e.target.value})} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Admin Email</label>
+              <input type="email" className="form-control" required
+                value={userData.email} onChange={e => setUserData({...userData, email: e.target.value})} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Admin Mobile Number</label>
+              <input type="text" className="form-control"
+                value={userData.mobile} onChange={e => setUserData({...userData, mobile: e.target.value})} />
+            </div>
+
+            <button type="submit" className="btn btn-primary" style={{ marginTop: 12 }}>
+              <Save size={18} /> Update Profile
+            </button>
+          </form>
         </div>
 
         {/* Change Password Settings */}

@@ -23,6 +23,7 @@ Route::get('/verify-gst', [App\Http\Controllers\Api\GstController::class, 'verif
 Route::middleware(['auth:sanctum', 'check.subscription', 'domain.tenant'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+    Route::post('/user/profile', [AuthController::class, 'updateProfile']);
     Route::post('/user/password', [AuthController::class, 'changePassword']);
     Route::delete('/user', [AuthController::class, 'deleteAccount']);
 
