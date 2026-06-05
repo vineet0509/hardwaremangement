@@ -100,8 +100,6 @@ const BillsList = () => {
   };
 
   const sendWhatsAppReminder = async (billId) => {
-    // Open window immediately in user-gesture context to avoid popup blocker
-    const waWindow = window.open('about:blank', '_blank');
     try {
       setWhatsappLoading(billId);
       const [billRes, settingsRes] = await Promise.all([
@@ -111,10 +109,7 @@ const BillsList = () => {
       const bill = billRes.data;
       const settings = settingsRes.data;
 
-      if (!bill.customer_phone) {
-        waWindow.close();
-        return alert('No phone number available for this customer.');
-      }
+      if (!bill.customer_phone) return alert('No phone number available for this customer.');
       
       let wapn = bill.customer_phone.replace(/[^0-9]/g,'');
       if (wapn.length === 10) wapn = '91' + wapn;
@@ -133,10 +128,8 @@ const BillsList = () => {
       }
 
       const msg = encodeURIComponent(msgText);
-      // Navigate the already-opened window to the WhatsApp URL
-      waWindow.location.href = `https://wa.me/${wapn}?text=${msg}`;
+      window.open(`https://wa.me/${wapn}?text=${msg}`, '_blank');
     } catch (err) {
-      waWindow.close();
       alert('Error: ' + (err.response?.data?.message || err.message));
     } finally {
       setWhatsappLoading(null);
@@ -144,8 +137,6 @@ const BillsList = () => {
   };
 
   const printBill = async (id) => {
-    // Open window immediately in user-gesture context to avoid popup blocker
-    const printWindow = window.open('', '_blank');
     try {
       const [billRes, settingsRes] = await Promise.all([
         api.get(`/bills/${id}`),
@@ -153,6 +144,8 @@ const BillsList = () => {
       ]);
       const bill = billRes.data;
       const settings = settingsRes.data;
+
+      const printWindow = window.open('', '_blank');
       printWindow.document.write(`
         <html>
           <head>

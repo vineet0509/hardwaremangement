@@ -56,13 +56,12 @@ Route::post('/customers/{phone}/send-reminder', [BillController::class, 'sendUdh
 Route::get('/udhar', [BillController::class, 'udharList']);
 Route::get('/advances', [BillController::class, 'advancesList']);
 Route::post('/advances', [BillController::class, 'storeAdvance']);
-// ⚠️ IMPORTANT: Literal routes MUST come before apiResource to avoid {bill} wildcard conflicts
-Route::get('/bills/export', [BillController::class, 'exportCSV']);
-Route::post('/bills/send-whatsapp', [BillController::class, 'sendWhatsApp']);
-Route::apiResource('bills', BillController::class);
 Route::post('/bills/{bill}/repay', [BillController::class, 'repay']);
 Route::post('/bills/{bill}/return', [BillController::class, 'returnItems']);
 Route::get('/bills/{bill}/pdf', [BillController::class, 'downloadPDF']);
+Route::get('/bills/export', [BillController::class, 'exportCSV']);
+Route::post('/bills/send-whatsapp', [BillController::class, 'sendWhatsApp']);
+Route::apiResource('bills', BillController::class);
 Route::apiResource('quotations', QuotationController::class);
 Route::post('/quotations/{quotation}/convert-to-bill', [QuotationController::class, 'convertToBill']);
 
