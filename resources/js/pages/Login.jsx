@@ -11,6 +11,10 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const sessionExpired = new URLSearchParams(location.search).get('session_expired');
+  const verifiedSuccess = new URLSearchParams(location.search).get('verified');
+  const [unverifiedEmail, setUnverifiedEmail] = useState(null);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendMessage, setResendMessage] = useState(null);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -37,10 +41,26 @@ const Login = () => {
          navigate('/dashboard');
       })
       .catch(err => {
-         setError(err.response?.data?.message || 'Login failed. Invalid credentials.');
+         if (err.response?.status === 403 && err.response?.data?.unverified_email) {
+            setUnverifiedEmail(err.response.data.unverified_email);
+            setError(err.response.data.message);
+         } else {
+            setUnverifiedEmail(null);
+            setError(err.response?.data?.message || 'Login failed. Invalid credentials.');
+         }
       })
           .finally(() => setLoading(false));
     });
+  };
+
+  const handleResendVerification = (e) => {
+      e.preventDefault();
+      setResendLoading(true);
+      setResendMessage(null);
+      api.post('/email/verification-notification', { email: unverifiedEmail })
+          .then(res => setResendMessage(res.data.message || 'Verification link sent! Please check your email.'))
+          .catch(err => setError(err.response?.data?.message || 'Failed to resend verification link.'))
+          .finally(() => setResendLoading(false));
   };
 
   return (
@@ -65,7 +85,28 @@ const Login = () => {
             </div>
           )}
 
-          {error && <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', padding: '12px 16px', borderRadius: 8, fontSize: '0.85rem', marginBottom: 24, textAlign: 'center' }}>{error}</div>}
+          {verifiedSuccess && !error && (
+            <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', padding: '12px 16px', borderRadius: 8, fontSize: '0.85rem', marginBottom: 24, textAlign: 'center', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+               Your email has been successfully verified! You can now sign in.
+            </div>
+          )}
+
+          {error && (
+            <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', padding: '12px 16px', borderRadius: 8, fontSize: '0.85rem', marginBottom: 24, textAlign: 'center' }}>
+               {error}
+               {unverifiedEmail && (
+                   <div style={{ marginTop: 12 }}>
+                       {resendMessage ? (
+                           <div style={{ color: 'var(--success)', fontWeight: 600 }}>{resendMessage}</div>
+                       ) : (
+                           <button onClick={handleResendVerification} disabled={resendLoading} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '0.8rem', background: 'transparent', borderColor: 'var(--danger)', color: 'var(--danger)' }}>
+                               {resendLoading ? 'Sending...' : 'Resend Verification Link'}
+                           </button>
+                       )}
+                   </div>
+               )}
+            </div>
+          )}
 
           <form onSubmit={handleLogin}>
              <div className="form-group" style={{ marginBottom: 16 }}>

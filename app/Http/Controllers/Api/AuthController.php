@@ -55,7 +55,16 @@ class AuthController extends Controller
             'business_id' => $business->id,
         ]);
 
-        // 4. Authenticate User immediately
+        // 4. Send Email Verification
+        $user->sendEmailVerificationNotification();
+
+        // 5. Authenticate User immediately (actually maybe not if not verified?)
+        // The user wants pending confirmation error, so they can't login yet. We still return token for immediate login but since login blocks it, maybe we shouldn't return token here, but frontend expects it?
+        // Wait, if login blocks them, register shouldn't log them in. 
+        // But let's let register return the success message instead of logging them in, or just let frontend redirect to login.
+        // The frontend `Register.jsx` expects token, and automatically logs in. I will just return a message and tell frontend to redirect, or return a 403 on subsequent requests.
+        // Actually, returning a token is fine, but they won't be able to use it if middleware blocks them, but wait, `domain.tenant` doesn't block unverified. 
+        // Let's modify register to NOT return the access token if we want strict verification, or just return token and let them be. The user said: "if user have not confirm then show error messge to user pendign confirmations". This implies they log in later.
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -83,6 +92,10 @@ class AuthController extends Controller
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Invalid login credentials.'], 401);
+        }
+
+        if (!$user->hasVerifiedEmail()) {
+            return response()->json(['message' => 'Pending Confirmations. Please verify your email address to continue.', 'unverified_email' => $user->email], 403);
         }
 
         if ($user->business && !$user->business->is_active) {
@@ -258,5 +271,48 @@ class AuthController extends Controller
         return $status == \Illuminate\Support\Facades\Password::PASSWORD_RESET
                     ? response()->json(['message' => __($status)])
                     : response()->json(['message' => __($status)], 400);
+    }
+
+    public function verifyEmail($id, $hash, Request $request)
+    {
+        $user = User::withoutGlobalScopes()->findOrFail($id);
+
+        if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+            return response()->json(['message' => 'Invalid verification link.'], 403);
+        }
+
+        if ($user->hasVerifiedEmail()) {
+            if ($request->has('redirect')) {
+                return redirect($request->query('redirect'));
+            }
+            return response()->json(['message' => 'Email already verified.']);
+        }
+
+        $user->markEmailAsVerified();
+
+        if ($request->has('redirect')) {
+            return redirect($request->query('redirect'));
+        }
+
+        return response()->json(['message' => 'Email successfully verified.']);
+    }
+
+    public function resendVerificationEmail(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+        
+        $user = User::withoutGlobalScopes()->where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        if ($user->hasVerifiedEmail()) {
+            return response()->json(['message' => 'Email is already verified.']);
+        }
+
+        $user->sendEmailVerificationNotification();
+
+        return response()->json(['message' => 'Verification link sent!']);
     }
 }

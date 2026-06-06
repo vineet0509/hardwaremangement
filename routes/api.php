@@ -19,6 +19,10 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/forgot-password', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
+
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('verification.verify');
+Route::post('/email/verification-notification', [AuthController::class, 'resendVerificationEmail'])->middleware('throttle:6,1')->name('verification.send');
+
 Route::post('/contact', [AuthController::class, 'contactSubmit']);
 Route::get('/verify-gst', [App\Http\Controllers\Api\GstController::class, 'verify']);
 
