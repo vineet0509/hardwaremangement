@@ -146,6 +146,9 @@ const QuotationsList = () => {
                 <div class="row"><span>CGST (9%):</span> <span>₹${(quote.tax / 2).toFixed(2)}</span></div>
                 <div class="row"><span>SGST (9%):</span> <span>₹${(quote.tax / 2).toFixed(2)}</span></div>
               ` : ''}
+              ${parseFloat(quote.total) !== (parseFloat(quote.subtotal) - parseFloat(quote.discount) + parseFloat(quote.other_charges || 0)) ? `
+                <div class="row"><span>Round Off:</span> <span>₹${(parseFloat(quote.total) - (parseFloat(quote.subtotal) - parseFloat(quote.discount) + parseFloat(quote.other_charges || 0))).toFixed(2)}</span></div>
+              ` : ''}
               <div class="row grand-total" style="color: #3b82f6;"><span>Total Estimate:</span> <span>₹${quote.total}</span></div>
             </div>
 

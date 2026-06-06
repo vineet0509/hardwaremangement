@@ -227,6 +227,9 @@ const BillsList = () => {
                 <div class="row"><span>CGST (9%):</span> <span>₹${(bill.tax / 2).toFixed(2)}</span></div>
                 <div class="row"><span>SGST (9%):</span> <span>₹${(bill.tax / 2).toFixed(2)}</span></div>
               ` : ''}
+              ${parseFloat(bill.total) !== (parseFloat(bill.subtotal) - parseFloat(bill.discount) + parseFloat(bill.other_charges || 0)) ? `
+                <div class="row"><span>Round Off:</span> <span>₹${(parseFloat(bill.total) - (parseFloat(bill.subtotal) - parseFloat(bill.discount) + parseFloat(bill.other_charges || 0))).toFixed(2)}</span></div>
+              ` : ''}
               <div class="row grand-total"><span>Grand Total:</span> <span>₹${bill.total}</span></div>
               <div style="height: 15px;"></div>
               <div class="row" style="color: #10b981;"><span>Amount Paid:</span> <span>₹${bill.paid_amount}</span></div>

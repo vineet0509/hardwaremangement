@@ -343,7 +343,7 @@ class BillController extends Controller
             $discount = $data['discount'] ?? 0;
             $other_charges = $data['other_charges'] ?? 0;
             $tax      = $data['tax'] ?? 0;
-            $total    = $subtotal - $discount + $other_charges + $tax;
+            $total    = round($subtotal - $discount + $other_charges);
             $paid     = $data['paid_amount'];
             
             // Allow negative due for overpayments (Customer credits)
@@ -467,7 +467,7 @@ class BillController extends Controller
             $discount = $data['discount'] ?? 0;
             $other_charges = $data['other_charges'] ?? 0;
             $tax      = $data['tax'] ?? 0;
-            $total    = $subtotal - $discount + $other_charges + $tax;
+            $total    = round($subtotal - $discount + $other_charges);
             $paid     = $data['paid_amount'];
             $due      = $total - $paid; 
             

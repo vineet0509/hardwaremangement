@@ -145,7 +145,8 @@ const QuotationCreate = () => {
     const basePrice = discountedTotal / (1 + ((item.gst_slab || 0) / 100));
     return acc + (discountedTotal - basePrice);
   }, 0) : 0;
-  const total = subtotal - discountAmount + otherChargesAmount + tax;
+  const rawTotal = subtotal - discountAmount + otherChargesAmount;
+  const total = Math.round(rawTotal);
 
   const handlePreview = () => {
     if (cart.length === 0) return Swal.fire('Empty Quote', 'Add products to preview.', 'warning');
@@ -235,6 +236,12 @@ const QuotationCreate = () => {
               <tr>
                 <td>Other Charges:</td>
                 <td class="text-right">+ ₹${otherCharges}</td>
+              </tr>
+              ` : ''}
+              ${Math.round(rawTotal) !== rawTotal ? `
+              <tr>
+                <td>Round Off:</td>
+                <td class="text-right">₹${(Math.round(rawTotal) - rawTotal).toFixed(2)}</td>
               </tr>
               ` : ''}
               ${isGst ? `
@@ -491,7 +498,7 @@ const QuotationCreate = () => {
             </div>
           )}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, borderTop: '1px dashed var(--border)', paddingTop: 16, fontSize: '1.25rem', fontWeight: 700 }}>
-            <span>Total Estimate</span>
+            <span>Total Estimate {total !== rawTotal && <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', marginLeft: 8 }}>(Round Off: {(total - rawTotal).toFixed(2)})</span>}</span>
             <span style={{ color: 'var(--primary)' }}>₹{typeof total === 'number' ? total.toFixed(2) : total}</span>
           </div>
 

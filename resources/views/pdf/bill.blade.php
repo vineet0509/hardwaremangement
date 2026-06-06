@@ -27,8 +27,8 @@
             <h1 style="margin: 0; font-size: 20px;">{{ $settings->company_name ?? 'Hardware Business' }}</h1>
             <p style="margin: 5px 0;">{{ $settings->company_address ?? '' }}</p>
             <p style="margin: 5px 0;">Phone: {{ $settings->company_phone ?? '' }}</p>
-            @if($bill->is_gst && $shop->gst_number)
-                <p style="margin: 5px 0;"><strong>GSTIN: {{ $shop->gst_number }}</strong></p>
+            @if($bill->is_gst && isset($settings) && $settings->gst_number)
+                <p style="margin: 5px 0;"><strong>GSTIN: {{ $settings->gst_number }}</strong></p>
             @endif
         </div>
         <div class="bill-info">
@@ -96,6 +96,12 @@
                 <tr>
                     <td>SGST:</td>
                     <td class="text-right">₹{{ number_format($bill->tax / 2, 2) }}</td>
+                </tr>
+            @endif
+            @if(round($bill->subtotal - $bill->discount + $bill->other_charges) != ($bill->subtotal - $bill->discount + $bill->other_charges))
+                <tr>
+                    <td>Round Off:</td>
+                    <td class="text-right">₹{{ number_format(round($bill->subtotal - $bill->discount + $bill->other_charges) - ($bill->subtotal - $bill->discount + $bill->other_charges), 2) }}</td>
                 </tr>
             @endif
             <tr class="total-row">

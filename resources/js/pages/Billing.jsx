@@ -172,7 +172,8 @@ const Billing = () => {
     const basePrice = discountedTotal / (1 + ((item.gst_slab || 0) / 100));
     return acc + (discountedTotal - basePrice);
   }, 0) : 0;
-  const total = subtotal - discountAmount + otherChargesAmount;
+  const rawTotal = subtotal - discountAmount + otherChargesAmount;
+  const total = Math.round(rawTotal);
   const liveDueAmount = total - (parseFloat(payment.paid) || 0);
 
   useEffect(() => {
@@ -279,6 +280,12 @@ const Billing = () => {
               <tr>
                 <td>Other Charges:</td>
                 <td class="text-right">+ ₹${billData.other_charges}</td>
+              </tr>
+              ` : ''}
+              ${Math.round(billData.total) !== billData.total ? `
+              <tr>
+                <td>Round Off:</td>
+                <td class="text-right">₹${(Math.round(billData.total) - billData.total).toFixed(2)}</td>
               </tr>
               ` : ''}
               ${isGst ? `
@@ -690,7 +697,7 @@ const Billing = () => {
 
           {/* Grand Total Row */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(135deg, var(--surface-hover) 0%, rgba(16, 185, 129, 0.05) 100%)', borderRadius: '8px', padding: '8px 12px', border: '1px solid var(--border)', marginBottom: '8px' }}>
-            <span style={{ fontSize: '0.95rem', fontWeight: 800 }}>Grand Total</span>
+            <span style={{ fontSize: '0.95rem', fontWeight: 800 }}>Grand Total {total !== rawTotal && <span style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', marginLeft: 8 }}>(Round Off: {(total - rawTotal).toFixed(2)})</span>}</span>
             <span style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--success)' }}>₹{typeof total === 'number' ? total.toFixed(2) : total}</span>
           </div>
 

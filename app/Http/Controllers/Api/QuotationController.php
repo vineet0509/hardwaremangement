@@ -45,7 +45,7 @@ class QuotationController extends Controller
 
             $discount = $request->discount ?? 0;
             $other_charges = $request->other_charges ?? 0;
-            $total = $subtotal - $discount + $other_charges;
+            $total = round($subtotal - $discount + $other_charges);
 
             // Generate unique quotation number
             $count = Quotation::count() + 1;
@@ -130,7 +130,7 @@ class QuotationController extends Controller
 
             $discount = $request->discount ?? 0;
             $other_charges = $request->other_charges ?? 0;
-            $total = $subtotal - $discount + $other_charges;
+            $total = round($subtotal - $discount + $other_charges);
 
             $quotation->update([
                 'customer_name' => $request->customer_name,
