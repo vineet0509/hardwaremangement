@@ -16,7 +16,7 @@ const Products = () => {
   const [editProductId, setEditProductId] = useState(null);
   const [newCatName, setNewCatName] = useState('');
   const [formData, setFormData] = useState({
-    name: '', category_id: '', supplier_id: '', purchase_price: 0, selling_price: 0, gst_slab: 0, quantity: 0, min_stock_alert: 5, unit: 'piece'
+    name: '', category_id: '', supplier_id: '', purchase_price: 0, selling_price: 0, gst_slab: 18, quantity: 0, min_stock_alert: 5, unit: 'piece'
   });
 
   const [stockModal, setStockModal] = useState({ show: false, type: 'add', product: null });
@@ -156,7 +156,7 @@ const Products = () => {
           </label>
           <button className="btn btn-primary" onClick={() => {
             setEditProductId(null);
-            setFormData({ name: '', category_id: '', purchase_price: 0, selling_price: 0, gst_slab: 0, quantity: 0, min_stock_alert: 5, unit: 'piece' });
+            setFormData({ name: '', category_id: '', purchase_price: 0, selling_price: 0, gst_slab: 18, quantity: 0, min_stock_alert: 5, unit: 'piece' });
             setShowModal(true);
           }}>
             <Plus size={18} /> Add Product
