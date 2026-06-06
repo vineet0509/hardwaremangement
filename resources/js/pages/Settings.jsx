@@ -17,6 +17,31 @@ const Settings = () => {
   const [loading, setLoading] = useState(true);
   const [gstChecking, setGstChecking] = useState(false);
   const [gstResult, setGstResult] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState('pro');
+
+  const planBenefits = {
+    pro: [
+      "Unlimited Invoicing & Billing",
+      "Basic Inventory Management",
+      "Customer & Supplier Tracking",
+      "Standard Reports",
+      "Email Support"
+    ],
+    business: [
+      "All Pro Features",
+      "Multiple Branches / Child Businesses",
+      "Staff & Attendance Management",
+      "Advanced Analytics & Reporting",
+      "Priority Phone Support"
+    ],
+    enterprise: [
+      "All Business Features",
+      "Custom API Integrations",
+      "Dedicated Account Manager",
+      "99.9% Uptime SLA",
+      "On-premise / Custom Cloud Deployment"
+    ]
+  };
 
   const handleVerifyGst = () => {
     if (!formData.gst_number) {
@@ -50,6 +75,9 @@ const Settings = () => {
           subscription_expires_at: settingsRes.data.subscription_expires_at ? settingsRes.data.subscription_expires_at.split('T')[0] : '',
           latest_request: settingsRes.data.latest_request
         });
+        if (settingsRes.data.latest_request && settingsRes.data.latest_request.status === 'pending') {
+          setSelectedPlan(settingsRes.data.latest_request.plan_type);
+        }
         setUserData({
           name: meRes.data.name || '',
           email: meRes.data.email || '',
@@ -115,6 +143,25 @@ const Settings = () => {
         setPasswordData({ current_password: '', new_password: '', new_password_confirmation: '' });
       })
       .catch(err => Swal.fire('Error', err.response?.data?.message || 'Error updating password', 'error'));
+  };
+
+  const handleForgotPassword = (e) => {
+    e.preventDefault();
+    if (!userData.email) return Swal.fire('Error', 'Email address not found in profile.', 'error');
+    
+    Swal.fire({
+      title: 'Send Password Reset Link?',
+      text: `A password reset link will be sent to ${userData.email}.`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, send it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api.post('/forgot-password', { email: userData.email })
+          .then(res => Swal.fire('Sent!', res.data.message || 'Reset link sent to your email.', 'success'))
+          .catch(err => Swal.fire('Error', err.response?.data?.message || 'Failed to send reset link.', 'error'));
+      }
+    });
   };
 
   const handleDeleteAccount = () => {
@@ -272,7 +319,7 @@ const Settings = () => {
                      <CheckCircle size={20} />
                      <strong style={{ textTransform: 'capitalize' }}>{formData.subscription_plan} Plan Active</strong>
                    </div>
-                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: formData.subscription_expires_at && new Date(formData.subscription_expires_at) < new Date() ? 'var(--danger)' : 'var(--warning)' }}>
+                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: formData.subscription_expires_at && new Date(formData.subscription_expires_at) < new Date() ? 'var(--danger)' : 'var(--warning)', marginBottom: 16 }}>
                      <AlertTriangle size={18} />
                      <strong>
                         {formData.subscription_expires_at 
@@ -281,6 +328,15 @@ const Settings = () => {
                               : `Plan Expires on ${new Date(formData.subscription_expires_at).toLocaleDateString()}`)
                           : 'No expiration date set'}
                      </strong>
+                   </div>
+                   
+                   <div style={{ background: 'var(--surface)', padding: 12, borderRadius: 8, border: '1px solid var(--border)' }}>
+                     <h4 style={{ marginBottom: 8, fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Current Plan Benefits</h4>
+                     <ul style={{ margin: 0, paddingLeft: 20, fontSize: '0.9rem', color: 'var(--text-main)' }}>
+                       {(planBenefits[formData.subscription_plan] || []).map((benefit, idx) => (
+                         <li key={idx} style={{ marginBottom: 4 }}>{benefit}</li>
+                       ))}
+                     </ul>
                    </div>
                  </div>
               )}
@@ -304,13 +360,24 @@ const Settings = () => {
                  )}
 
                  <form onSubmit={handleSubscriptionRequest}>
-                   <div className="form-group">
-                     <select name="plan_type" className="form-control" required style={{ marginBottom: 12 }} defaultValue={formData.latest_request?.status === 'pending' ? formData.latest_request.plan_type : 'monthly'}>
-                       <option value="monthly">Monthly Plan - ₹299/month</option>
-                       <option value="yearly">Yearly Plan - ₹2,999/year (with free priority support)</option>
-                     </select>
-                   </div>
-                   <button type="submit" className="btn btn-primary" style={{ width: '100%', background: 'var(--success)', border: 'none' }}>
+                    <div className="form-group">
+                      <select name="plan_type" className="form-control" required style={{ marginBottom: 12 }} value={selectedPlan} onChange={(e) => setSelectedPlan(e.target.value)}>
+                        <option value="pro">Pro Plan - ₹2,999</option>
+                        <option value="business">Business Plan - ₹4,999</option>
+                        <option value="enterprise">Enterprise Plan - ₹9,999</option>
+                      </select>
+                    </div>
+
+                    <div style={{ marginBottom: 16, background: 'var(--surface-hover)', padding: 12, borderRadius: 8, border: '1px solid var(--border)' }}>
+                      <h4 style={{ marginBottom: 8, fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>What you get</h4>
+                      <ul style={{ margin: 0, paddingLeft: 20, fontSize: '0.9rem', color: 'var(--text-main)' }}>
+                        {(planBenefits[selectedPlan] || []).map((benefit, idx) => (
+                          <li key={idx} style={{ marginBottom: 4 }}>{benefit}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <button type="submit" className="btn btn-primary" style={{ width: '100%', background: 'var(--success)', border: 'none' }}>
                      {formData.latest_request?.status === 'pending' ? 'Change Requested Plan' : 'Submit Renewal Request'}
                    </button>
                  </form>
@@ -366,6 +433,9 @@ const Settings = () => {
             <button type="submit" className="btn btn-primary" style={{ marginTop: 12, background: 'var(--text-main)', width: '100%' }}>
               Update Password
             </button>
+            <div style={{ textAlign: 'center', marginTop: 16 }}>
+              <a href="#" onClick={handleForgotPassword} style={{ fontSize: '0.85rem', color: 'var(--primary)', textDecoration: 'none' }}>Forgot your current password?</a>
+            </div>
           </form>
         </div>
         {/* Language Settings - Added for mobile accessibility */}

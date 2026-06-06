@@ -77,7 +77,7 @@ const Login = () => {
              <div className="form-group" style={{ marginBottom: 24 }}>
                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                  <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6, margin: 0 }}><Lock size={16} /> Password</label>
-                 <a href="#" onClick={(e) => { e.preventDefault(); alert("To reset your password, please contact the Software Administrator or use your registered recovery phone number."); }} style={{ fontSize: '0.75rem', color: 'var(--primary)', textDecoration: 'none' }}>Forgot Password?</a>
+                 <Link to="/forgot-password" style={{ fontSize: '0.75rem', color: 'var(--primary)', textDecoration: 'none' }}>Forgot Password?</Link>
                </div>
                <input type="password" required className="form-control"
                   value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} />

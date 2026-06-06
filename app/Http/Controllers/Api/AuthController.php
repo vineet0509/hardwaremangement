@@ -222,4 +222,41 @@ class AuthController extends Controller
             return response()->json(['message' => 'Inquiry registered. Vynkra Support will get back to you shortly.']);
         }
     }
+
+    public function sendResetLinkEmail(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+        
+        $status = \Illuminate\Support\Facades\Password::broker()->sendResetLink(
+            $request->only('email')
+        );
+
+        return $status == \Illuminate\Support\Facades\Password::RESET_LINK_SENT
+                    ? response()->json(['message' => __($status)])
+                    : response()->json(['message' => __($status)], 400);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|confirmed|min:8',
+        ]);
+
+        $status = \Illuminate\Support\Facades\Password::broker()->reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => \Illuminate\Support\Facades\Hash::make($password)
+                ])->setRememberToken(\Illuminate\Support\Str::random(60));
+
+                $user->save();
+            }
+        );
+
+        return $status == \Illuminate\Support\Facades\Password::PASSWORD_RESET
+                    ? response()->json(['message' => __($status)])
+                    : response()->json(['message' => __($status)], 400);
+    }
 }
