@@ -84,11 +84,11 @@
             </tr>
             @if($bill->is_gst)
                 <tr>
-                    <td>CGST (9%):</td>
+                    <td>CGST:</td>
                     <td class="text-right">₹{{ number_format($bill->tax / 2, 2) }}</td>
                 </tr>
                 <tr>
-                    <td>SGST (9%):</td>
+                    <td>SGST:</td>
                     <td class="text-right">₹{{ number_format($bill->tax / 2, 2) }}</td>
                 </tr>
             @endif

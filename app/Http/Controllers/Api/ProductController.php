@@ -56,6 +56,7 @@ class ProductController extends Controller
             'description'     => 'nullable|string',
             'purchase_price'  => 'required|numeric|min:0',
             'selling_price'   => 'required|numeric|min:0',
+            'gst_slab'        => 'nullable|integer|in:0,5,12,18,28',
             'quantity'        => 'required|integer|min:0',
             'min_stock_alert' => 'required|integer|min:0',
             'unit'            => 'required|string|max:50',
@@ -114,6 +115,7 @@ class ProductController extends Controller
             'description'     => 'nullable|string',
             'purchase_price'  => 'sometimes|numeric|min:0',
             'selling_price'   => 'sometimes|numeric|min:0',
+            'gst_slab'        => 'nullable|integer|in:0,5,12,18,28',
             'min_stock_alert' => 'sometimes|integer|min:0',
             'unit'            => 'sometimes|string|max:50',
         ]);

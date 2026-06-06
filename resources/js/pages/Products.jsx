@@ -16,7 +16,7 @@ const Products = () => {
   const [editProductId, setEditProductId] = useState(null);
   const [newCatName, setNewCatName] = useState('');
   const [formData, setFormData] = useState({
-    name: '', category_id: '', supplier_id: '', purchase_price: 0, selling_price: 0, quantity: 0, min_stock_alert: 5, unit: 'piece'
+    name: '', category_id: '', supplier_id: '', purchase_price: 0, selling_price: 0, gst_slab: 0, quantity: 0, min_stock_alert: 5, unit: 'piece'
   });
 
   const [stockModal, setStockModal] = useState({ show: false, type: 'add', product: null });
@@ -156,7 +156,7 @@ const Products = () => {
           </label>
           <button className="btn btn-primary" onClick={() => {
             setEditProductId(null);
-            setFormData({ name: '', category_id: '', purchase_price: 0, selling_price: 0, quantity: 0, min_stock_alert: 5, unit: 'piece' });
+            setFormData({ name: '', category_id: '', purchase_price: 0, selling_price: 0, gst_slab: 0, quantity: 0, min_stock_alert: 5, unit: 'piece' });
             setShowModal(true);
           }}>
             <Plus size={18} /> Add Product
@@ -208,7 +208,7 @@ const Products = () => {
                         setEditProductId(p.id);
                         setFormData({
                           name: p.name, category_id: p.category_id, supplier_id: p.supplier_id || '', purchase_price: p.purchase_price,
-                          selling_price: p.selling_price, quantity: p.quantity,
+                          selling_price: p.selling_price, gst_slab: p.gst_slab || 0, quantity: p.quantity,
                           min_stock_alert: p.min_stock_alert, unit: p.unit
                         });
                         setShowModal(true);
@@ -278,9 +278,19 @@ const Products = () => {
                       value={formData.purchase_price} onChange={e => setFormData({...formData, purchase_price: e.target.value})} />
                   </div>
                   <div className="form-group" style={{ flex: 1 }}>
-                    <label className="form-label">Selling Price</label>
+                    <label className="form-label">Selling Price (With GST)</label>
                     <input type="number" className="form-control" required 
                       value={formData.selling_price} onChange={e => setFormData({...formData, selling_price: e.target.value})} />
+                  </div>
+                  <div className="form-group" style={{ flex: 1 }}>
+                    <label className="form-label">GST Slab (%)</label>
+                    <select className="form-control" value={formData.gst_slab} onChange={e => setFormData({...formData, gst_slab: parseInt(e.target.value)})}>
+                      <option value="0">0% (Nil)</option>
+                      <option value="5">5%</option>
+                      <option value="12">12%</option>
+                      <option value="18">18%</option>
+                      <option value="28">28%</option>
+                    </select>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: 16 }}>

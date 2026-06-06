@@ -12,7 +12,7 @@ class BillItem extends Model
 
     protected $fillable = [
         'bill_id', 'product_id', 'product_name', 'description',
-        'price', 'quantity', 'unit', 'discount', 'total', 'business_id',
+        'price', 'gst_slab', 'quantity', 'unit', 'discount', 'total', 'business_id',
     ];
 
     protected $casts = [

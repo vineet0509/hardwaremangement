@@ -30,7 +30,8 @@ class QuotationController extends Controller
                 }),
             ],
             'items.*.quantity' => 'required|numeric|min:0.1',
-            'items.*.price' => 'required|numeric|min:0'
+            'items.*.price' => 'required|numeric|min:0',
+            'items.*.gst_slab' => 'nullable|integer|min:0',
         ]);
 
         try {
@@ -76,6 +77,7 @@ class QuotationController extends Controller
                     'description' => $product->description,
                     'unit' => $product->unit,
                     'price' => $item['price'],
+                    'gst_slab' => $item['gst_slab'] ?? $product->gst_slab ?? 0,
                     'quantity' => $item['quantity'],
                     'total' => $item['price'] * $item['quantity'],
                 ]);
@@ -110,7 +112,8 @@ class QuotationController extends Controller
                 }),
             ],
             'items.*.quantity' => 'required|numeric|min:0.1',
-            'items.*.price' => 'required|numeric|min:0'
+            'items.*.price' => 'required|numeric|min:0',
+            'items.*.gst_slab' => 'nullable|integer|min:0',
         ]);
 
         try {
@@ -146,6 +149,7 @@ class QuotationController extends Controller
                     'description' => $product->description,
                     'unit' => $product->unit,
                     'price' => $item['price'],
+                    'gst_slab' => $item['gst_slab'] ?? $product->gst_slab ?? 0,
                     'quantity' => $item['quantity'],
                     'total' => $item['price'] * $item['quantity'],
                 ]);
@@ -203,6 +207,7 @@ class QuotationController extends Controller
                     'description'  => $product->description,
                     'unit'         => $product->unit,
                     'price'        => $item->price,
+                    'gst_slab'     => $item->gst_slab ?? $product->gst_slab ?? 0,
                     'quantity'     => $item->quantity,
                     'discount'     => 0,
                     'total'        => $item->total,

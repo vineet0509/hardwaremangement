@@ -105,7 +105,7 @@ const QuotationCreate = () => {
       if (existing) {
         return prev.map(item => item.product_id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
       }
-      return [...prev, { product_id: product.id, name: product.name, unit: product.unit, price: product.selling_price, quantity: 1, stock: product.quantity }];
+      return [...prev, { product_id: product.id, name: product.name, unit: product.unit, price: product.selling_price, gst_slab: product.gst_slab || 0, quantity: 1, stock: product.quantity }];
     });
   };
 
@@ -133,8 +133,14 @@ const QuotationCreate = () => {
   const removeFromCart = (id) => setCart(prev => prev.filter(item => item.product_id !== id));
 
   const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-  const tax = isGst ? (subtotal - discount) * 0.18 : 0;
-  const total = (subtotal - discount) + tax;
+  const tax = isGst ? cart.reduce((acc, item) => {
+    const itemTotal = item.price * item.quantity;
+    const itemDiscount = subtotal > 0 && discount > 0 ? (itemTotal / subtotal) * discount : 0;
+    const discountedTotal = itemTotal - itemDiscount;
+    const basePrice = discountedTotal / (1 + ((item.gst_slab || 0) / 100));
+    return acc + (discountedTotal - basePrice);
+  }, 0) : 0;
+  const total = subtotal - discount;
 
   const handlePreview = () => {
     if (cart.length === 0) return Swal.fire('Empty Quote', 'Add products to preview.', 'warning');
@@ -222,8 +228,12 @@ const QuotationCreate = () => {
               </tr>
               ${isGst ? `
                 <tr>
-                  <td>GST (18%):</td>
-                  <td class="text-right">₹${tax.toFixed(2)}</td>
+                  <td>CGST:</td>
+                  <td class="text-right">₹${(tax / 2).toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td>SGST:</td>
+                  <td class="text-right">₹${(tax / 2).toFixed(2)}</td>
                 </tr>
               ` : ''}
               <tr class="total-row">

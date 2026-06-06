@@ -134,7 +134,7 @@ const Billing = () => {
         if (existing.quantity >= product.quantity) return prev;
         return prev.map(item => item.product_id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
       }
-      return [...prev, { product_id: product.id, name: product.name, description: product.description, unit: product.unit, price: product.selling_price, quantity: 1, stock: product.quantity }];
+      return [...prev, { product_id: product.id, name: product.name, description: product.description, unit: product.unit, price: product.selling_price, gst_slab: product.gst_slab || 0, quantity: 1, stock: product.quantity }];
     });
   };
 
@@ -163,8 +163,14 @@ const Billing = () => {
   const removeFromCart = (id) => setCart(prev => prev.filter(item => item.product_id !== id));
 
   const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-  const tax = isGstBill ? (subtotal - payment.discount) * 0.18 : 0;
-  const total = (subtotal - payment.discount) + tax;
+  const tax = isGstBill ? cart.reduce((acc, item) => {
+    const itemTotal = item.price * item.quantity;
+    const itemDiscount = subtotal > 0 && payment.discount > 0 ? (itemTotal / subtotal) * payment.discount : 0;
+    const discountedTotal = itemTotal - itemDiscount;
+    const basePrice = discountedTotal / (1 + ((item.gst_slab || 0) / 100));
+    return acc + (discountedTotal - basePrice);
+  }, 0) : 0;
+  const total = subtotal - payment.discount;
   const liveDueAmount = total - (parseFloat(payment.paid) || 0);
 
   useEffect(() => {
@@ -269,11 +275,11 @@ const Billing = () => {
               </tr>
               ${isGst ? `
                 <tr>
-                  <td>CGST (9%):</td>
+                  <td>CGST:</td>
                   <td class="text-right">₹${(billData.tax / 2).toFixed(2)}</td>
                 </tr>
                 <tr>
-                  <td>SGST (9%):</td>
+                  <td>SGST:</td>
                   <td class="text-right">₹${(billData.tax / 2).toFixed(2)}</td>
                 </tr>
               ` : ''}
