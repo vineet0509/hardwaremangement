@@ -207,7 +207,7 @@ const Billing = () => {
 
   useEffect(() => {
     if (!editBillId) {
-      if (payment.method !== 'credit') {
+      if (payment.method !== 'credit' && payment.method !== 'razorpay') {
         setPayment(prev => ({ ...prev, paid: total }));
       } else {
         setPayment(prev => ({ ...prev, paid: 0 }));
