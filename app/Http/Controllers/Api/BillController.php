@@ -418,7 +418,7 @@ class BillController extends Controller
             'other_charges'    => 'nullable|numeric|min:0',
             'tax'              => 'nullable|numeric|min:0',
             'paid_amount'      => 'required|numeric|min:0',
-            'payment_method'   => 'required|in:cash,card,upi,credit',
+            'payment_method'   => 'required|in:cash,card,upi,credit,razorpay',
             'notes'            => 'nullable|string',
             'is_gst'           => 'nullable|boolean',
             'type'             => 'nullable|in:sale,return',
@@ -554,7 +554,7 @@ class BillController extends Controller
             'other_charges'    => 'nullable|numeric|min:0',
             'tax'              => 'nullable|numeric|min:0',
             'paid_amount'      => 'required|numeric|min:0',
-            'payment_method'   => 'required|in:cash,upi,card,credit',
+            'payment_method'   => 'required|in:cash,upi,card,credit,razorpay',
             'notes'            => 'nullable|string',
             'is_gst'           => 'nullable|boolean',
         ]);
