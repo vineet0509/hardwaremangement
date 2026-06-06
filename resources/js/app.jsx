@@ -46,6 +46,14 @@ const PublicOrPrivateLayout = ({ children }) => {
   return <PublicLayout>{children}</PublicLayout>;
 };
 
+const GuestRoute = ({ children }) => {
+  const token = localStorage.getItem('auth_token');
+  if (token) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  return children;
+};
+
 function App() {
   useEffect(() => {
     // Standard CSRF fetch for stateful forms
@@ -55,9 +63,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/" element={<GuestRoute><Landing /></GuestRoute>} />
+        <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
+        <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
         
         <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
         <Route path="/products" element={<ProtectedRoute><Layout><Products /></Layout></ProtectedRoute>} />
