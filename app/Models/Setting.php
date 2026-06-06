@@ -15,7 +15,10 @@ class Setting extends Model
         'company_phone',
         'company_address',
         'subscription_plan',
-        'subscription_expires_at'
+        'subscription_expires_at',
+        'razorpay_key',
+        'razorpay_secret',
+        'razorpay_webhook_secret'
     ];
 
     protected $casts = [

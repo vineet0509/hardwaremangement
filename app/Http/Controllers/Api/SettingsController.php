@@ -41,6 +41,10 @@ class SettingsController extends Controller
         $data['business_type'] = $business?->business_type ?? '';
         $data['latest_request'] = \App\Models\SubscriptionRequest::where('business_id', $business->id)->latest()->first();
         
+        $data['razorpay_key'] = $settings->razorpay_key;
+        $data['razorpay_secret'] = $settings->razorpay_secret;
+        $data['razorpay_webhook_secret'] = $settings->razorpay_webhook_secret;
+
         return response()->json($data);
     }
 
@@ -99,9 +103,12 @@ class SettingsController extends Controller
             'company_phone'=> 'nullable|string|max:50',
             'company_address' => 'nullable|string',
             'gst_number' => ['nullable', 'string', new \App\Rules\ValidGstin()],
+            'razorpay_key' => 'nullable|string|max:255',
+            'razorpay_secret' => 'nullable|string|max:255',
+            'razorpay_webhook_secret' => 'nullable|string|max:255',
         ]);
 
-        $data = $request->only(['company_name', 'company_phone', 'company_address']);
+        $data = $request->only(['company_name', 'business_type', 'company_phone', 'company_address', 'razorpay_key', 'razorpay_secret', 'razorpay_webhook_secret']);
 
         if ($settings) {
             $settings->update($data);

@@ -171,11 +171,12 @@ class BillController extends Controller
             return response()->json(['message' => 'Bill is already paid.'], 400);
         }
 
-        $key = config('services.razorpay.key');
-        $secret = config('services.razorpay.secret');
+        $setting = \App\Models\Setting::first();
+        $key = $setting->razorpay_key ?? config('services.razorpay.key');
+        $secret = $setting->razorpay_secret ?? config('services.razorpay.secret');
 
         if (!$key || !$secret) {
-            return response()->json(['message' => 'Razorpay keys are not configured on the server.'], 500);
+            return response()->json(['message' => 'Razorpay keys are not configured in settings.'], 500);
         }
 
         $api = new Api($key, $secret);
@@ -227,8 +228,9 @@ class BillController extends Controller
             return response()->json(['message' => 'Payment already verified.', 'status' => 'paid']);
         }
 
-        $key = config('services.razorpay.key');
-        $secret = config('services.razorpay.secret');
+        $setting = \App\Models\Setting::first();
+        $key = $setting->razorpay_key ?? config('services.razorpay.key');
+        $secret = $setting->razorpay_secret ?? config('services.razorpay.secret');
 
         $api = new Api($key, $secret);
 
@@ -262,18 +264,8 @@ class BillController extends Controller
 
     public function handleRazorpayWebhook(Request $request)
     {
-        $webhookSecret = config('services.razorpay.webhook_secret');
         $payload = $request->getContent();
         $signature = $request->header('x-razorpay-signature');
-
-        // Verify Signature
-        if ($webhookSecret) {
-            $expectedSignature = hash_hmac('sha256', $payload, $webhookSecret);
-            if (!hash_equals($expectedSignature, $signature)) {
-                return response()->json(['error' => 'Invalid signature'], 400);
-            }
-        }
-
         $event = $request->input('event');
 
         if ($event === 'payment_link.paid') {
@@ -284,18 +276,37 @@ class BillController extends Controller
             $paymentId = $paymentEntity['id'] ?? null;
 
             if ($paymentLinkId) {
-                $bill = Bill::where('razorpay_payment_link_id', $paymentLinkId)->first();
+                // Must bypass BusinessScope because webhook is unauthenticated
+                $bill = Bill::withoutGlobalScope(\App\Models\Scopes\BusinessScope::class)
+                            ->where('razorpay_payment_link_id', $paymentLinkId)
+                            ->first();
 
-                if ($bill && $bill->status !== 'paid') {
-                    $bill->update([
-                        'status' => 'paid',
-                        'paid_amount' => $bill->total,
-                        'due_amount' => 0,
-                        'payment_method' => 'Razorpay',
-                        'razorpay_payment_id' => $paymentId,
-                    ]);
-                    
-                    Log::info("Bill #{$bill->id} auto-paid via Razorpay Webhook.");
+                if ($bill) {
+                    $setting = \App\Models\Setting::withoutGlobalScope(\App\Models\Scopes\BusinessScope::class)
+                                                  ->where('business_id', $bill->business_id)
+                                                  ->first();
+
+                    $webhookSecret = $setting->razorpay_webhook_secret ?? config('services.razorpay.webhook_secret');
+
+                    // Verify Signature
+                    if ($webhookSecret) {
+                        $expectedSignature = hash_hmac('sha256', $payload, $webhookSecret);
+                        if (!hash_equals($expectedSignature, $signature)) {
+                            return response()->json(['error' => 'Invalid signature'], 400);
+                        }
+                    }
+
+                    if ($bill->status !== 'paid') {
+                        $bill->update([
+                            'status' => 'paid',
+                            'paid_amount' => $bill->total,
+                            'due_amount' => 0,
+                            'payment_method' => 'Razorpay',
+                            'razorpay_payment_id' => $paymentId,
+                        ]);
+                        
+                        Log::info("Bill #{$bill->id} auto-paid via Razorpay Webhook using tenant settings.");
+                    }
                 }
             }
         }
