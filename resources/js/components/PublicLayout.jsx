@@ -45,6 +45,7 @@ const PublicLayout = ({ children }) => {
     password: '',
     password_confirmation: '',
     shop_name: '',
+    business_type: '',
     gst_number: ''
   });
   const [registerError, setRegisterError] = useState(null);
@@ -579,6 +580,20 @@ const PublicLayout = ({ children }) => {
                     value={registerData.shop_name} 
                     onChange={e => setRegisterData({...registerData, shop_name: e.target.value})} 
                   />
+                  <select 
+                    name="business_type" 
+                    className="form-control" 
+                    required 
+                    value={registerData.business_type} 
+                    onChange={e => setRegisterData({...registerData, business_type: e.target.value})}
+                  >
+                    <option value="" disabled>Select Type of Business</option>
+                    <option value="Hardware / Building Materials">Hardware / Building Materials</option>
+                    <option value="Electronics / Mobile Shop">Electronics / Mobile Shop</option>
+                    <option value="Grocery / Supermarket">Grocery / Supermarket</option>
+                    <option value="Clothing / Garments">Clothing / Garments</option>
+                    <option value="Services / General">Services / General</option>
+                  </select>
                   <input 
                     type="text" 
                     className="form-control" 
