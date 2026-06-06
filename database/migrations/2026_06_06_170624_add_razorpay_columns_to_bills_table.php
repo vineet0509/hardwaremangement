@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bills', function (Blueprint $table) {
-            $table->string('razorpay_payment_link_id')->nullable()->after('payment_status');
+            $table->string('razorpay_payment_link_id')->nullable()->after('status');
             $table->string('razorpay_payment_id')->nullable()->after('razorpay_payment_link_id');
         });
     }
