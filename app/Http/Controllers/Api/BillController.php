@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Setting;
+use Razorpay\Api\Api;
+use Illuminate\Support\Facades\Log;
 
 class BillController extends Controller
 {
@@ -158,7 +160,147 @@ class BillController extends Controller
             'updated_at'     => $data['date']
         ]);
 
-        return response()->json(['message' => 'Advance recorded successfully!', 'data' => $bill]);
+        return response()->json(['message' => 'Advance recorded successfully!', 'advance' => $advance]);
+    }
+
+    public function generatePaymentLink($billId)
+    {
+        $bill = Bill::findOrFail($billId);
+
+        if ($bill->status === 'paid') {
+            return response()->json(['message' => 'Bill is already paid.'], 400);
+        }
+
+        $key = config('services.razorpay.key');
+        $secret = config('services.razorpay.secret');
+
+        if (!$key || !$secret) {
+            return response()->json(['message' => 'Razorpay keys are not configured on the server.'], 500);
+        }
+
+        $api = new Api($key, $secret);
+
+        try {
+            $linkData = [
+                'amount' => round($bill->total * 100), // Amount in paise
+                'currency' => 'INR',
+                'accept_partial' => false,
+                'description' => 'Payment for Bill #' . $bill->bill_number,
+                'customer' => [
+                    'name' => $bill->customer_name ?: 'Customer',
+                    'contact' => $bill->customer_phone ?: '',
+                ],
+                'notify' => [
+                    'sms' => false,
+                    'email' => false,
+                ],
+                'reminder_enable' => false,
+                'reference_id' => 'BILL_' . $bill->id . '_' . time(),
+            ];
+
+            $paymentLink = $api->paymentLink->create($linkData);
+
+            $bill->update([
+                'razorpay_payment_link_id' => $paymentLink->id,
+            ]);
+
+            return response()->json([
+                'short_url' => $paymentLink->short_url,
+                'id' => $paymentLink->id,
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Razorpay Error: ' . $e->getMessage());
+            return response()->json(['message' => 'Failed to generate Razorpay link. ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function verifyPaymentStatus($billId)
+    {
+        $bill = Bill::findOrFail($billId);
+
+        if (!$bill->razorpay_payment_link_id) {
+            return response()->json(['message' => 'No payment link generated for this bill.'], 400);
+        }
+
+        if ($bill->status === 'paid') {
+            return response()->json(['message' => 'Payment already verified.', 'status' => 'paid']);
+        }
+
+        $key = config('services.razorpay.key');
+        $secret = config('services.razorpay.secret');
+
+        $api = new Api($key, $secret);
+
+        try {
+            $paymentLink = $api->paymentLink->fetch($bill->razorpay_payment_link_id);
+
+            if ($paymentLink->status === 'paid') {
+                $paymentId = null;
+                if (isset($paymentLink->payments) && count($paymentLink->payments) > 0) {
+                    $paymentId = $paymentLink->payments[0]->payment_id;
+                }
+
+                $bill->update([
+                    'status' => 'paid',
+                    'paid_amount' => $bill->total,
+                    'due_amount' => 0,
+                    'payment_method' => 'Razorpay',
+                    'razorpay_payment_id' => $paymentId,
+                ]);
+
+                return response()->json(['message' => 'Payment successful!', 'status' => 'paid']);
+            }
+
+            return response()->json(['message' => 'Payment is pending or failed.', 'status' => $paymentLink->status], 400);
+
+        } catch (\Exception $e) {
+            Log::error('Razorpay Error: ' . $e->getMessage());
+            return response()->json(['message' => 'Failed to verify payment. ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function handleRazorpayWebhook(Request $request)
+    {
+        $webhookSecret = config('services.razorpay.webhook_secret');
+        $payload = $request->getContent();
+        $signature = $request->header('x-razorpay-signature');
+
+        // Verify Signature
+        if ($webhookSecret) {
+            $expectedSignature = hash_hmac('sha256', $payload, $webhookSecret);
+            if (!hash_equals($expectedSignature, $signature)) {
+                return response()->json(['error' => 'Invalid signature'], 400);
+            }
+        }
+
+        $event = $request->input('event');
+
+        if ($event === 'payment_link.paid') {
+            $paymentLinkEntity = $request->input('payload.payment_link.entity');
+            $paymentEntity = $request->input('payload.payment.entity');
+
+            $paymentLinkId = $paymentLinkEntity['id'] ?? null;
+            $paymentId = $paymentEntity['id'] ?? null;
+
+            if ($paymentLinkId) {
+                $bill = Bill::where('razorpay_payment_link_id', $paymentLinkId)->first();
+
+                if ($bill && $bill->status !== 'paid') {
+                    $bill->update([
+                        'status' => 'paid',
+                        'paid_amount' => $bill->total,
+                        'due_amount' => 0,
+                        'payment_method' => 'Razorpay',
+                        'razorpay_payment_id' => $paymentId,
+                    ]);
+                    
+                    Log::info("Bill #{$bill->id} auto-paid via Razorpay Webhook.");
+                }
+            }
+        }
+
+        return response()->json(['status' => 'ok']);
     }
 
     public function index(Request $request): JsonResponse

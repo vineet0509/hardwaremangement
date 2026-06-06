@@ -25,6 +25,7 @@ Route::post('/email/verification-notification', [AuthController::class, 'resendV
 
 Route::post('/contact', [AuthController::class, 'contactSubmit']);
 Route::get('/verify-gst', [App\Http\Controllers\Api\GstController::class, 'verify']);
+Route::post('/razorpay-webhook', [BillController::class, 'handleRazorpayWebhook']);
 
 Route::middleware(['auth:sanctum', 'check.subscription', 'domain.tenant'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -66,6 +67,8 @@ Route::post('/advances', [BillController::class, 'storeAdvance']);
 Route::post('/bills/{bill}/repay', [BillController::class, 'repay']);
 Route::post('/bills/{bill}/return', [BillController::class, 'returnItems']);
 Route::get('/bills/{bill}/pdf', [BillController::class, 'downloadPDF']);
+Route::post('/bills/{bill}/razorpay-link', [BillController::class, 'generatePaymentLink']);
+Route::post('/bills/{bill}/razorpay-verify', [BillController::class, 'verifyPaymentStatus']);
 Route::get('/bills/export', [BillController::class, 'exportCSV']);
 Route::post('/bills/send-whatsapp', [BillController::class, 'sendWhatsApp']);
 Route::apiResource('bills', BillController::class);

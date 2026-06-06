@@ -17,6 +17,7 @@ class Bill extends Model
         'paid_amount', 'due_amount',
         'payment_method', 'status', 'notes', 'is_gst', 'user_id',
         'type', 'parent_bill_id',
+        'razorpay_payment_link_id', 'razorpay_payment_id',
     ];
 
     protected $casts = [
