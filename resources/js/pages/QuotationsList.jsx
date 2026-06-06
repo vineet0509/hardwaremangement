@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { printHtml, openWhatsApp } from '../utils/webview';
+import { getTermsAndConditions } from '../utils/terms';
 import { Search, Printer, Trash2, MessageSquare, Plus, FileText, Edit2, ArrowRightCircle } from 'lucide-react';
 import Swal from 'sweetalert2';
 
@@ -142,7 +143,8 @@ const QuotationsList = () => {
             </div>
 
             <div class="footer">
-              <p>This is an estimate and subject to change. Thank you!</p>
+              <p>This is a computer generated quotation.</p>
+              <p><strong>Terms & Conditions:</strong> ${getTermsAndConditions(settings.business_type)}</p>
             </div>
             
             <script>

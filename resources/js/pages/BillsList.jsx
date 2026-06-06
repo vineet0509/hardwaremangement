@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { printHtml, downloadFile, openWhatsApp } from '../utils/webview';
+import { getTermsAndConditions } from '../utils/terms';
 import { Search, Receipt, Printer, Trash2, Banknote, X, Edit2, MessageSquare, FileText } from 'lucide-react';
 
 const BillsList = () => {
@@ -227,10 +228,10 @@ const BillsList = () => {
               <div style="height: 15px;"></div>
               <div class="row" style="color: #10b981;"><span>Amount Paid:</span> <span>₹${bill.paid_amount}</span></div>
               <div class="row" style="color: #ef4444;"><span>Balance Due:</span> <span>₹${bill.due_amount}</span></div>
-            </div>
-
-            <div class="footer">
-              <p>Thank you for your business!</p>
+              <div class="footer">
+                <p>This is a computer generated invoice. No signature required.</p>
+                <p><strong>Terms & Conditions:</strong> ${getTermsAndConditions(settings.business_type)}</p>
+              </div>
             </div>
             
             <script>

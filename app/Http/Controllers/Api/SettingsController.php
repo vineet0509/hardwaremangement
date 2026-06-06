@@ -38,6 +38,7 @@ class SettingsController extends Controller
         $data['is_expired'] = $isExpired;
         $data['trial_days_remaining'] = max(0, $daysRemaining);
         $data['gst_number'] = $business?->gst_number ?? '';
+        $data['business_type'] = $business?->business_type ?? '';
         $data['latest_request'] = \App\Models\SubscriptionRequest::where('business_id', $business->id)->latest()->first();
         
         return response()->json($data);
@@ -94,6 +95,7 @@ class SettingsController extends Controller
 
         $request->validate([
             'company_name' => 'required|string|max:255',
+            'business_type'=> 'nullable|string|max:100',
             'company_phone'=> 'nullable|string|max:50',
             'company_address' => 'nullable|string',
             'gst_number' => ['nullable', 'string', new \App\Rules\ValidGstin()],
@@ -108,11 +110,15 @@ class SettingsController extends Controller
         }
 
         if ($business) {
-            $business->update(['gst_number' => $request->gst_number]);
+            $business->update([
+                'gst_number' => $request->gst_number,
+                'business_type' => $request->business_type
+            ]);
         }
 
         $response = $settings->toArray();
         $response['gst_number'] = $business?->gst_number ?? '';
+        $response['business_type'] = $business?->business_type ?? '';
 
         return response()->json($response);
     }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { printHtml, openWhatsApp } from '../utils/webview';
+import { getTermsAndConditions } from '../utils/terms';
 import { Search, Trash2, Save, ArrowLeft, Package, FileText, User, Phone, MapPin, PlusCircle, XCircle } from 'lucide-react';
 
 import Swal from 'sweetalert2';
@@ -232,8 +233,8 @@ const QuotationCreate = () => {
             </table>
 
             <div class="footer">
-              <p>This is a computer generated estimate and subject to change based on stock availability.</p>
-              <p>Thank you for choosing us!</p>
+              <p>This is a computer generated quotation. Valid for 15 days.</p>
+              <p><strong>Terms & Conditions:</strong> ${getTermsAndConditions(settings.business_type)}</p>
             </div>
           </div>
           <script>window.onload = function() { window.print(); }</script>

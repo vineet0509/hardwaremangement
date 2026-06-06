@@ -13,6 +13,7 @@ const Register = () => {
     password: '',
     password_confirmation: '',
     shop_name: '',
+    business_type: '',
     gst_number: ''
   });
   const [error, setError] = useState(null);
@@ -95,6 +96,20 @@ const Register = () => {
                     value={formData.shop_name} 
                     onChange={handleChange} 
                   />
+                  <select 
+                    name="business_type" 
+                    className="form-control" 
+                    required 
+                    value={formData.business_type} 
+                    onChange={handleChange}
+                  >
+                    <option value="" disabled>Select Type of Business</option>
+                    <option value="Hardware / Building Materials">Hardware / Building Materials</option>
+                    <option value="Electronics / Mobile Shop">Electronics / Mobile Shop</option>
+                    <option value="Grocery / Supermarket">Grocery / Supermarket</option>
+                    <option value="Clothing / Garments">Clothing / Garments</option>
+                    <option value="Services / General">Services / General</option>
+                  </select>
                   <input 
                     type="text" 
                     name="gst_number" 

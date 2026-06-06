@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { printHtml } from '../utils/webview';
+import { getTermsAndConditions } from '../utils/terms';
 import { Search, ShoppingCart, Trash2, IndianRupee, Save, ArrowLeft, Package, User, Phone, MapPin, CreditCard, PlusCircle, XCircle, Banknote, Smartphone, ClipboardList } from 'lucide-react';
 
 import Swal from 'sweetalert2';
@@ -294,7 +295,7 @@ const Billing = () => {
 
             <div class="footer">
               <p>This is a computer generated invoice. No signature required.</p>
-              <p>Thank you for your business!</p>
+              <p><strong>Terms & Conditions:</strong> ${getTermsAndConditions(settings.business_type)}</p>
             </div>
           </div>
           <script>window.onload = function() { window.print(); window.onafterprint = function() { window.close(); }; }</script>

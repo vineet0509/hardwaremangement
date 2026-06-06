@@ -112,7 +112,7 @@
 
     <div class="footer">
         <p>This is a computer generated invoice. No signature required.</p>
-        <p>Thank you for your business!</p>
+        <p><strong>Terms & Conditions:</strong> {{ $business->terms ?? 'Thank you for your business!' }}</p>
     </div>
 </body>
 </html>

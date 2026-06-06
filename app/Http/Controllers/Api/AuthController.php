@@ -24,12 +24,14 @@ class AuthController extends Controller
             'mobile' => 'nullable|string|max:15|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'shop_name' => 'required|string|max:255',
+            'business_type' => 'nullable|string|max:100',
             'gst_number' => ['nullable', 'string', new \App\Rules\ValidGstin()]
         ]);
 
         // 1. Create the unique Shop (Multi-tenant partition)
         $business = Business::create([
             'name' => $request->shop_name,
+            'business_type' => $request->business_type,
             'gst_number' => $request->gst_number,
             'is_active' => true,
             'trial_ends_at' => now()->addDays(30),

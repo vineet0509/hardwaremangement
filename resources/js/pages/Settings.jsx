@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 
 const Settings = () => {
   const [formData, setFormData] = useState({
-    company_name: '', company_phone: '', company_address: '', gst_number: '',
+    company_name: '', company_phone: '', company_address: '', gst_number: '', business_type: '',
     subscription_plan: 'full_time', subscription_expires_at: '', latest_request: null
   });
   const [userData, setUserData] = useState({
@@ -45,6 +45,7 @@ const Settings = () => {
           company_phone: settingsRes.data.company_phone || '',
           company_address: settingsRes.data.company_address || '',
           gst_number: settingsRes.data.gst_number || '',
+          business_type: settingsRes.data.business_type || '',
           subscription_plan: settingsRes.data.subscription_plan || 'full_time',
           subscription_expires_at: settingsRes.data.subscription_expires_at ? settingsRes.data.subscription_expires_at.split('T')[0] : '',
           latest_request: settingsRes.data.latest_request
@@ -159,6 +160,17 @@ const Settings = () => {
               <label className="form-label">Company / Business Name</label>
               <input type="text" className="form-control" required
                 value={formData.company_name} onChange={e => setFormData({...formData, company_name: e.target.value})} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Type of Business</label>
+              <select className="form-control" value={formData.business_type} onChange={e => setFormData({...formData, business_type: e.target.value})}>
+                  <option value="" disabled>Select Type of Business</option>
+                  <option value="Hardware / Building Materials">Hardware / Building Materials</option>
+                  <option value="Electronics / Mobile Shop">Electronics / Mobile Shop</option>
+                  <option value="Grocery / Supermarket">Grocery / Supermarket</option>
+                  <option value="Clothing / Garments">Clothing / Garments</option>
+                  <option value="Services / General">Services / General</option>
+              </select>
             </div>
             <div className="form-group">
               <label className="form-label">Contact Phone</label>
