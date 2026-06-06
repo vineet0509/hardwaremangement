@@ -220,6 +220,9 @@ const BillsList = () => {
             <div class="totals">
               <div class="row"><span>Subtotal:</span> <span>₹${bill.subtotal}</span></div>
               <div class="row"><span>Discount:</span> <span>₹${bill.discount}</span></div>
+              ${parseFloat(bill.other_charges) > 0 ? `
+              <div class="row"><span>Other Charges:</span> <span>+ ₹${bill.other_charges}</span></div>
+              ` : ''}
               ${bill.is_gst ? `
                 <div class="row"><span>CGST (9%):</span> <span>₹${(bill.tax / 2).toFixed(2)}</span></div>
                 <div class="row"><span>SGST (9%):</span> <span>₹${(bill.tax / 2).toFixed(2)}</span></div>

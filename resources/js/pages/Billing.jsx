@@ -19,7 +19,7 @@ const Billing = () => {
   
   const [customerInfo, setCustomerInfo] = useState({ name: '', phone: '', address: '' });
   const [customerResults, setCustomerResults] = useState([]);
-  const [payment, setPayment] = useState({ method: 'cash', paid: 0, discount: 0, upi_digits: '' });
+  const [payment, setPayment] = useState({ discount: 0, other_charges: 0, paid: 0, method: 'cash', upi_digits: '' });
   const [udharCustomers, setUdharCustomers] = useState([]);
   const [mobileTab, setMobileTab] = useState('products');
   const [notify, setNotify] = useState({ show: false, title: '', message: '', type: 'success' });
@@ -64,7 +64,7 @@ const Billing = () => {
            upi = b.notes.split('UPI Ref: ')[1]?.substring(0, 5) || '';
         }
 
-        setPayment({ method: b.payment_method, paid: b.paid_amount, discount: b.discount, upi_digits: upi });
+        setPayment({ discount: b.discount || 0, other_charges: b.other_charges || 0, paid: b.paid_amount, method: b.payment_method, upi_digits: upi });
         
         setCart(b.items.map(i => ({
            product_id: i.product_id,
@@ -164,6 +164,7 @@ const Billing = () => {
 
   const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const discountAmount = parseFloat(payment.discount) || 0;
+  const otherChargesAmount = parseFloat(payment.other_charges) || 0;
   const tax = isGstBill ? cart.reduce((acc, item) => {
     const itemTotal = item.price * item.quantity;
     const itemDiscount = subtotal > 0 && discountAmount > 0 ? (itemTotal / subtotal) * discountAmount : 0;
@@ -171,7 +172,7 @@ const Billing = () => {
     const basePrice = discountedTotal / (1 + ((item.gst_slab || 0) / 100));
     return acc + (discountedTotal - basePrice);
   }, 0) : 0;
-  const total = subtotal - discountAmount;
+  const total = subtotal - discountAmount + otherChargesAmount;
   const liveDueAmount = total - (parseFloat(payment.paid) || 0);
 
   useEffect(() => {
@@ -274,6 +275,12 @@ const Billing = () => {
                 <td>Discount:</td>
                 <td class="text-right">- ₹${billData.discount}</td>
               </tr>
+              ${parseFloat(billData.other_charges) > 0 ? `
+              <tr>
+                <td>Other Charges:</td>
+                <td class="text-right">+ ₹${billData.other_charges}</td>
+              </tr>
+              ` : ''}
               ${isGst ? `
                 <tr>
                   <td>CGST:</td>
@@ -326,7 +333,8 @@ const Billing = () => {
       customer_phone: customerInfo.phone,
       customer_address: customerInfo.address,
       payment_method: payment.method,
-      discount: parseFloat(payment.discount) || 0,
+      discount: payment.discount || 0,
+      other_charges: payment.other_charges || 0,
       tax: tax,
       is_gst: isGstBill,
       paid_amount: parseFloat(payment.paid) || 0,
@@ -376,7 +384,7 @@ const Billing = () => {
         localStorage.removeItem('billing_draft');
         setCart([]);
         setCustomerInfo({ name: '', phone: '', address: '' });
-        setPayment({ method: 'cash', paid: 0, discount: 0, upi_digits: '' });
+        setPayment({ method: 'cash', paid: 0, discount: 0, other_charges: 0, upi_digits: '' });
         api.get('/udhar').then(res => setUdharCustomers(res.data)).catch(console.error); // refresh udhar list post checkout
         navigate('/bills');
       })
@@ -661,6 +669,13 @@ const Billing = () => {
               <div style={{ display: 'flex', alignItems: 'center', width: '70px' }}>
                  <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginRight: '2px' }}>₹</span>
                  <input type="number" value={payment.discount} onChange={e => setPayment({...payment, discount: e.target.value})} style={{ width: '100%', border: 'none', outline: 'none', textAlign: 'right', fontWeight: 700, fontSize: '0.85rem', background: 'transparent' }} />
+              </div>
+            </div>
+            <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--surface-hover)', borderRadius: '8px', padding: '4px 10px', border: '1px solid var(--border)' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)' }}>Other Chg</span>
+              <div style={{ display: 'flex', alignItems: 'center', width: '70px' }}>
+                 <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginRight: '2px' }}>₹</span>
+                 <input type="number" value={payment.other_charges} onChange={e => setPayment({...payment, other_charges: e.target.value})} style={{ width: '100%', border: 'none', outline: 'none', textAlign: 'right', fontWeight: 700, fontSize: '0.85rem', background: 'transparent' }} />
               </div>
             </div>
           </div>

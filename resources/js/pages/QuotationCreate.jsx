@@ -20,10 +20,11 @@ const QuotationCreate = () => {
   const [customerInfo, setCustomerInfo] = useState({ name: '', phone: '', address: '' });
   const [customerResults, setCustomerResults] = useState([]);
   const [discount, setDiscount] = useState(0);
+  const [otherCharges, setOtherCharges] = useState(0);
+  const [isGst, setIsGst] = useState(false);
   const [notes, setNotes] = useState('');
   const [mobileTab, setMobileTab] = useState('products');
   const [settings, setSettings] = useState({});
-  const [isGst, setIsGst] = useState(false);
 
   useEffect(() => {
     api.get('/categories').then(res => setCategories(res.data)).catch(console.error);
@@ -57,6 +58,7 @@ const QuotationCreate = () => {
         setCustomerInfo({ name: q.customer_name || '', phone: q.customer_phone || '', address: q.customer_address || '' });
         setIsGst(q.is_gst || false);
         setDiscount(q.discount);
+        setOtherCharges(q.other_charges || 0);
         setNotes(q.notes || '');
         setCart(q.items.map(i => ({
            product_id: i.product_id,
@@ -79,6 +81,7 @@ const QuotationCreate = () => {
           setCart(draft.cart);
           if (draft.customerInfo) setCustomerInfo(draft.customerInfo);
           if (draft.discount !== undefined) setDiscount(draft.discount);
+          if (draft.otherCharges !== undefined) setOtherCharges(draft.otherCharges);
           if (draft.notes) setNotes(draft.notes);
           if (draft.isGst !== undefined) setIsGst(draft.isGst);
         }
@@ -91,13 +94,13 @@ const QuotationCreate = () => {
     if (!editQuotationId) {
       if (cart.length > 0 || customerInfo.name) {
         localStorage.setItem('quotation_draft', JSON.stringify({
-          cart, customerInfo, discount, notes, isGst
+          cart, customerInfo, discount, otherCharges, notes, isGst
         }));
       } else {
         localStorage.removeItem('quotation_draft');
       }
     }
-  }, [cart, customerInfo, discount, notes, isGst]);
+  }, [cart, customerInfo, discount, otherCharges, notes, isGst]);
 
   const addToCart = (product) => {
     setCart(prev => {
@@ -134,6 +137,7 @@ const QuotationCreate = () => {
 
   const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const discountAmount = parseFloat(discount) || 0;
+  const otherChargesAmount = parseFloat(otherCharges) || 0;
   const tax = isGst ? cart.reduce((acc, item) => {
     const itemTotal = item.price * item.quantity;
     const itemDiscount = subtotal > 0 && discountAmount > 0 ? (itemTotal / subtotal) * discountAmount : 0;
@@ -141,7 +145,7 @@ const QuotationCreate = () => {
     const basePrice = discountedTotal / (1 + ((item.gst_slab || 0) / 100));
     return acc + (discountedTotal - basePrice);
   }, 0) : 0;
-  const total = subtotal - discountAmount;
+  const total = subtotal - discountAmount + otherChargesAmount + tax;
 
   const handlePreview = () => {
     if (cart.length === 0) return Swal.fire('Empty Quote', 'Add products to preview.', 'warning');
@@ -225,8 +229,14 @@ const QuotationCreate = () => {
               </tr>
               <tr>
                 <td>Discount:</td>
-                <td class="text-right">- ₹${parseFloat(discount).toFixed(2)}</td>
+                <td class="text-right">- ₹${parseFloat(discount) || 0}</td>
               </tr>
+              ${parseFloat(otherCharges) > 0 ? `
+              <tr>
+                <td>Other Charges:</td>
+                <td class="text-right">+ ₹${otherCharges}</td>
+              </tr>
+              ` : ''}
               ${isGst ? `
                 <tr>
                   <td>CGST:</td>
@@ -262,6 +272,7 @@ const QuotationCreate = () => {
       customer_phone: customerInfo.phone,
       customer_address: customerInfo.address,
       discount: parseFloat(discount) || 0,
+      other_charges: parseFloat(otherCharges) || 0,
       tax: tax,
       is_gst: isGst,
       notes: notes,
@@ -299,6 +310,7 @@ const QuotationCreate = () => {
         setCart([]);
         setCustomerInfo({ name: '', phone: '', address: '' });
         setDiscount(0);
+        setOtherCharges(0);
         setNotes('');
         navigate('/quotations');
       })
@@ -467,6 +479,10 @@ const QuotationCreate = () => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <span>Discount (₹)</span>
             <input type="number" className="form-control" value={discount} onChange={e => setDiscount(e.target.value)} style={{ width: 100, padding: '4px 8px', textAlign: 'right' }} />
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <span>Other Charges (₹)</span>
+            <input type="number" className="form-control" value={otherCharges} onChange={e => setOtherCharges(e.target.value)} style={{ width: 100, padding: '4px 8px', textAlign: 'right' }} />
           </div>
           {isGst && (
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, color: 'var(--primary)', fontWeight: 600 }}>

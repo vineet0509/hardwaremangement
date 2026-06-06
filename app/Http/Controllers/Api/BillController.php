@@ -273,6 +273,7 @@ class BillController extends Controller
             'items.*.gst_slab' => 'nullable|integer|min:0',
             'items.*.discount' => 'nullable|numeric|min:0',
             'discount'         => 'nullable|numeric|min:0',
+            'other_charges'    => 'nullable|numeric|min:0',
             'tax'              => 'nullable|numeric|min:0',
             'paid_amount'      => 'required|numeric|min:0',
             'payment_method'   => 'required|in:cash,card,upi,credit',
@@ -340,8 +341,9 @@ class BillController extends Controller
             }
 
             $discount = $data['discount'] ?? 0;
+            $other_charges = $data['other_charges'] ?? 0;
             $tax      = $data['tax'] ?? 0;
-            $total    = $subtotal - $discount + $tax;
+            $total    = $subtotal - $discount + $other_charges + $tax;
             $paid     = $data['paid_amount'];
             
             // Allow negative due for overpayments (Customer credits)
@@ -358,6 +360,7 @@ class BillController extends Controller
                 'customer_address'=> $data['customer_address'],
                 'subtotal'       => $subtotal,
                 'discount'       => $discount,
+                'other_charges'  => $other_charges,
                 'tax'            => $tax,
                 'total'          => $total,
                 'paid_amount'    => $paid,
@@ -406,6 +409,7 @@ class BillController extends Controller
             'items.*.gst_slab' => 'nullable|integer|min:0',
             'items.*.discount' => 'nullable|numeric|min:0',
             'discount'         => 'nullable|numeric|min:0',
+            'other_charges'    => 'nullable|numeric|min:0',
             'tax'              => 'nullable|numeric|min:0',
             'paid_amount'      => 'required|numeric|min:0',
             'payment_method'   => 'required|in:cash,upi,card,credit',
@@ -461,8 +465,9 @@ class BillController extends Controller
             }
 
             $discount = $data['discount'] ?? 0;
+            $other_charges = $data['other_charges'] ?? 0;
             $tax      = $data['tax'] ?? 0;
-            $total    = $subtotal - $discount + $tax;
+            $total    = $subtotal - $discount + $other_charges + $tax;
             $paid     = $data['paid_amount'];
             $due      = $total - $paid; 
             
@@ -474,6 +479,7 @@ class BillController extends Controller
                 'customer_address'=> $data['customer_address'],
                 'subtotal'       => $subtotal,
                 'discount'       => $discount,
+                'other_charges'  => $other_charges,
                 'tax'            => $tax,
                 'total'          => $total,
                 'paid_amount'    => $paid,

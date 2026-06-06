@@ -22,6 +22,7 @@ class QuotationController extends Controller
             'customer_phone' => 'nullable|string|max:20',
             'customer_address' => 'nullable|string',
             'discount' => 'numeric|min:0',
+            'other_charges' => 'nullable|numeric|min:0',
             'items' => 'required|array|min:1',
             'items.*.product_id' => [
                 'required',
@@ -43,7 +44,8 @@ class QuotationController extends Controller
             }
 
             $discount = $request->discount ?? 0;
-            $total = $subtotal - $discount;
+            $other_charges = $request->other_charges ?? 0;
+            $total = $subtotal - $discount + $other_charges;
 
             // Generate unique quotation number
             $count = Quotation::count() + 1;
@@ -63,7 +65,8 @@ class QuotationController extends Controller
                 'customer_address' => $request->customer_address,
                 'subtotal' => $subtotal,
                 'discount' => $discount,
-                'tax' => 0,
+                'other_charges' => $other_charges,
+                'tax' => $request->tax ?? 0,
                 'total' => $total,
                 'notes' => $request->notes,
             ]);
@@ -104,6 +107,7 @@ class QuotationController extends Controller
             'customer_phone' => 'nullable|string|max:20',
             'customer_address' => 'nullable|string',
             'discount' => 'numeric|min:0',
+            'other_charges' => 'nullable|numeric|min:0',
             'items' => 'required|array|min:1',
             'items.*.product_id' => [
                 'required',
@@ -125,7 +129,8 @@ class QuotationController extends Controller
             }
 
             $discount = $request->discount ?? 0;
-            $total = $subtotal - $discount;
+            $other_charges = $request->other_charges ?? 0;
+            $total = $subtotal - $discount + $other_charges;
 
             $quotation->update([
                 'customer_name' => $request->customer_name,
@@ -133,7 +138,9 @@ class QuotationController extends Controller
                 'customer_address' => $request->customer_address,
                 'subtotal' => $subtotal,
                 'discount' => $discount,
+                'other_charges' => $other_charges,
                 'total' => $total,
+                'tax' => $request->tax ?? 0,
                 'notes' => $request->notes,
             ]);
 
@@ -182,6 +189,7 @@ class QuotationController extends Controller
                 'customer_address'=> $quotation->customer_address,
                 'subtotal'       => $quotation->subtotal,
                 'discount'       => $quotation->discount,
+                'other_charges'  => $quotation->other_charges,
                 'tax'            => $quotation->tax,
                 'total'          => $quotation->total,
                 'paid_amount'    => 0,

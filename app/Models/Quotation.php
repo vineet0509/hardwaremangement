@@ -16,6 +16,7 @@ class Quotation extends Model
         'customer_address',
         'subtotal',
         'discount',
+        'other_charges',
         'tax',
         'total',
         'notes',

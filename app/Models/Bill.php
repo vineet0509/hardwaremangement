@@ -13,7 +13,7 @@ class Bill extends Model
 
     protected $fillable = [
         'bill_number', 'customer_name', 'customer_phone', 'customer_address',
-        'subtotal', 'discount', 'tax', 'total',
+        'subtotal', 'discount', 'other_charges', 'tax', 'total',
         'paid_amount', 'due_amount',
         'payment_method', 'status', 'notes', 'is_gst', 'user_id',
         'type', 'parent_bill_id',

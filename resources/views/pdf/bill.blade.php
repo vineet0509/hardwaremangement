@@ -82,6 +82,12 @@
                 <td>Discount:</td>
                 <td class="text-right">- ₹{{ number_format($bill->discount, 2) }}</td>
             </tr>
+            @if($bill->other_charges > 0)
+                <tr>
+                    <td>Other Charges:</td>
+                    <td class="text-right">+ ₹{{ number_format($bill->other_charges, 2) }}</td>
+                </tr>
+            @endif
             @if($bill->is_gst)
                 <tr>
                     <td>CGST:</td>
