@@ -112,7 +112,7 @@ const QuotationCreate = () => {
   const updateQuantity = (id, quantity) => {
     setCart(prev => prev.map(item => {
       if (item.product_id === id) {
-        const newQ = parseInt(quantity);
+        const newQ = parseFloat(quantity);
         if (isNaN(newQ)) return { ...item, quantity: 0 };
         return { ...item, quantity: newQ };
       }
@@ -133,14 +133,15 @@ const QuotationCreate = () => {
   const removeFromCart = (id) => setCart(prev => prev.filter(item => item.product_id !== id));
 
   const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const discountAmount = parseFloat(discount) || 0;
   const tax = isGst ? cart.reduce((acc, item) => {
     const itemTotal = item.price * item.quantity;
-    const itemDiscount = subtotal > 0 && discount > 0 ? (itemTotal / subtotal) * discount : 0;
+    const itemDiscount = subtotal > 0 && discountAmount > 0 ? (itemTotal / subtotal) * discountAmount : 0;
     const discountedTotal = itemTotal - itemDiscount;
     const basePrice = discountedTotal / (1 + ((item.gst_slab || 0) / 100));
     return acc + (discountedTotal - basePrice);
   }, 0) : 0;
-  const total = subtotal - discount;
+  const total = subtotal - discountAmount;
 
   const handlePreview = () => {
     if (cart.length === 0) return Swal.fire('Empty Quote', 'Add products to preview.', 'warning');

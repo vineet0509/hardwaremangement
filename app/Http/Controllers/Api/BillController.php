@@ -268,7 +268,7 @@ class BillController extends Controller
                     return $query->where('business_id', auth()->user()->business_id);
                 }),
             ],
-            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.quantity' => 'required|numeric|min:0.01',
             'items.*.price'    => 'required|numeric|min:0',
             'items.*.gst_slab' => 'nullable|integer|min:0',
             'items.*.discount' => 'nullable|numeric|min:0',
@@ -401,7 +401,7 @@ class BillController extends Controller
                     return $query->where('business_id', auth()->user()->business_id);
                 }),
             ],
-            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.quantity' => 'required|numeric|min:0.01',
             'items.*.price'    => 'required|numeric|min:0',
             'items.*.gst_slab' => 'nullable|integer|min:0',
             'items.*.discount' => 'nullable|numeric|min:0',

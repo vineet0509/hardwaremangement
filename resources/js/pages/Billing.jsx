@@ -141,7 +141,7 @@ const Billing = () => {
   const updateQuantity = (id, quantity) => {
     setCart(prev => prev.map(item => {
       if (item.product_id === id) {
-        const newQ = parseInt(quantity);
+        const newQ = parseFloat(quantity);
         if (isNaN(newQ)) return { ...item, quantity: 0 };
         if (newQ >= 0 && newQ <= item.stock) return { ...item, quantity: newQ };
         if (newQ > item.stock) return { ...item, quantity: item.stock };
@@ -163,14 +163,15 @@ const Billing = () => {
   const removeFromCart = (id) => setCart(prev => prev.filter(item => item.product_id !== id));
 
   const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const discountAmount = parseFloat(payment.discount) || 0;
   const tax = isGstBill ? cart.reduce((acc, item) => {
     const itemTotal = item.price * item.quantity;
-    const itemDiscount = subtotal > 0 && payment.discount > 0 ? (itemTotal / subtotal) * payment.discount : 0;
+    const itemDiscount = subtotal > 0 && discountAmount > 0 ? (itemTotal / subtotal) * discountAmount : 0;
     const discountedTotal = itemTotal - itemDiscount;
     const basePrice = discountedTotal / (1 + ((item.gst_slab || 0) / 100));
     return acc + (discountedTotal - basePrice);
   }, 0) : 0;
-  const total = subtotal - payment.discount;
+  const total = subtotal - discountAmount;
   const liveDueAmount = total - (parseFloat(payment.paid) || 0);
 
   useEffect(() => {
@@ -569,7 +570,7 @@ const Billing = () => {
                  style={{ width: 16, height: 16, cursor: 'pointer', accentColor: 'var(--primary)' }}
                />
                <label htmlFor="gst_bill_toggle" style={{ fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', color: isGstBill ? 'var(--primary)' : 'var(--text-main)' }}>
-                 Generate GST Tax Invoice (18%)
+                 Generate GST Tax Invoice
                </label>
             </div>
             
