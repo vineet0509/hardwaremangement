@@ -425,7 +425,23 @@ const Billing = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 18px', background: 'var(--bg-color)', border: '1px solid var(--border)', borderRadius: 24, minWidth: '250px', flex: 1, margin: 0, transition: 'all 0.2s' }}>
             <Search size={20} color="var(--text-muted)" />
             <input 
+              autoFocus
               type="text" placeholder="Search products by name or SKU..." value={search} onChange={e => setSearch(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && search.trim() !== '') {
+                  const exactMatch = products.find(p => p.sku === search || p.name.toLowerCase() === search.toLowerCase());
+                  if (exactMatch) {
+                    addToCart(exactMatch);
+                    setSearch('');
+                  } else if (products.length === 1) {
+                    addToCart(products[0]);
+                    setSearch('');
+                  } else if (products.length > 1) {
+                    addToCart(products[0]);
+                    setSearch('');
+                  }
+                }
+              }}
               style={{ background: 'transparent', border: 'none', color: 'inherit', outline: 'none', width: '100%', fontSize: '1.05rem' }}
             />
           </div>

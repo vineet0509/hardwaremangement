@@ -351,7 +351,20 @@ const QuotationCreate = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', background: 'var(--bg-color)', border: '1px solid var(--border)', borderRadius: 24, flex: 1, minWidth: 180 }}>
             <Search size={18} color="var(--text-muted)" />
             <input 
+              autoFocus
               type="text" placeholder="Search products..." value={search} onChange={e => setSearch(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && search.trim() !== '') {
+                  const exactMatch = products.find(p => p.sku === search || p.name.toLowerCase() === search.toLowerCase());
+                  if (exactMatch) {
+                    addToCart(exactMatch);
+                    setSearch('');
+                  } else if (products.length > 0) {
+                    addToCart(products[0]);
+                    setSearch('');
+                  }
+                }
+              }}
               style={{ background: 'transparent', border: 'none', color: 'inherit', outline: 'none', width: '100%', fontSize: '0.95rem' }}
             />
           </div>
