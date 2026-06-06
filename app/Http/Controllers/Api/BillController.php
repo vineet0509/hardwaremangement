@@ -172,8 +172,8 @@ class BillController extends Controller
         }
 
         $setting = \App\Models\Setting::first();
-        $key = $setting->razorpay_key ?? config('services.razorpay.key');
-        $secret = $setting->razorpay_secret ?? config('services.razorpay.secret');
+        $key = $setting->razorpay_key;
+        $secret = $setting->razorpay_secret;
 
         if (!$key || !$secret) {
             return response()->json(['message' => 'Razorpay keys are not configured in settings.'], 500);
@@ -229,8 +229,8 @@ class BillController extends Controller
         }
 
         $setting = \App\Models\Setting::first();
-        $key = $setting->razorpay_key ?? config('services.razorpay.key');
-        $secret = $setting->razorpay_secret ?? config('services.razorpay.secret');
+        $key = $setting->razorpay_key;
+        $secret = $setting->razorpay_secret;
 
         $api = new Api($key, $secret);
 
@@ -286,7 +286,7 @@ class BillController extends Controller
                                                   ->where('business_id', $bill->business_id)
                                                   ->first();
 
-                    $webhookSecret = $setting->razorpay_webhook_secret ?? config('services.razorpay.webhook_secret');
+                    $webhookSecret = $setting->razorpay_webhook_secret;
 
                     // Verify Signature
                     if ($webhookSecret) {
