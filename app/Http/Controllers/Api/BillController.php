@@ -427,6 +427,7 @@ class BillController extends Controller
             'is_gst'           => 'nullable|boolean',
             'type'             => 'nullable|in:sale,return',
             'parent_bill_id'   => 'nullable|exists:bills,id',
+            'other_charges_details' => 'nullable|array',
         ]);
 
         if (!empty($data['customer_phone']) && !empty($data['customer_name'])) {
@@ -518,6 +519,7 @@ class BillController extends Controller
                 'user_id'        => auth()->id(),
                 'type'           => $data['type'] ?? 'sale',
                 'parent_bill_id' => $data['parent_bill_id'] ?? null,
+                'other_charges_details' => isset($data['other_charges_details']) ? json_encode($data['other_charges_details']) : null,
             ]);
 
             foreach ($itemsData as $item) {
@@ -561,6 +563,7 @@ class BillController extends Controller
             'payment_method'   => 'required|in:cash,upi,card,credit,razorpay',
             'notes'            => 'nullable|string',
             'is_gst'           => 'nullable|boolean',
+            'other_charges_details' => 'nullable|array',
         ]);
 
         if (!empty($data['customer_phone']) && !empty($data['customer_name'])) {
@@ -634,6 +637,7 @@ class BillController extends Controller
                 'status'         => $status,
                 'notes'          => $data['notes'] ?? null,
                 'is_gst'         => $data['is_gst'] ?? false,
+                'other_charges_details' => isset($data['other_charges_details']) ? json_encode($data['other_charges_details']) : null,
             ]);
 
             foreach ($itemsData as $item) {

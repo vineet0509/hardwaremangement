@@ -83,10 +83,22 @@
                 <td class="text-right">- ₹{{ number_format($bill->discount, 2) }}</td>
             </tr>
             @if($bill->other_charges > 0)
-                <tr>
-                    <td>Other Charges:</td>
-                    <td class="text-right">+ ₹{{ number_format($bill->other_charges, 2) }}</td>
-                </tr>
+                @php
+                    $details = is_string($bill->other_charges_details) ? json_decode($bill->other_charges_details, true) : $bill->other_charges_details;
+                @endphp
+                @if(is_array($details) && count($details) > 0)
+                    @foreach($details as $charge)
+                        <tr>
+                            <td>{{ $charge['name'] ?? 'Other Charge' }}:</td>
+                            <td class="text-right">+ ₹{{ number_format(floatval($charge['amount'] ?? 0), 2) }}</td>
+                        </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td>Other Charges:</td>
+                        <td class="text-right">+ ₹{{ number_format($bill->other_charges, 2) }}</td>
+                    </tr>
+                @endif
             @endif
             @if($bill->is_gst)
                 <tr>

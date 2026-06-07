@@ -18,6 +18,7 @@ class Bill extends Model
         'payment_method', 'status', 'notes', 'is_gst', 'user_id',
         'type', 'parent_bill_id',
         'razorpay_payment_link_id', 'razorpay_payment_id',
+        'other_charges_details',
     ];
 
     protected $casts = [
@@ -28,6 +29,7 @@ class Bill extends Model
         'paid_amount' => 'float',
         'due_amount'  => 'float',
         'is_gst'      => 'boolean',
+        'other_charges_details' => 'array',
     ];
 
     public function items(): HasMany

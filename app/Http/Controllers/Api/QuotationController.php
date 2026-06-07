@@ -33,6 +33,7 @@ class QuotationController extends Controller
             'items.*.quantity' => 'required|numeric|min:0.1',
             'items.*.price' => 'required|numeric|min:0',
             'items.*.gst_slab' => 'nullable|integer|min:0',
+            'other_charges_details' => 'nullable|array',
         ]);
 
         try {
@@ -69,6 +70,7 @@ class QuotationController extends Controller
                 'tax' => $request->tax ?? 0,
                 'total' => $total,
                 'notes' => $request->notes,
+                'other_charges_details' => $request->has('other_charges_details') ? json_encode($request->other_charges_details) : null,
             ]);
 
             foreach ($request->items as $item) {
@@ -118,6 +120,7 @@ class QuotationController extends Controller
             'items.*.quantity' => 'required|numeric|min:0.1',
             'items.*.price' => 'required|numeric|min:0',
             'items.*.gst_slab' => 'nullable|integer|min:0',
+            'other_charges_details' => 'nullable|array',
         ]);
 
         try {
@@ -142,6 +145,7 @@ class QuotationController extends Controller
                 'total' => $total,
                 'tax' => $request->tax ?? 0,
                 'notes' => $request->notes,
+                'other_charges_details' => $request->has('other_charges_details') ? json_encode($request->other_charges_details) : null,
             ]);
 
             // Clear old items and recreate
@@ -198,6 +202,7 @@ class QuotationController extends Controller
                 'status'         => 'pending',
                 'notes'          => "Converted from Quotation #{$quotation->quotation_number}",
                 'is_gst'         => false,
+                'other_charges_details' => $quotation->other_charges_details,
             ]);
 
             foreach ($quotation->items as $item) {

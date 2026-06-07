@@ -20,7 +20,17 @@ class Quotation extends Model
         'tax',
         'total',
         'notes',
-        'is_gst'
+        'is_gst',
+        'other_charges_details',
+    ];
+
+    protected $casts = [
+        'subtotal'    => 'float',
+        'discount'    => 'float',
+        'tax'         => 'float',
+        'total'       => 'float',
+        'is_gst'      => 'boolean',
+        'other_charges_details' => 'array',
     ];
 
 

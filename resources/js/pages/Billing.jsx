@@ -20,7 +20,7 @@ const Billing = () => {
   
   const [customerInfo, setCustomerInfo] = useState({ name: '', phone: '', address: '' });
   const [customerResults, setCustomerResults] = useState([]);
-  const [payment, setPayment] = useState({ discount: 0, other_charges: 0, paid: 0, method: 'cash', upi_digits: '' });
+  const [payment, setPayment] = useState({ discount: 0, other_charges: 0, other_charges_details: [], paid: 0, method: 'cash', upi_digits: '' });
   const [udharCustomers, setUdharCustomers] = useState([]);
   const [mobileTab, setMobileTab] = useState('products');
   const [notify, setNotify] = useState({ show: false, title: '', message: '', type: 'success' });
@@ -66,7 +66,7 @@ const Billing = () => {
            upi = b.notes.split('UPI Ref: ')[1]?.substring(0, 5) || '';
         }
 
-        setPayment({ discount: b.discount || 0, other_charges: b.other_charges || 0, paid: b.paid_amount, method: b.payment_method, upi_digits: upi });
+        setPayment({ discount: b.discount || 0, other_charges: b.other_charges || 0, other_charges_details: typeof b.other_charges_details === 'string' ? JSON.parse(b.other_charges_details) : (b.other_charges_details || []), paid: b.paid_amount, method: b.payment_method, upi_digits: upi });
         
         setCart(b.items.map(i => ({
            product_id: i.product_id,
@@ -163,6 +163,30 @@ const Billing = () => {
   };
 
   const removeFromCart = (id) => setCart(prev => prev.filter(item => item.product_id !== id));
+
+  const addOtherCharge = () => {
+    setPayment(prev => ({
+      ...prev,
+      other_charges_details: [...(prev.other_charges_details || []), { name: '', amount: '' }]
+    }));
+  };
+
+  const updateOtherCharge = (index, field, value) => {
+    setPayment(prev => {
+      const newDetails = [...(prev.other_charges_details || [])];
+      newDetails[index][field] = value;
+      const newTotalCharges = newDetails.reduce((sum, charge) => sum + (parseFloat(charge.amount) || 0), 0);
+      return { ...prev, other_charges_details: newDetails, other_charges: newTotalCharges };
+    });
+  };
+
+  const removeOtherCharge = (index) => {
+    setPayment(prev => {
+      const newDetails = (prev.other_charges_details || []).filter((_, i) => i !== index);
+      const newTotalCharges = newDetails.reduce((sum, charge) => sum + (parseFloat(charge.amount) || 0), 0);
+      return { ...prev, other_charges_details: newDetails, other_charges: newTotalCharges };
+    });
+  };
 
   const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const discountAmount = parseFloat(payment.discount) || 0;
@@ -293,12 +317,29 @@ const Billing = () => {
                 <td>Discount:</td>
                 <td class="text-right">- ₹${billData.discount}</td>
               </tr>
-              ${parseFloat(billData.other_charges) > 0 ? `
-              <tr>
-                <td>Other Charges:</td>
-                <td class="text-right">+ ₹${billData.other_charges}</td>
-              </tr>
-              ` : ''}
+              ${parseFloat(billData.other_charges) > 0 ? (
+                (() => {
+                  let details = billData.other_charges_details;
+                  if (typeof details === 'string') {
+                    try { details = JSON.parse(details); } catch(e) { details = []; }
+                  }
+                  if (Array.isArray(details) && details.length > 0) {
+                    return details.map(charge => `
+                      <tr>
+                        <td>${charge.name || 'Other Charge'}:</td>
+                        <td class="text-right">+ ₹${charge.amount || 0}</td>
+                      </tr>
+                    `).join('');
+                  } else {
+                    return `
+                      <tr>
+                        <td>Other Charges:</td>
+                        <td class="text-right">+ ₹${billData.other_charges}</td>
+                      </tr>
+                    `;
+                  }
+                })()
+              ) : ''}
               ${Math.round(billData.total) !== billData.total ? `
               <tr>
                 <td>Round Off:</td>
@@ -359,6 +400,7 @@ const Billing = () => {
       payment_method: payment.method,
       discount: payment.discount || 0,
       other_charges: payment.other_charges || 0,
+      other_charges_details: payment.other_charges_details || [],
       tax: tax,
       is_gst: isGstBill,
       paid_amount: parseFloat(payment.paid) || 0,
@@ -703,42 +745,32 @@ const Billing = () => {
                 <div className="cart-item-title" style={{ fontSize: '0.95rem', color: 'var(--text-main)', fontWeight: 700 }}>{item.name}</div>
                 <button onClick={() => removeFromCart(item.product_id)} style={{ background: 'var(--danger)', color: 'white', border: 'none', width: 24, height: 24, borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}><Trash2 size={11} /></button>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', flexWrap: 'wrap' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto auto', alignItems: 'center', gap: '6px', width: '100%' }}>
                 {/* Editable Rate */}
-                <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(79,70,229,0.05)', border: '1.5px solid rgba(79,70,229,0.2)', borderRadius: 7, padding: '3px 8px', gap: 3 }}>
-                  <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--primary)', letterSpacing: '0.02em' }}>₹</span>
+                <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(79,70,229,0.05)', border: '1.5px solid rgba(79,70,229,0.2)', borderRadius: 6, padding: '2px 4px', gap: 2 }}>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--primary)' }}>₹</span>
                   <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={item.price}
+                    type="number" min="0" step="0.01" value={item.price}
                     onChange={e => updateRate(item.product_id, e.target.value)}
-                    title="Edit rate"
-                    style={{ width: 64, border: 'none', outline: 'none', background: 'transparent', fontWeight: 700, fontSize: '0.9rem', color: 'var(--primary)', textAlign: 'center' }}
+                    style={{ width: '100%', minWidth: '40px', border: 'none', outline: 'none', background: 'transparent', fontWeight: 700, fontSize: '0.85rem', color: 'var(--primary)', textAlign: 'center' }}
                   />
-                  <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600 }}>rate</span>
                 </div>
-
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>×</span>
 
                 {/* Quantity Controls */}
-                <div className="cart-item-controls" style={{ background: 'var(--surface)', padding: '3px', borderRadius: '7px', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <button onClick={() => updateQuantity(item.product_id, item.quantity - 1)} style={{ width: 24, height: 24, borderRadius: 4, fontSize: '1rem', cursor: 'pointer' }}>-</button>
+                <div className="cart-item-controls" style={{ background: 'var(--surface)', padding: '2px', borderRadius: '6px', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <button onClick={() => updateQuantity(item.product_id, item.quantity - 1)} style={{ width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>-</button>
                   <input
-                    type="number"
-                    min="0"
-                    max={item.stock}
-                    value={item.quantity}
+                    type="number" min="0" max={item.stock} value={item.quantity}
                     onChange={e => updateQuantity(item.product_id, e.target.value)}
-                    style={{ width: 34, textAlign: 'center', background: 'transparent', border: 'none', color: 'var(--text-main)', fontWeight: 800, fontSize: '0.88rem', outline: 'none' }}
+                    style={{ width: '30px', textAlign: 'center', background: 'transparent', border: 'none', color: 'var(--text-main)', fontWeight: 800, fontSize: '0.85rem', outline: 'none' }}
                   />
-                  <button onClick={() => updateQuantity(item.product_id, item.quantity + 1)} style={{ width: 24, height: 24, borderRadius: 4, fontSize: '1rem', cursor: 'pointer' }}>+</button>
+                  <button onClick={() => updateQuantity(item.product_id, item.quantity + 1)} style={{ width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
                 </div>
 
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>=</span>
-
                 {/* Line Total */}
-                <span style={{ fontWeight: 800, color: 'var(--success)', fontSize: '0.95rem', marginLeft: 'auto' }}>₹{(item.price * item.quantity).toFixed(2)}</span>
+                <div style={{ fontWeight: 800, color: 'var(--success)', fontSize: '0.9rem', textAlign: 'right', minWidth: '60px' }}>
+                  ₹{(item.price * item.quantity).toFixed(2)}
+                </div>
               </div>
             </div>
           ))}
@@ -763,12 +795,45 @@ const Billing = () => {
             </div>
             <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--surface-hover)', borderRadius: '8px', padding: '4px 10px', border: '1px solid var(--border)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)' }}>Other Chg</span>
-              <div style={{ display: 'flex', alignItems: 'center', width: '70px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', width: '70px', justifyContent: 'flex-end' }}>
                  <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginRight: '2px' }}>₹</span>
-                 <input type="number" value={payment.other_charges} onChange={e => setPayment({...payment, other_charges: e.target.value})} style={{ width: '100%', border: 'none', outline: 'none', textAlign: 'right', fontWeight: 700, fontSize: '0.85rem', background: 'transparent' }} />
+                 <span style={{ fontWeight: 700, fontSize: '0.85rem' }}>{payment.other_charges || 0}</span>
               </div>
             </div>
+            <button type="button" onClick={addOtherCharge} style={{ background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '8px', padding: '0 10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Add Other Charge">
+               <PlusCircle size={16} />
+            </button>
           </div>
+
+          {/* Multiple Other Charges List */}
+          {payment.other_charges_details && payment.other_charges_details.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '8px' }}>
+              {payment.other_charges_details.map((charge, index) => (
+                <div key={index} style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'rgba(245, 158, 11, 0.05)', border: '1px solid rgba(245, 158, 11, 0.2)', padding: '6px 10px', borderRadius: '8px' }}>
+                  <input
+                    type="text"
+                    placeholder="Charge Name (e.g. Delivery)"
+                    value={charge.name}
+                    onChange={e => updateOtherCharge(index, 'name', e.target.value)}
+                    style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', fontSize: '0.8rem', fontWeight: 600 }}
+                  />
+                  <div style={{ display: 'flex', alignItems: 'center', width: '70px', background: 'var(--surface)', padding: '2px 6px', borderRadius: '4px', border: '1px solid var(--border)' }}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginRight: '2px' }}>₹</span>
+                    <input
+                      type="number"
+                      placeholder="0"
+                      value={charge.amount}
+                      onChange={e => updateOtherCharge(index, 'amount', e.target.value)}
+                      style={{ width: '100%', border: 'none', outline: 'none', textAlign: 'right', fontWeight: 700, fontSize: '0.8rem', background: 'transparent' }}
+                    />
+                  </div>
+                  <button onClick={() => removeOtherCharge(index)} style={{ background: 'var(--danger)', color: 'white', border: 'none', width: 22, height: 22, borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                    <Trash2 size={12} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* GST Details Row (Conditional) */}
           {isGstBill && (
