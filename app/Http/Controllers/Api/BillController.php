@@ -163,7 +163,7 @@ class BillController extends Controller
         return response()->json(['message' => 'Advance recorded successfully!', 'advance' => $advance]);
     }
 
-    public function generatePaymentLink($billId)
+    public function createRazorpayOrder($billId)
     {
         $bill = Bill::findOrFail($billId);
 
@@ -182,51 +182,47 @@ class BillController extends Controller
         $api = new Api($key, $secret);
 
         try {
-            $linkData = [
-                'amount' => round($bill->total * 100), // Amount in paise
-                'currency' => 'INR',
-                'accept_partial' => false,
-                'description' => 'Payment for Bill #' . $bill->bill_number,
-                'customer' => [
-                    'name' => $bill->customer_name ?: 'Customer',
-                    'contact' => $bill->customer_phone ?: '',
-                ],
-                'notify' => [
-                    'sms' => false,
-                    'email' => false,
-                ],
-                'reminder_enable' => false,
-                'reference_id' => 'BILL_' . $bill->id . '_' . time(),
+            $orderData = [
+                'receipt'         => 'BILL_' . $bill->id . '_' . time(),
+                'amount'          => round($bill->total * 100), // paise
+                'currency'        => 'INR',
+                'payment_capture' => 1 // auto capture
             ];
 
-            $paymentLink = $api->paymentLink->create($linkData);
+            $razorpayOrder = $api->order->create($orderData);
 
             $bill->update([
-                'razorpay_payment_link_id' => $paymentLink->id,
+                // We'll store order id in the same column or a new one? 
+                // Let's store it in razorpay_payment_link_id to avoid migration
+                'razorpay_payment_link_id' => $razorpayOrder['id'],
             ]);
 
             return response()->json([
-                'short_url' => $paymentLink->short_url,
-                'id' => $paymentLink->id,
+                'order_id' => $razorpayOrder['id'],
+                'amount'   => $bill->total,
+                'currency' => 'INR',
+                'key'      => $key,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Razorpay Error: ' . $e->getMessage());
-            return response()->json(['message' => 'Failed to generate Razorpay link. ' . $e->getMessage()], 500);
+            return response()->json(['message' => 'Failed to generate Razorpay order. ' . $e->getMessage()], 500);
         }
     }
 
-    public function verifyPaymentStatus($billId)
+    public function verifyRazorpayPayment(Request $request, $billId)
     {
         $bill = Bill::findOrFail($billId);
-
-        if (!$bill->razorpay_payment_link_id) {
-            return response()->json(['message' => 'No payment link generated for this bill.'], 400);
-        }
 
         if ($bill->status === 'paid') {
             return response()->json(['message' => 'Payment already verified.', 'status' => 'paid']);
         }
+
+        $request->validate([
+            'razorpay_payment_id' => 'required|string',
+            'razorpay_order_id' => 'required|string',
+            'razorpay_signature' => 'required|string',
+        ]);
 
         $setting = \App\Models\Setting::first();
         $key = $setting->razorpay_key;
@@ -235,30 +231,27 @@ class BillController extends Controller
         $api = new Api($key, $secret);
 
         try {
-            $paymentLink = $api->paymentLink->fetch($bill->razorpay_payment_link_id);
+            $attributes = array(
+                'razorpay_order_id' => $request->razorpay_order_id,
+                'razorpay_payment_id' => $request->razorpay_payment_id,
+                'razorpay_signature' => $request->razorpay_signature
+            );
 
-            if ($paymentLink->status === 'paid') {
-                $paymentId = null;
-                if (isset($paymentLink->payments) && count($paymentLink->payments) > 0) {
-                    $paymentId = $paymentLink->payments[0]->payment_id;
-                }
+            $api->utility->verifyPaymentSignature($attributes);
 
-                $bill->update([
-                    'status' => 'paid',
-                    'paid_amount' => $bill->total,
-                    'due_amount' => 0,
-                    'payment_method' => 'Razorpay',
-                    'razorpay_payment_id' => $paymentId,
-                ]);
+            $bill->update([
+                'status' => 'paid',
+                'paid_amount' => $bill->total,
+                'due_amount' => 0,
+                'payment_method' => 'razorpay',
+                'razorpay_payment_id' => $request->razorpay_payment_id,
+            ]);
 
-                return response()->json(['message' => 'Payment successful!', 'status' => 'paid']);
-            }
-
-            return response()->json(['message' => 'Payment is pending or failed.', 'status' => $paymentLink->status], 400);
+            return response()->json(['message' => 'Payment successful!', 'status' => 'paid']);
 
         } catch (\Exception $e) {
-            Log::error('Razorpay Error: ' . $e->getMessage());
-            return response()->json(['message' => 'Failed to verify payment. ' . $e->getMessage()], 500);
+            Log::error('Razorpay Verify Error: ' . $e->getMessage());
+            return response()->json(['message' => 'Failed to verify payment.'], 400);
         }
     }
 
