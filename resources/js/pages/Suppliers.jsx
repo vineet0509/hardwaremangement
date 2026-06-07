@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
 import { Truck, Phone, Mail, MapPin, Plus, Edit, Trash2, Save, X, IndianRupee, FileText } from 'lucide-react';
 
+import Swal from 'sweetalert2';
+
 const Suppliers = () => {
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,7 +38,7 @@ const Suppliers = () => {
         setLoading(false);
       })
       .catch(err => {
-        alert('Failed to load suppliers');
+        Swal.fire('Failed to load suppliers');
         setLoading(false);
       });
   };
@@ -44,7 +46,7 @@ const Suppliers = () => {
   const fetchLedger = (supplierId) => {
     api.get(`/suppliers/${supplierId}/transactions`)
       .then(res => setLedgerTransactions(res.data))
-      .catch(err => alert('Failed to load transaction logs.'));
+      .catch(err => Swal.fire('Failed to load transaction logs.'));
   };
 
   const handleOpenModal = (supplier = null) => {
@@ -76,17 +78,17 @@ const Suppliers = () => {
       : api.post('/suppliers', formData);
 
     request.then(() => {
-      alert(editingSupplier ? 'Supplier updated!' : 'Supplier added!');
+      Swal.fire(editingSupplier ? 'Supplier updated!' : 'Supplier added!');
       setShowModal(false);
       fetchSuppliers();
-    }).catch(err => alert(err.response?.data?.message || 'Submission failed'));
+    }).catch(err => Swal.fire(err.response?.data?.message || 'Submission failed'));
   };
 
   const handleLedgerSubmit = (e) => {
     e.preventDefault();
     api.post(`/suppliers/${selectedSupplier.id}/transactions`, ledgerFormData)
       .then(() => {
-        alert('Transaction recorded successfully!');
+        Swal.fire('Transaction recorded successfully!');
         setLedgerFormData({
           type: 'payment',
           amount: '',
@@ -96,17 +98,17 @@ const Suppliers = () => {
         fetchLedger(selectedSupplier.id);
         fetchSuppliers(); 
       })
-      .catch(err => alert(err.response?.data?.message || 'Transaction logging failed.'));
+      .catch(err => Swal.fire(err.response?.data?.message || 'Transaction logging failed.'));
   };
 
   const handleDelete = (id) => {
     if (confirm("Are you sure you want to remove this supplier?")) {
       api.delete(`/suppliers/${id}`)
         .then(() => {
-          alert('Supplier removed successfully');
+          Swal.fire('Supplier removed successfully');
           fetchSuppliers();
         })
-        .catch(err => alert(err.response?.data?.message || 'Delete failed'));
+        .catch(err => Swal.fire(err.response?.data?.message || 'Delete failed'));
     }
   };
 

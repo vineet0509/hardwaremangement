@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
 import { Users, Plus, Banknote, Calendar, CheckCircle, Search, Edit, TrendingUp, Clock, Power } from 'lucide-react';
 
+import Swal from 'sweetalert2';
+
 const Staff = () => {
   const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -70,7 +72,7 @@ const Staff = () => {
           permissions: { can_edit_bills: false, can_manage_inventory: false, can_view_reports: false }
         });
       })
-      .catch(err => alert(err.response?.data?.message || 'Error occurred while saving staff.'));
+      .catch(err => Swal.fire(err.response?.data?.message || 'Error occurred while saving staff.'));
   };
 
   const handleEditStaff = (staff) => {
@@ -92,7 +94,7 @@ const Staff = () => {
         fetchStaff();
         setSelectedStaff(null);
       })
-      .catch(err => alert(err.response?.data?.message || 'Error updating staff.'));
+      .catch(err => Swal.fire(err.response?.data?.message || 'Error updating staff.'));
   };
 
   const fetchPerformance = (staff) => {
@@ -102,7 +104,7 @@ const Staff = () => {
         setPerformanceData(res.data);
         setShowPerformanceModal(true);
       })
-      .catch(err => alert('Failed to fetch performance.'));
+      .catch(err => Swal.fire('Failed to fetch performance.'));
   };
 
   const fetchAttendance = (staff) => {
@@ -112,7 +114,7 @@ const Staff = () => {
         setAttendanceData(res.data);
         setShowAttendanceModal(true);
       })
-      .catch(err => alert('Failed to fetch attendance.'));
+      .catch(err => Swal.fire('Failed to fetch attendance.'));
   };
 
   const handleAddAdvance = (e) => {
@@ -123,7 +125,7 @@ const Staff = () => {
         fetchStaff(); 
         setAdvanceData({ amount: '', advance_date: new Date().toISOString().slice(0, 16), reason: '' });
       })
-      .catch(err => alert(err.response?.data?.message || 'Error occurred while saving advance.'));
+      .catch(err => Swal.fire(err.response?.data?.message || 'Error occurred while saving advance.'));
   };
 
   const paySalary = (s) => {
@@ -146,11 +148,11 @@ const Staff = () => {
     e.preventDefault();
     api.post(`/staff/${selectedStaff.id}/salary-records`, salaryData)
       .then(() => {
-        alert('Salary processed successfully!');
+        Swal.fire('Salary processed successfully!');
         setShowSalaryModal(false);
         fetchStaff();
       })
-      .catch(err => alert(err.response?.data?.message || 'Error processing salary.'));
+      .catch(err => Swal.fire(err.response?.data?.message || 'Error processing salary.'));
   };
 
   const fetchSalaryHistory = (staff) => {
@@ -160,7 +162,7 @@ const Staff = () => {
         setSalaryHistory(res.data);
         setShowSalaryHistoryModal(true);
       })
-      .catch(err => alert('Failed to fetch salary history.'));
+      .catch(err => Swal.fire('Failed to fetch salary history.'));
   };
 
   const handleToggleStatus = (s) => {
@@ -168,7 +170,7 @@ const Staff = () => {
     if(confirm(`Are you sure you want to mark ${s.name} as ${newStatus}?`)) {
       api.put(`/staff/${s.id}`, { status: newStatus })
         .then(() => fetchStaff())
-        .catch(err => alert(err.response?.data?.message || 'Error updating status.'));
+        .catch(err => Swal.fire(err.response?.data?.message || 'Error updating status.'));
     }
   };
 

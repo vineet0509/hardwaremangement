@@ -3,6 +3,8 @@ import { Search, UserCheck, TrendingUp, AlertCircle, Eye, Edit2 } from 'lucide-r
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 
+import Swal from 'sweetalert2';
+
 const Customers = () => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +33,7 @@ const Customers = () => {
            setShowModal(false);
            fetchCustomers();
        })
-       .catch(err => alert(err.response?.data?.message || 'Failed to update customer.'));
+       .catch(err => Swal.fire(err.response?.data?.message || 'Failed to update customer.'));
   };
 
   return (

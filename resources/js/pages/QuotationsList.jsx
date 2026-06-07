@@ -164,7 +164,7 @@ const QuotationsList = () => {
         </html>
       `);
     } catch (err) {
-      alert('Error generating print layout: ' + (err.response?.data?.message || err.message));
+      Swal.fire('Error generating print layout: ' + (err.response?.data?.message || err.message));
     }
   };
 

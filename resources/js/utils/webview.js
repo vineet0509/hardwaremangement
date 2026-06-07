@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 /**
  * webview.js - Android WebView compatibility helpers
  *
@@ -135,7 +136,7 @@ export const printHtml = (htmlContent) => {
   if (!isAndroidWebView()) {
     const printWindow = window.open('', '_blank');
     if (!printWindow) {
-      alert('Popup blocked. Please allow popups for this site.');
+      Swal.fire('Popup blocked. Please allow popups for this site.');
       return;
     }
     printWindow.document.write(htmlContent);

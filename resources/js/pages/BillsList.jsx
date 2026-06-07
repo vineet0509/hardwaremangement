@@ -5,6 +5,8 @@ import { printHtml, downloadFile, openWhatsApp } from '../utils/webview';
 import { getTermsAndConditions } from '../utils/terms';
 import { Search, Receipt, Printer, Trash2, Banknote, X, Edit2, MessageSquare, FileText } from 'lucide-react';
 
+import Swal from 'sweetalert2';
+
 const BillsList = () => {
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -64,22 +66,22 @@ const BillsList = () => {
     if(confirm('Are you sure you want to delete this bill? Stock will be restored.')) {
       api.delete(`/bills/${id}`)
         .then(() => fetchBills())
-        .catch(err => alert(err.response?.data?.message || 'Error deleting bill'));
+        .catch(err => Swal.fire(err.response?.data?.message || 'Error deleting bill'));
     }
   };
 
   const handleRepay = (e) => {
     e.preventDefault();
-    if (!repayData.amount || repayData.amount <= 0) return alert('Enter a valid amount.');
-    if (repayData.method === 'upi' && repayData.upi_digits.length !== 5) return alert('Enter exactly 5 digits for UPI tracking.');
+    if (!repayData.amount || repayData.amount <= 0) return Swal.fire('Enter a valid amount.');
+    if (repayData.method === 'upi' && repayData.upi_digits.length !== 5) return Swal.fire('Enter exactly 5 digits for UPI tracking.');
 
     api.post(`/bills/${targetBill.id}/repay`, repayData)
       .then(res => {
-        alert(res.data.message);
+        Swal.fire(res.data.message);
         setShowRepayModal(false);
         fetchBills();
       })
-      .catch(err => alert(err.response?.data?.message || 'Error processing repayment.'));
+      .catch(err => Swal.fire(err.response?.data?.message || 'Error processing repayment.'));
   };
 
   const handleReturnSubmit = (e) => {
@@ -89,16 +91,16 @@ const BillsList = () => {
       .map(([id, qty]) => ({ id: parseInt(id), return_qty: parseInt(qty) }));
 
     if (itemsToReturn.length === 0) {
-      return alert('Please specify at least one item to return.');
+      return Swal.fire('Please specify at least one item to return.');
     }
 
     api.post(`/bills/${returnBill.id}/return`, { items: itemsToReturn })
       .then(res => {
-        alert(res.data.message);
+        Swal.fire(res.data.message);
         setShowReturnModal(false);
         fetchBills();
       })
-      .catch(err => alert(err.response?.data?.message || 'Error processing return.'));
+      .catch(err => Swal.fire(err.response?.data?.message || 'Error processing return.'));
   };
 
   const sendWhatsAppReminder = async (billId) => {
@@ -111,7 +113,7 @@ const BillsList = () => {
       const bill = billRes.data;
       const settings = settingsRes.data;
 
-      if (!bill.customer_phone) return alert('No phone number available for this customer.');
+      if (!bill.customer_phone) return Swal.fire('No phone number available for this customer.');
       
       let wapn = bill.customer_phone.replace(/[^0-9]/g,'');
       if (wapn.length === 10) wapn = '91' + wapn;
@@ -132,7 +134,7 @@ const BillsList = () => {
       // Use openWhatsApp helper — works in both browser and Android WebView
       openWhatsApp(wapn, msgText);
     } catch (err) {
-      alert('Error: ' + (err.response?.data?.message || err.message));
+      Swal.fire('Error: ' + (err.response?.data?.message || err.message));
     } finally {
       setWhatsappLoading(null);
     }
@@ -247,7 +249,7 @@ const BillsList = () => {
         </html>
       `);
     } catch (err) {
-      alert('Error generating print layout: ' + (err.response?.data?.message || err.message));
+      Swal.fire('Error generating print layout: ' + (err.response?.data?.message || err.message));
     }
   };
 
@@ -561,7 +563,7 @@ const BillsList = () => {
                                 value={returnItemsState[item.id] || ''} 
                                 onChange={e => {
                                   const val = parseInt(e.target.value) || 0;
-                                  if (val > maxReturnable) return alert('Cannot return more than purchased.');
+                                  if (val > maxReturnable) return Swal.fire('Cannot return more than purchased.');
                                   setReturnItemsState({...returnItemsState, [item.id]: val});
                                 }}
                                 disabled={maxReturnable === 0}

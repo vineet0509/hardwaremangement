@@ -4,6 +4,8 @@ import { LayoutDashboard, Package, ShoppingCart, Users, FileText, Receipt, LogOu
 import api from '../utils/api';
 import OnboardingTour from './OnboardingTour';
 
+import Swal from 'sweetalert2';
+
 const Layout = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -137,7 +139,7 @@ const Layout = ({ children }) => {
 
   const handleClockIn = () => {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser.');
+      Swal.fire('Geolocation is not supported by your browser.');
       return;
     }
     setLocationLoading(true);
@@ -146,19 +148,19 @@ const Layout = ({ children }) => {
         const { latitude, longitude } = position.coords;
         api.post('/attendance/clock-in', { latitude, longitude })
           .then(() => fetchAttendanceStatus())
-          .catch(err => alert(err.response?.data?.message || 'Error clocking in.'))
+          .catch(err => Swal.fire(err.response?.data?.message || 'Error clocking in.'))
           .finally(() => setLocationLoading(false));
       },
       (error) => {
         setLocationLoading(false);
-        alert('You must allow location access to clock in.');
+        Swal.fire('You must allow location access to clock in.');
       }
     );
   };
 
   const handleClockOut = () => {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser.');
+      Swal.fire('Geolocation is not supported by your browser.');
       return;
     }
     setLocationLoading(true);
@@ -167,12 +169,12 @@ const Layout = ({ children }) => {
         const { latitude, longitude } = position.coords;
         api.post('/attendance/clock-out', { latitude, longitude })
           .then(() => fetchAttendanceStatus())
-          .catch(err => alert(err.response?.data?.message || 'Error clocking out.'))
+          .catch(err => Swal.fire(err.response?.data?.message || 'Error clocking out.'))
           .finally(() => setLocationLoading(false));
       },
       (error) => {
         setLocationLoading(false);
-        alert('You must allow location access to clock out.');
+        Swal.fire('You must allow location access to clock out.');
       }
     );
   };

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Store, Plus, Power, Building, AlertCircle, Key, User, Phone, Mail } from 'lucide-react';
 import api from '../utils/api';
 
+import Swal from 'sweetalert2';
+
 const ChildBusinesses = () => {
     const [shops, setBusinesses] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -83,7 +85,7 @@ const ChildBusinesses = () => {
             await api.patch(`/child-businesses/${id}/toggle-status`, { is_active: !currentStatus });
             fetchBusinesses();
         } catch (err) {
-            alert(err.response?.data?.message || 'Failed to toggle status.');
+            Swal.fire(err.response?.data?.message || 'Failed to toggle status.');
         }
     };
 

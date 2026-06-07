@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
 import { Shield, Store, Users, Calendar, CheckCircle, XCircle, ToggleLeft, ToggleRight } from 'lucide-react';
 
+import Swal from 'sweetalert2';
+
 const SuperAdmin = () => {
   const [shops, setBusinesses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,7 +44,7 @@ const SuperAdmin = () => {
         setLoading(false);
       })
       .catch(err => {
-        alert(err.response?.data?.message || 'Error fetching businesses');
+        Swal.fire(err.response?.data?.message || 'Error fetching businesses');
         setLoading(false);
       });
   };
@@ -50,10 +52,10 @@ const SuperAdmin = () => {
   const handleToggleStatus = (businessId) => {
     api.post(`/super-admin/shops/${businessId}/toggle-status`)
       .then(res => {
-        alert(res.data.message);
+        Swal.fire(res.data.message);
         fetchBusinesses();
       })
-      .catch(err => alert(err.response?.data?.message || 'Error updating business status'));
+      .catch(err => Swal.fire(err.response?.data?.message || 'Error updating business status'));
   };
 
   const handleExtendPlan = (businessId) => {
@@ -61,10 +63,10 @@ const SuperAdmin = () => {
     if (days && !isNaN(days) && parseInt(days) > 0) {
       api.post(`/super-admin/shops/${businessId}/extend-plan`, { days: parseInt(days) })
         .then(res => {
-          alert(res.data.message);
+          Swal.fire(res.data.message);
           fetchBusinesses();
         })
-        .catch(err => alert(err.response?.data?.message || 'Error extending plan'));
+        .catch(err => Swal.fire(err.response?.data?.message || 'Error extending plan'));
     }
   };
 
@@ -72,11 +74,11 @@ const SuperAdmin = () => {
     if(confirm("Are you sure you want to approve this subscription? This will extend the business's plan.")) {
       api.post(`/super-admin/subscription-requests/${id}/approve`)
         .then(res => {
-          alert(res.data.message);
+          Swal.fire(res.data.message);
           fetchSubscriptionRequests();
           fetchBusinesses();
         })
-        .catch(err => alert(err.response?.data?.message || 'Error approving request'));
+        .catch(err => Swal.fire(err.response?.data?.message || 'Error approving request'));
     }
   };
 
@@ -84,10 +86,10 @@ const SuperAdmin = () => {
     if(confirm("Reject this request?")) {
       api.post(`/super-admin/subscription-requests/${id}/reject`)
         .then(res => {
-          alert(res.data.message);
+          Swal.fire(res.data.message);
           fetchSubscriptionRequests();
         })
-        .catch(err => alert(err.response?.data?.message || 'Error rejecting request'));
+        .catch(err => Swal.fire(err.response?.data?.message || 'Error rejecting request'));
     }
   };
 

@@ -47,7 +47,7 @@ const ContactUs = () => {
                 </div>
                 <div>
                   <div style={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase' }}>Call Us</div>
-                  <div style={{ color: 'var(--text-main)', fontWeight: 600 }}>+91 9169704496</div>
+                  <a href="tel:8924074096" style={{ color: 'var(--text-main)', fontWeight: 600, textDecoration: 'none' }}>8924074096</a>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -56,7 +56,7 @@ const ContactUs = () => {
                 </div>
                 <div>
                   <div style={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase' }}>Email Us</div>
-                  <div style={{ color: 'var(--text-main)', fontWeight: 600 }}>support@vynkra.in</div>
+                  <a href="mailto:vyaparsync@vynkra.in" style={{ color: 'var(--text-main)', fontWeight: 600, textDecoration: 'none' }}>vyaparsync@vynkra.in</a>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>

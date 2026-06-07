@@ -3,6 +3,8 @@ import api from '../utils/api';
 import { downloadFile, downloadBlob } from '../utils/webview';
 import { Plus, Search, AlertTriangle, ArrowUpCircle, ArrowDownCircle, Edit2, Trash2 } from 'lucide-react';
 
+import Swal from 'sweetalert2';
+
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -38,7 +40,7 @@ const Products = () => {
         setStockPrice('');
         fetchData();
       })
-      .catch(err => alert(err.response?.data?.message || 'Error updating stock'));
+      .catch(err => Swal.fire(err.response?.data?.message || 'Error updating stock'));
   };
   const handleExportCSV = () => {
     const token = localStorage.getItem('auth_token');
@@ -58,10 +60,10 @@ const Products = () => {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
     .then(res => {
-      alert(res.data.message);
+      Swal.fire(res.data.message);
       fetchData();
     })
-    .catch(err => alert(err.response?.data?.message || 'Import failed'));
+    .catch(err => Swal.fire(err.response?.data?.message || 'Import failed'));
   };
   const handleDownloadSampleCSV = () => {
     const csvContent = "SKU,Product Name,Category,Purchase Price,Selling Price,Quantity,Min Stock Alert,Unit,Description\nSKU-1001,Sample Product,General,10.00,15.00,100,10,piece,Sample description";
@@ -104,14 +106,14 @@ const Products = () => {
         setFormData({ name: '', category_id: '', purchase_price: 0, selling_price: 0, quantity: 0, min_stock_alert: 5, unit: 'piece' });
         setEditProductId(null);
       })
-      .catch(err => alert(err.response?.data?.message || 'Error occurred while saving product.'));
+      .catch(err => Swal.fire(err.response?.data?.message || 'Error occurred while saving product.'));
   };
 
   const handleDeleteProduct = (id) => {
     if(confirm("Are you sure you want to delete this product? It will be soft-deleted.")) {
       api.delete(`/products/${id}`)
         .then(() => fetchData())
-        .catch(err => alert(err.response?.data?.message || 'Error deleting product'));
+        .catch(err => Swal.fire(err.response?.data?.message || 'Error deleting product'));
     }
   };
 
@@ -125,7 +127,7 @@ const Products = () => {
         setShowCatModal(false);
         setNewCatName('');
       })
-      .catch(err => alert(err.response?.data?.message || 'Error adding category'));
+      .catch(err => Swal.fire(err.response?.data?.message || 'Error adding category'));
   };
 
   return (

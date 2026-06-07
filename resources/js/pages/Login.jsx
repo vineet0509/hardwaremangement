@@ -4,6 +4,8 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import api from '../utils/api';
 import { Package, Lock, Mail, Languages, Shield, FileText } from 'lucide-react';
 
+import Swal from 'sweetalert2';
+
 const Login = () => {
   const [formData, setFormData] = useState({ login: '', password: '' });
   const [error, setError] = useState(null);
@@ -173,7 +175,7 @@ const Login = () => {
           <div style={{ display: 'flex', gap: 20, fontSize: '0.85rem' }}>
             <Link to="/privacy-policy" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}><Shield size={14} /> Privacy Policy</Link>
             <Link to="/terms" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}><FileText size={14} /> Terms & Conditions</Link>
-            <a href="#" onClick={(e) => { e.preventDefault(); alert("VyaparSync SaaS v2.0\nSupport: support@vynkra.in"); }} style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Help & Support</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); Swal.fire("VyaparSync SaaS v2.0\nSupport: support@vynkra.in"); }} style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Help & Support</a>
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', opacity: 0.8, marginTop: 8 }}>
             Powered by <span style={{ fontWeight: 600, color: 'var(--primary)' }}>Vynkra Technologies</span>

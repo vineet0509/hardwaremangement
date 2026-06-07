@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import api from '../utils/api';
+import Swal from 'sweetalert2';
 import { 
   Package, 
   ShoppingCart, 
@@ -1390,7 +1391,7 @@ const Landing = () => {
               <div style={{ marginBottom: 24 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                   <label style={{ fontSize: '0.825rem', fontWeight: 600, color: 'var(--text-muted)', margin: 0 }}>Password</label>
-                  <a href="#" onClick={(e) => { e.preventDefault(); alert("To reset password, please get in touch with Vynkra Technologies support team."); }} style={{ fontSize: '0.75rem', color: 'var(--primary)', textDecoration: 'none' }}>Forgot?</a>
+                  <a href="#" onClick={(e) => { e.preventDefault(); Swal.fire("To reset password, please get in touch with Vynkra Technologies support team."); }} style={{ fontSize: '0.75rem', color: 'var(--primary)', textDecoration: 'none' }}>Forgot?</a>
                 </div>
                 <input 
                   type="password" 

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
 import { Search, Plus, Calendar, User, IndianRupee, Trash2, X, CheckSquare } from 'lucide-react';
 
+import Swal from 'sweetalert2';
+
 const Advances = () => {
   const [advances, setAdvances] = useState([]);
   const [staffList, setStaffList] = useState([]);
@@ -37,24 +39,24 @@ const Advances = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.amount || formData.amount <= 0) return alert('Enter a valid amount.');
-    if (!formData.staff_id) return alert('Please select a staff member.');
+    if (!formData.amount || formData.amount <= 0) return Swal.fire('Enter a valid amount.');
+    if (!formData.staff_id) return Swal.fire('Please select a staff member.');
 
     api.post(`/staff/${formData.staff_id}/advance-payments`, formData)
       .then(res => {
-        alert('Advance recorded successfully!');
+        Swal.fire('Advance recorded successfully!');
         setShowModal(false);
         setFormData({ staff_id: '', amount: '', reason: '', advance_date: new Date().toISOString().slice(0, 16) });
         fetchAdvances();
       })
-      .catch(err => alert(err.response?.data?.message || 'Error processing advance.'));
+      .catch(err => Swal.fire(err.response?.data?.message || 'Error processing advance.'));
   };
 
   const deleteAdvance = (id) => {
     if(confirm('Are you sure you want to delete this staff advance?')) {
       api.delete(`/advance-payments/${id}`)
         .then(() => fetchAdvances())
-        .catch(err => alert(err.response?.data?.message || 'Error deleting.'));
+        .catch(err => Swal.fire(err.response?.data?.message || 'Error deleting.'));
     }
   };
 
@@ -62,7 +64,7 @@ const Advances = () => {
     if(confirm('Mark this advance as deducted from their salary?')) {
       api.patch(`/advance-payments/${id}/deducted`)
         .then(() => fetchAdvances())
-        .catch(err => alert(err.response?.data?.message || 'Error updating status.'));
+        .catch(err => Swal.fire(err.response?.data?.message || 'Error updating status.'));
     }
   }
 
