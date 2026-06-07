@@ -65,7 +65,7 @@ const Register = () => {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
         <div className="login-card" style={{ maxWidth: 500, width: '100%', padding: '40px', background: 'var(--surface)', borderRadius: 20, marginTop: 40, marginBottom: 40, boxShadow: '0 20px 25px -5px rgba(0,0,0,0.05), 0 10px 10px -5px rgba(0,0,0,0.02)' }}>
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
-            <img src="/logo.png" alt="Logo" style={{ height: '64px', width: '64px', objectFit: 'contain', margin: '0 auto 16px', borderRadius: '16px' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'flex'; }} />
+            <img src="/logo.png" alt="Logo" style={{ height: '64px', width: '64px', objectFit: 'contain', margin: '0 auto 16px', borderRadius: '50%' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'flex'; }} />
             <div style={{ display: 'none', background: 'linear-gradient(135deg, var(--primary), #059669)', width: 64, height: 64, borderRadius: 16, alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: 'white', boxShadow: '0 10px 15px -3px rgba(79, 70, 229, 0.3)' }}>
                <Package size={36} strokeWidth={2.5} />
             </div>

@@ -16,7 +16,7 @@
 
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <meta name="author" content="VyaparSync by Vynkra Technologies">
-    <meta name="theme-color" content="#00a8ff">
+    <meta name="theme-color" content="#14b8a6">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="VyaparSync">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">

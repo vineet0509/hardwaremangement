@@ -1,0 +1,10 @@
+{
+  "appId": "com.vynkra.vyaparsync",
+  "appName": "VyaparSync",
+  "webDir": "build",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://vyaparsync.vynkra.in/",
+    "cleartext": true
+  }
+}
