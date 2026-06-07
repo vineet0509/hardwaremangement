@@ -57,69 +57,70 @@ const Attendance = ({ user }) => {
         ) : attendances.length === 0 ? (
           <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No attendance records found.</div>
         ) : (
-          <div className="table-responsive">
-            <table className="table" style={{ minWidth: '600px' }}>
-              <thead>
-                <tr>
-                  {user?.role !== 'staff' && <th>Staff Member</th>}
-                  <th>Date</th>
-                  <th>Clock In</th>
-                  <th>Clock Out</th>
-                </tr>
-              </thead>
-              <tbody>
-                {attendances
-                  .filter(record => {
-                    const recordDateStr = record.date.substring(0, 10);
-                    if (fromDate && recordDateStr < fromDate) return false;
-                    if (toDate && recordDateStr > toDate) return false;
-                    return true;
-                  })
-                  .map(record => (
-                  <tr key={record.id}>
-                    {user?.role !== 'staff' && (
-                      <td>
-                        <div style={{ fontWeight: 600, color: 'var(--text-main)' }}>{record.staff?.name}</div>
-                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{record.staff?.role}</div>
-                      </td>
-                    )}
-                    <td>{new Date(record.date).toLocaleDateString()}</td>
-                    <td>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {attendances
+              .filter(record => {
+                const recordDateStr = record.date.substring(0, 10);
+                if (fromDate && recordDateStr < fromDate) return false;
+                if (toDate && recordDateStr > toDate) return false;
+                return true;
+              })
+              .map(record => (
+              <div key={record.id} style={{ display: 'flex', flexDirection: 'column', gap: '12px', padding: '16px', border: '1px solid var(--border)', borderRadius: '12px', background: 'var(--surface-hover)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border)', paddingBottom: '8px' }}>
+                  {user?.role !== 'staff' ? (
+                    <div>
+                      <div style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '1rem' }}>{record.staff?.name}</div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{record.staff?.role}</div>
+                    </div>
+                  ) : (
+                    <div style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '1rem' }}>Attendance Record</div>
+                  )}
+                  <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--primary)', background: 'rgba(79, 70, 229, 0.1)', padding: '4px 10px', borderRadius: '6px' }}>
+                    {new Date(record.date).toLocaleDateString()}
+                  </div>
+                </div>
+                
+                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                  <div style={{ flex: 1, minWidth: '150px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Clock In</div>
+                    <div style={{ fontWeight: 700, fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-main)' }}>
+                      <Clock size={14} color="var(--success)" />
                       {record.clock_in_time ? new Date(record.clock_in_time).toLocaleTimeString() : '-'}
-                      {record.clock_in_location && (
-                        <div style={{ fontSize: '0.75rem', marginTop: 8 }}>
-                          <button className="btn btn-outline btn-sm" onClick={() => setMapLocation(record.clock_in_location)} style={{ padding: '4px 8px', display: 'flex', alignItems: 'center', gap: 4 }}>
-                            <MapPin size={12} /> View Map
-                          </button>
-                        </div>
-                      )}
-                    </td>
-                    <td>
+                    </div>
+                    {record.clock_in_location && (
+                      <button className="btn btn-outline btn-sm" onClick={() => setMapLocation(record.clock_in_location)} style={{ padding: '4px 8px', display: 'flex', alignItems: 'center', gap: 4, width: 'fit-content', marginTop: '4px', fontSize: '0.75rem' }}>
+                        <MapPin size={12} /> View Map
+                      </button>
+                    )}
+                  </div>
+                  
+                  <div style={{ flex: 1, minWidth: '150px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Clock Out</div>
+                    <div style={{ fontWeight: 700, fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-main)' }}>
+                      <Clock size={14} color="var(--danger)" />
                       {record.clock_out_time ? new Date(record.clock_out_time).toLocaleTimeString() : '-'}
-                      {record.clock_out_location && (
-                        <div style={{ fontSize: '0.75rem', marginTop: 8 }}>
-                          <button className="btn btn-outline btn-sm" onClick={() => setMapLocation(record.clock_out_location)} style={{ padding: '4px 8px', display: 'flex', alignItems: 'center', gap: 4 }}>
-                            <MapPin size={12} /> View Map
-                          </button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-                {attendances.filter(record => {
-                    const recordDateStr = record.date.substring(0, 10);
-                    if (fromDate && recordDateStr < fromDate) return false;
-                    if (toDate && recordDateStr > toDate) return false;
-                    return true;
-                }).length === 0 && (
-                  <tr>
-                    <td colSpan={user?.role !== 'staff' ? 4 : 3} style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)' }}>
-                      No records found for the selected date.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                    </div>
+                    {record.clock_out_location && (
+                      <button className="btn btn-outline btn-sm" onClick={() => setMapLocation(record.clock_out_location)} style={{ padding: '4px 8px', display: 'flex', alignItems: 'center', gap: 4, width: 'fit-content', marginTop: '4px', fontSize: '0.75rem' }}>
+                        <MapPin size={12} /> View Map
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+            
+            {attendances.filter(record => {
+                const recordDateStr = record.date.substring(0, 10);
+                if (fromDate && recordDateStr < fromDate) return false;
+                if (toDate && recordDateStr > toDate) return false;
+                return true;
+            }).length === 0 && (
+              <div style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)' }}>
+                No records found for the selected date.
+              </div>
+            )}
           </div>
         )}
       </div>
