@@ -167,11 +167,19 @@ const Staff = () => {
 
   const handleToggleStatus = (s) => {
     const newStatus = s.status === 'active' ? 'inactive' : 'active';
-    if(confirm(`Are you sure you want to mark ${s.name} as ${newStatus}?`)) {
-      api.put(`/staff/${s.id}`, { status: newStatus })
-        .then(() => fetchStaff())
-        .catch(err => Swal.fire(err.response?.data?.message || 'Error updating status.'));
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `Are you sure you want to mark ${s.name} as ${newStatus}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api.put(`/staff/${s.id}`, { status: newStatus })
+          .then(() => fetchStaff())
+          .catch(err => Swal.fire(err.response?.data?.message || 'Error updating status.'));
+      }
+    });
   };
 
   return (
@@ -201,7 +209,7 @@ const Staff = () => {
 
       <div style={{ background: 'var(--surface)', borderRadius: 16, border: '1px solid var(--border)', overflow: 'hidden' }}>
         <div className="table-responsive">
-          <table className="table" style={{ width: '100%', minWidth: '1000px', borderCollapse: 'collapse', textAlign: 'left', marginBottom: 0 }}>
+          <table className="table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', marginBottom: 0 }}>
           <thead style={{ background: 'var(--bg-color)', borderBottom: '1px solid var(--border)' }}>
             <tr>
               <th style={{ padding: '16px', fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Staff Name</th>
@@ -218,24 +226,24 @@ const Staff = () => {
               <tr><td colSpan="5" style={{ textAlign: 'center', padding: '24px', color: 'var(--text-muted)' }}>No staff members found.</td></tr>
             ) : staff.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.role.toLowerCase().includes(searchQuery.toLowerCase())).map(s => (
               <tr key={s.id} style={{ borderBottom: '1px solid var(--border)' }}>
-                <td style={{ padding: '16px' }}>
+                <td data-label="Staff Name" style={{ padding: '16px' }}>
                   <div style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '1.05rem' }}>{s.name}</div>
                 </td>
-                <td style={{ padding: '16px' }}>
+                <td data-label="Role & Phone" style={{ padding: '16px' }}>
                   <div style={{ color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 600 }}>{s.role}</div>
                   <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{s.phone}</div>
                 </td>
-                <td style={{ padding: '16px' }}>
+                <td data-label="Salary Info" style={{ padding: '16px' }}>
                   <div style={{ fontSize: '0.95rem', fontWeight: 600 }}>₹{s.monthly_salary} <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 'normal' }}>/mo</span></div>
                   <div style={{ color: s.pending_advance > 0 ? 'var(--danger)' : 'var(--success)', fontSize: '0.8rem', fontWeight: 700 }}>Advance: ₹{s.pending_advance || 0}</div>
                 </td>
-                <td style={{ padding: '16px' }}>
+                <td data-label="Status" style={{ padding: '16px' }}>
                   <span className={`badge ${s.status === 'active' ? 'badge-success' : 'badge-danger'}`}>
                     {s.status}
                   </span>
                 </td>
-                <td style={{ padding: '16px', textAlign: 'right' }}>
-                  <div className="d-flex justify-content-end gap-2" style={{ flexWrap: 'wrap', width: 220, marginLeft: 'auto' }}>
+                <td data-label="Actions" style={{ padding: '16px', textAlign: 'right' }}>
+                  <div className="action-btns" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                     <button className="btn btn-outline" style={{ padding: '6px 10px', fontSize: '0.8rem' }} onClick={() => handleEditStaff(s)} title="Edit Staff">
                       <Edit size={16} color="var(--primary)" />
                     </button>

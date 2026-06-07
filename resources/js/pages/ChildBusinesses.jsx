@@ -79,7 +79,15 @@ const ChildBusinesses = () => {
     };
 
     const handleToggleStatus = async (id, currentStatus) => {
-        if (!confirm(`Are you sure you want to ${currentStatus ? 'disable' : 'enable'} this shop?`)) return;
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: `Are you sure you want to ${currentStatus ? 'disable' : 'enable'} this shop?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, do it!'
+        });
+        
+        if (!result.isConfirmed) return;
 
         try {
             await api.patch(`/child-businesses/${id}/toggle-status`, { is_active: !currentStatus });

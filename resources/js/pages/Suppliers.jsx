@@ -102,14 +102,22 @@ const Suppliers = () => {
   };
 
   const handleDelete = (id) => {
-    if (confirm("Are you sure you want to remove this supplier?")) {
-      api.delete(`/suppliers/${id}`)
-        .then(() => {
-          Swal.fire('Supplier removed successfully');
-          fetchSuppliers();
-        })
-        .catch(err => Swal.fire(err.response?.data?.message || 'Delete failed'));
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Are you sure you want to remove this supplier?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, remove it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api.delete(`/suppliers/${id}`)
+          .then(() => {
+            Swal.fire('Supplier removed successfully');
+            fetchSuppliers();
+          })
+          .catch(err => Swal.fire(err.response?.data?.message || 'Delete failed'));
+      }
+    });
   };
 
   if (loading) return <div style={{ padding: 20 }}>Loading Supplier List...</div>;

@@ -881,30 +881,33 @@ tr:hover td { background: var(--surface-hover); }
   }
   
   .table-responsive table td {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start; /* Better for long text wrapping */
+    display: block; /* Standard block instead of flex */
+    position: relative; /* Anchor for absolute pseudo-element */
     border: none !important;
     border-bottom: 1px dashed var(--border) !important;
-    padding: 12px 16px !important; /* Increase side padding */
+    padding: 12px 16px !important;
+    padding-left: 40% !important; /* Make room for label */
     text-align: right;
     font-size: 0.95rem !important;
     white-space: normal;
     word-break: break-word;
+    min-height: 48px; /* Ensure enough height */
   }
   
   /* Insert the dynamic column header on the left side of each cell */
   .table-responsive table td::before {
     content: attr(data-label);
-    font-weight: 600; /* Slightly less bold for readability */
+    position: absolute;
+    left: 16px;
+    top: 12px;
+    width: 35%;
+    font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
     font-size: 0.75rem;
     text-align: left;
-    margin-right: 16px;
-    white-space: nowrap;
-    flex-shrink: 0;
-    margin-top: 2px; /* Align better with wrapped text */
+    white-space: normal; /* Allow wrapping for long headers */
+    word-break: break-word;
   }
 
   /* Specific styling for the last column (Actions) */

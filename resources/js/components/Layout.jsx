@@ -197,13 +197,21 @@ const Layout = ({ children }) => {
   }, [user, location.pathname, navigate]);
 
   const handleLogout = () => {
-    if(confirm("Are you sure you want to log out?")) {
-       api.post('/logout').catch(console.error).finally(() => {
+    Swal.fire({
+      title: 'Logout',
+      text: "Are you sure you want to log out?",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, logout'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api.post('/logout').catch(console.error).finally(() => {
           localStorage.removeItem('auth_token');
           localStorage.removeItem('login_date');
           window.location.href = '/';
-       });
-    }
+        });
+      }
+    });
   };
 
   if (authLoading) {
@@ -578,13 +586,21 @@ const Layout = ({ children }) => {
                       <button
                         onClick={() => {
                           setShowProfileMenu(false);
-                          if (confirm('Are you sure you want to log out?')) {
-                            api.post('/logout').catch(console.error).finally(() => {
-                              localStorage.removeItem('auth_token');
-                              localStorage.removeItem('login_date');
-                              window.location.href = '/';
-                            });
-                          }
+                          Swal.fire({
+                            title: 'Logout',
+                            text: 'Are you sure you want to log out?',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes, logout'
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              api.post('/logout').catch(console.error).finally(() => {
+                                localStorage.removeItem('auth_token');
+                                localStorage.removeItem('login_date');
+                                window.location.href = '/';
+                              });
+                            }
+                          });
                         }}
                         className="profile-menu-item"
                         style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '11px 18px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', fontSize: '0.88rem', fontWeight: 600, transition: 'all 0.15s', textAlign: 'left' }}

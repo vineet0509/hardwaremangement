@@ -63,11 +63,19 @@ const BillsList = () => {
   }, []);
 
   const deleteBill = (id) => {
-    if(confirm('Are you sure you want to delete this bill? Stock will be restored.')) {
-      api.delete(`/bills/${id}`)
-        .then(() => fetchBills())
-        .catch(err => Swal.fire(err.response?.data?.message || 'Error deleting bill'));
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Are you sure you want to delete this bill? Stock will be restored.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api.delete(`/bills/${id}`)
+          .then(() => fetchBills())
+          .catch(err => Swal.fire(err.response?.data?.message || 'Error deleting bill'));
+      }
+    });
   };
 
   const handleRepay = (e) => {

@@ -71,26 +71,42 @@ const SuperAdmin = () => {
   };
 
   const handleApproveRequest = (id) => {
-    if(confirm("Are you sure you want to approve this subscription? This will extend the business's plan.")) {
-      api.post(`/super-admin/subscription-requests/${id}/approve`)
-        .then(res => {
-          Swal.fire(res.data.message);
-          fetchSubscriptionRequests();
-          fetchBusinesses();
-        })
-        .catch(err => Swal.fire(err.response?.data?.message || 'Error approving request'));
-    }
+    Swal.fire({
+      title: 'Approve Request?',
+      text: "Are you sure you want to approve this subscription? This will extend the business's plan.",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, approve'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api.post(`/super-admin/subscription-requests/${id}/approve`)
+          .then(res => {
+            Swal.fire(res.data.message);
+            fetchSubscriptionRequests();
+            fetchBusinesses();
+          })
+          .catch(err => Swal.fire(err.response?.data?.message || 'Error approving request'));
+      }
+    });
   };
 
   const handleRejectRequest = (id) => {
-    if(confirm("Reject this request?")) {
-      api.post(`/super-admin/subscription-requests/${id}/reject`)
-        .then(res => {
-          Swal.fire(res.data.message);
-          fetchSubscriptionRequests();
-        })
-        .catch(err => Swal.fire(err.response?.data?.message || 'Error rejecting request'));
-    }
+    Swal.fire({
+      title: 'Reject Request?',
+      text: "Reject this request?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, reject'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api.post(`/super-admin/subscription-requests/${id}/reject`)
+          .then(res => {
+            Swal.fire(res.data.message);
+            fetchSubscriptionRequests();
+          })
+          .catch(err => Swal.fire(err.response?.data?.message || 'Error rejecting request'));
+      }
+    });
   };
 
   if (loading) {

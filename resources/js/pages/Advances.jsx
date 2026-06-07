@@ -53,19 +53,35 @@ const Advances = () => {
   };
 
   const deleteAdvance = (id) => {
-    if(confirm('Are you sure you want to delete this staff advance?')) {
-      api.delete(`/advance-payments/${id}`)
-        .then(() => fetchAdvances())
-        .catch(err => Swal.fire(err.response?.data?.message || 'Error deleting.'));
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Are you sure you want to delete this staff advance?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api.delete(`/advance-payments/${id}`)
+          .then(() => fetchAdvances())
+          .catch(err => Swal.fire(err.response?.data?.message || 'Error deleting.'));
+      }
+    });
   };
 
   const markDeducted = (id) => {
-    if(confirm('Mark this advance as deducted from their salary?')) {
-      api.patch(`/advance-payments/${id}/deducted`)
-        .then(() => fetchAdvances())
-        .catch(err => Swal.fire(err.response?.data?.message || 'Error updating status.'));
-    }
+    Swal.fire({
+      title: 'Mark Deducted?',
+      text: 'Mark this advance as deducted from their salary?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, mark as deducted'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api.patch(`/advance-payments/${id}/deducted`)
+          .then(() => fetchAdvances())
+          .catch(err => Swal.fire(err.response?.data?.message || 'Error updating status.'));
+      }
+    });
   }
 
   // Filter based on search (searching staff name)

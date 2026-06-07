@@ -110,11 +110,19 @@ const Products = () => {
   };
 
   const handleDeleteProduct = (id) => {
-    if(confirm("Are you sure you want to delete this product? It will be soft-deleted.")) {
-      api.delete(`/products/${id}`)
-        .then(() => fetchData())
-        .catch(err => Swal.fire(err.response?.data?.message || 'Error deleting product'));
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Are you sure you want to delete this product? It will be soft-deleted.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        api.delete(`/products/${id}`)
+          .then(() => fetchData())
+          .catch(err => Swal.fire(err.response?.data?.message || 'Error deleting product'));
+      }
+    });
   };
 
   const handleCreateCategory = (e) => {
