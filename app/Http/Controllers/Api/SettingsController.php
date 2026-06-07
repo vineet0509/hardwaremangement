@@ -48,7 +48,7 @@ class SettingsController extends Controller
         return response()->json($data);
     }
 
-    public function submitSubscriptionRequest(Request $request): JsonResponse
+    public function createSubscriptionOrder(Request $request): JsonResponse
     {
         if (auth()->user()->business->parent_id !== null) {
             return response()->json(['message' => 'Subscription updates must be managed by the parent shop owner.'], 403);
@@ -66,26 +66,84 @@ class SettingsController extends Controller
         
         $amount = $prices[$request->plan_type];
 
-        $existing = \App\Models\SubscriptionRequest::where('business_id', auth()->user()->business_id)
-            ->where('status', 'pending')
-            ->first();
+        $key = config('services.razorpay.key');
+        $secret = config('services.razorpay.secret');
 
-        if ($existing) {
-            $existing->update([
-                'plan_type' => $request->plan_type,
-                'amount' => $amount
-            ]);
-            return response()->json(['message' => 'Subscription request updated successfully.']);
+        if (!$key || !$secret) {
+            return response()->json(['message' => 'Super Admin Razorpay keys are not configured.'], 500);
         }
 
-        \App\Models\SubscriptionRequest::create([
-            'business_id' => auth()->user()->business_id,
-            'plan_type' => $request->plan_type,
-            'amount' => $amount,
-            'status' => 'pending'
+        $api = new \Razorpay\Api\Api($key, $secret);
+
+        try {
+            $orderData = [
+                'receipt'         => 'sub_' . time() . '_' . auth()->user()->business_id,
+                'amount'          => $amount * 100, // paise
+                'currency'        => 'INR',
+                'payment_capture' => 1 // auto capture
+            ];
+
+            $razorpayOrder = $api->order->create($orderData);
+
+            return response()->json([
+                'order_id' => $razorpayOrder['id'],
+                'amount' => $amount,
+                'currency' => 'INR',
+                'key' => $key,
+            ]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Razorpay Order Error: ' . $e->getMessage());
+            return response()->json(['message' => 'Failed to create Razorpay order.'], 500);
+        }
+    }
+
+    public function verifySubscriptionPayment(Request $request): JsonResponse
+    {
+        $request->validate([
+            'razorpay_payment_id' => 'required|string',
+            'razorpay_order_id' => 'required|string',
+            'razorpay_signature' => 'required|string',
+            'plan_type' => 'required|in:pro,business,enterprise',
         ]);
 
-        return response()->json(['message' => 'Subscription request submitted successfully.']);
+        $key = config('services.razorpay.key');
+        $secret = config('services.razorpay.secret');
+
+        $api = new \Razorpay\Api\Api($key, $secret);
+
+        try {
+            $attributes = array(
+                'razorpay_order_id' => $request->razorpay_order_id,
+                'razorpay_payment_id' => $request->razorpay_payment_id,
+                'razorpay_signature' => $request->razorpay_signature
+            );
+
+            $api->utility->verifyPaymentSignature($attributes);
+
+            // Payment verified, update subscription
+            $settings = Setting::first();
+            
+            $currentExpires = $settings->subscription_expires_at ? Carbon::parse($settings->subscription_expires_at) : Carbon::now();
+            if ($currentExpires->isPast()) {
+                $currentExpires = Carbon::now();
+            }
+
+            $settings->update([
+                'subscription_plan' => $request->plan_type,
+                'subscription_expires_at' => $currentExpires->addDays(365),
+            ]);
+
+            // Clear any pending requests
+            \App\Models\SubscriptionRequest::where('business_id', auth()->user()->business_id)
+                ->where('status', 'pending')
+                ->update(['status' => 'approved']);
+
+            return response()->json(['message' => 'Subscription updated successfully!', 'settings' => $settings]);
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Razorpay Verify Error: ' . $e->getMessage());
+            return response()->json(['message' => 'Payment verification failed.'], 400);
+        }
     }
 
     public function update(Request $request): JsonResponse

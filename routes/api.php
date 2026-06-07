@@ -37,7 +37,8 @@ Route::middleware(['auth:sanctum', 'check.subscription', 'domain.tenant'])->grou
 // Settings
 Route::get('/settings', [SettingsController::class, 'index']);
 Route::post('/settings', [SettingsController::class, 'update']);
-Route::post('/subscription-request', [SettingsController::class, 'submitSubscriptionRequest']);
+Route::post('/settings/subscription/order', [SettingsController::class, 'createSubscriptionOrder']);
+Route::post('/settings/subscription/verify', [SettingsController::class, 'verifySubscriptionPayment']);
 
 // Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index']);

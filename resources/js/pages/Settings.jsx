@@ -116,15 +116,72 @@ const Settings = () => {
       .catch(err => Swal.fire('Error', err.response?.data?.message || 'Error saving settings', 'error'));
   };
 
-  const handleSubscriptionRequest = (e) => {
+
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      if (window.Razorpay) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handleSubscriptionRequest = async (e) => {
     e.preventDefault();
     const planType = e.target.plan_type.value;
-    api.post('/subscription-request', { plan_type: planType })
-      .then(res => {
-        Swal.fire('Success', res.data.message || 'Request sent!', 'success');
-        fetchSettings();
-      })
-      .catch(err => Swal.fire('Error', err.response?.data?.message || 'Failed to submit request', 'error'));
+
+    const resLoad = await loadRazorpay();
+    if (!resLoad) {
+      return Swal.fire('Error', 'Razorpay SDK failed to load. Are you online?', 'error');
+    }
+
+    try {
+      const { data } = await api.post('/settings/subscription/order', { plan_type: planType });
+
+      const options = {
+        key: data.key,
+        amount: data.amount * 100,
+        currency: data.currency,
+        name: formData.company_name || 'VyaparSync',
+        description: `Subscription Upgrade: ${planType.toUpperCase()}`,
+        order_id: data.order_id,
+        handler: async function (response) {
+          try {
+            const verifyRes = await api.post('/settings/subscription/verify', {
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+              plan_type: planType
+            });
+            Swal.fire('Success', verifyRes.data.message || 'Subscription upgraded successfully!', 'success');
+            fetchSettings();
+          } catch (err) {
+            Swal.fire('Error', err.response?.data?.message || 'Payment verification failed', 'error');
+          }
+        },
+        prefill: {
+          name: userData.name,
+          email: userData.email,
+          contact: userData.mobile || formData.company_phone
+        },
+        theme: {
+          color: '#4f46e5'
+        }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (response) {
+        Swal.fire('Payment Failed', response.error.description, 'error');
+      });
+      rzp.open();
+    } catch (err) {
+      Swal.fire('Error', err.response?.data?.message || 'Failed to create order', 'error');
+    }
   };
 
   const handleProfileSave = (e) => {
@@ -382,20 +439,6 @@ const Settings = () => {
             {formData.subscription_plan !== 'full_time' && (
                <div style={{ marginTop: 24, padding: 16, border: '1px solid var(--border)', borderRadius: 8 }}>
                  <h4 style={{ marginBottom: 12, fontSize: '0.95rem' }}>Renew or Upgrade Plan</h4>
-                 
-                 {formData.latest_request && formData.latest_request.status === 'pending' ? (
-                   <div style={{ marginBottom: 16, padding: 12, background: 'rgba(245, 158, 11, 0.1)', borderRadius: 8, border: '1px solid rgba(245, 158, 11, 0.2)' }}>
-                     <div style={{ color: 'var(--warning)', fontWeight: 600, fontSize: '0.85rem', marginBottom: 4 }}>REQUEST PENDING</div>
-                     <div style={{ fontSize: '0.9rem' }}>You requested the <strong style={{ textTransform: 'capitalize' }}>{formData.latest_request.plan_type}</strong> plan.</div>
-                     <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 4 }}>Requested on {new Date(formData.latest_request.created_at).toLocaleDateString()}</div>
-                   </div>
-                 ) : formData.latest_request && formData.latest_request.status === 'rejected' && (
-                    <div style={{ marginBottom: 16, padding: 12, background: 'rgba(239, 68, 68, 0.1)', borderRadius: 8, border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                      <div style={{ color: 'var(--danger)', fontWeight: 600, fontSize: '0.85rem', marginBottom: 4 }}>REQUEST REJECTED</div>
-                      <div style={{ fontSize: '0.9rem' }}>Your previous request was not approved. You can submit a new one.</div>
-                    </div>
-                 )}
-
                  <form onSubmit={handleSubscriptionRequest}>
                     <div className="form-group">
                       <select name="plan_type" className="form-control" required style={{ marginBottom: 12 }} value={selectedPlan} onChange={(e) => setSelectedPlan(e.target.value)}>
@@ -414,9 +457,9 @@ const Settings = () => {
                       </ul>
                     </div>
 
-                    <button type="submit" className="btn btn-primary" style={{ width: '100%', background: 'var(--success)', border: 'none' }}>
-                     {formData.latest_request?.status === 'pending' ? 'Change Requested Plan' : 'Submit Renewal Request'}
-                   </button>
+                      <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: 8 }}>
+                        Upgrade Now
+                      </button>
                  </form>
                </div>
             )}
