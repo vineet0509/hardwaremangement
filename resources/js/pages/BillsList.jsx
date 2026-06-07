@@ -402,7 +402,15 @@ const BillsList = () => {
                   )}
                 </td>
                 <td style={{ fontWeight: 600 }}>₹{b.total}</td>
-                <td style={{ color: 'var(--success)' }}>₹{b.paid_amount}</td>
+                <td style={{ color: 'var(--success)' }}>
+                  <div style={{ fontWeight: 600 }}>₹{b.paid_amount}</div>
+                  {String(b.payment_method).toLowerCase() === 'razorpay' && b.razorpay_payment_id && (
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 4, display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ color: 'var(--primary)', fontWeight: 600 }}>Razorpay</span>
+                      <span style={{ fontSize: '0.65rem', wordBreak: 'break-all' }}>{b.razorpay_payment_id}</span>
+                    </div>
+                  )}
+                </td>
                 <td style={{ color: 'var(--danger)' }}>₹{b.due_amount}</td>
                 <td>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontWeight: 500 }}>
