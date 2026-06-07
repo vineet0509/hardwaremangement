@@ -30,7 +30,13 @@ import ContactUs from './pages/ContactUs';
 import ChildBusinesses from './pages/ChildBusinesses';
 import PublicLayout from './components/PublicLayout';
 import api from './utils/api';
+import { initResponsiveTables } from './utils/responsive-tables';
 import '../css/app.css';
+
+// Initialize responsive tables observer
+if (typeof window !== 'undefined') {
+  initResponsiveTables();
+}
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('auth_token');
