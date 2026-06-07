@@ -821,45 +821,31 @@ tr:hover td { background: var(--surface-hover); }
    ACTION BUTTON LABELS & TABLE RESPONSIVENESS
    ========================================================= */
 
-/* By default (desktop), show button labels */
+/* Hide button labels globally to save horizontal space (tooltips explain the action) */
 .btn-label {
-  display: inline;
-  font-size: 0.8rem;
-  font-weight: 600;
-  white-space: nowrap;
+  display: none !important;
 }
 
+/* Make action buttons small and square for icons globally */
 .action-btns {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
+}
+
+.action-btns .btn {
+  padding: 8px !important;
+  min-width: 36px;
+  height: 36px;
+  justify-content: center !important;
+  border-radius: 8px !important;
+}
+
+.action-btns .btn svg {
+  margin: 0 !important;
 }
 
 @media (max-width: 992px) {
-  /* On mobile, hide the text label inside action buttons to save space */
-  .btn-label {
-    display: none;
-  }
-
-  /* Make action buttons small and square for icons */
-  /* Action buttons row */
-  .action-btns {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 6px;
-  }
-
-  .action-btns .btn {
-    padding: 8px !important;
-    min-width: 36px;
-    height: 36px;
-    justify-content: center !important;
-    border-radius: 8px !important;
-  }
-
-  .action-btns .btn svg {
-    margin: 0 !important;
-  }
 
   /* Responsive Card Tables - Eliminates horizontal scrolling completely */
   .table-responsive {
