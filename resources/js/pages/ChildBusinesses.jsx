@@ -283,13 +283,34 @@ const ChildBusinesses = () => {
                                     <th>Admin Login Info</th>
                                     <th>Status</th>
                                     <th>Created On</th>
-                                    <th style={{ textAlign: 'right' }}>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {shops.map(shop => (
                                     <tr key={shop.id}>
-                                        <td><strong style={{ color: 'var(--primary)' }}>#{shop.id}</strong></td>
+                                        <td>
+                                            <strong style={{ color: 'var(--primary)' }}>#{shop.id}</strong>
+                                            <div style={{ marginTop: 12 }}>
+                                                <button
+                                                    onClick={() => handleToggleStatus(shop.id, shop.is_active)}
+                                                    style={{
+                                                        padding: '4px 8px',
+                                                        borderRadius: 8,
+                                                        border: 'none',
+                                                        background: shop.is_active ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+                                                        color: shop.is_active ? '#ef4444' : '#10b981',
+                                                        cursor: 'pointer',
+                                                        fontWeight: 600,
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center',
+                                                        gap: 6
+                                                    }}
+                                                >
+                                                    <Power size={14} />
+                                                    <span className="btn-label" style={{ fontSize: '0.75rem' }}>{shop.is_active ? 'Disable' : 'Enable'}</span>
+                                                </button>
+                                            </div>
+                                        </td>
                                         <td>
                                             <div style={{ fontWeight: 600 }}>{shop.name}</div>
                                             {shop.gst_number && <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>GST: {shop.gst_number}</div>}
@@ -327,26 +348,6 @@ const ChildBusinesses = () => {
                                         </td>
                                         <td style={{ color: 'var(--text-muted)' }}>
                                             {new Date(shop.created_at).toLocaleDateString()}
-                                        </td>
-                                        <td style={{ textAlign: 'right' }}>
-                                            <button
-                                                onClick={() => handleToggleStatus(shop.id, shop.is_active)}
-                                                style={{
-                                                    padding: '6px 12px',
-                                                    borderRadius: 8,
-                                                    border: 'none',
-                                                    background: shop.is_active ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
-                                                    color: shop.is_active ? '#ef4444' : '#10b981',
-                                                    cursor: 'pointer',
-                                                    fontWeight: 600,
-                                                    display: 'inline-flex',
-                                                    alignItems: 'center',
-                                                    gap: 6
-                                                }}
-                                            >
-                                                <Power size={14} />
-                                                {shop.is_active ? 'Disable' : 'Enable'}
-                                            </button>
                                         </td>
                                     </tr>
                                 ))}

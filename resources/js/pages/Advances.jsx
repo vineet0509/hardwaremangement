@@ -118,7 +118,6 @@ const Advances = () => {
               <th className="text-right">Advance Amount</th>
               <th>Reason / Notes</th>
               <th>Status</th>
-              <th width="150">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -130,6 +129,16 @@ const Advances = () => {
               <tr key={a.id}>
                 <td>
                   <div style={{ fontWeight: 600 }}>{new Date(a.advance_date).toLocaleString()}</div>
+                  <div className="d-flex gap-2" style={{ marginTop: 12 }}>
+                    {a.status === 'pending' && (
+                      <button className="btn btn-outline" style={{ padding: '4px 8px', borderColor: 'var(--success)', color: 'var(--success)' }} onClick={() => markDeducted(a.id)} title="Mark Deducted">
+                        <CheckSquare size={14} /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Mark Deducted</span>
+                      </button>
+                    )}
+                    <button className="btn btn-outline" style={{ padding: '4px 8px', borderColor: 'var(--danger)', color: 'var(--danger)' }} onClick={() => deleteAdvance(a.id)} title="Delete Advance">
+                      <Trash2 size={14} /> <span className="btn-label" style={{ fontSize: '0.75rem', color: 'var(--danger)' }}>Delete</span>
+                    </button>
+                  </div>
                 </td>
                 <td>
                   <div style={{ fontWeight: 600, color: 'var(--primary)' }}>{a.staff?.name || 'Unknown'}</div>
@@ -145,18 +154,6 @@ const Advances = () => {
                   <span className={`badge ${a.status === 'deducted' ? 'badge-success' : 'badge-warning'}`} style={{ textTransform: 'uppercase' }}>
                     {a.status}
                   </span>
-                </td>
-                <td>
-                  <div className="d-flex gap-2">
-                    {a.status === 'pending' && (
-                      <button className="btn btn-outline" style={{ padding: '6px 10px', borderColor: 'var(--success)', color: 'var(--success)' }} onClick={() => markDeducted(a.id)} title="Mark Deducted">
-                        <CheckSquare size={16} />
-                      </button>
-                    )}
-                    <button className="btn btn-outline" style={{ padding: '6px 10px', borderColor: 'var(--danger)', color: 'var(--danger)' }} onClick={() => deleteAdvance(a.id)} title="Delete Advance">
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
                 </td>
               </tr>
             ))}

@@ -76,7 +76,6 @@ const Customers = () => {
               <th>Lifetime Purchases</th>
               <th>Paid Amount</th>
               <th>Pending Udhar / Balance</th>
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -89,6 +88,18 @@ const Customers = () => {
                 <td>
                   <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>{c.customer_name}</div>
                   <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{c.customer_phone}</div>
+                  <div className="d-flex gap-2" style={{ marginTop: 12 }}>
+                    <button className="btn btn-outline" style={{ padding: '4px 8px' }} title="View Purchase History" onClick={() => navigate(`/bills?customer=${encodeURIComponent(c.customer_name)}`)}>
+                       <Eye size={14} /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>History</span>
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '4px 8px', borderColor: 'var(--primary)', color: 'var(--primary)' }} title="Edit Profile"
+                      onClick={() => {
+                        setFormData({ old_phone: c.customer_phone, customer_name: c.customer_name, customer_phone: c.customer_phone, customer_address: c.customer_address });
+                        setShowModal(true);
+                      }}>
+                       <Edit2 size={14} /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Edit</span>
+                    </button>
+                  </div>
                 </td>
                 <td style={{ maxWidth: 200, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={c.customer_address}>
                   {c.customer_address || '-'}
@@ -114,20 +125,6 @@ const Customers = () => {
                         <span style={{ color: 'var(--text-muted)' }}>All Cleared</span>
                       )}
                     </div>
-                </td>
-                <td>
-                  <div className="d-flex gap-2">
-                    <button className="btn btn-outline" style={{ padding: '6px 12px' }} title="View Purchase History" onClick={() => navigate(`/bills?customer=${encodeURIComponent(c.customer_name)}`)}>
-                       <Eye size={16} /> History
-                    </button>
-                    <button className="btn btn-outline" style={{ padding: '6px 12px', borderColor: 'var(--primary)', color: 'var(--primary)' }} title="Edit Profile"
-                      onClick={() => {
-                        setFormData({ old_phone: c.customer_phone, customer_name: c.customer_name, customer_phone: c.customer_phone, customer_address: c.customer_address });
-                        setShowModal(true);
-                      }}>
-                       <Edit2 size={16} /> Edit
-                    </button>
-                  </div>
                 </td>
               </tr>
             ))}

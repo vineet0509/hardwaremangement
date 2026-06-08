@@ -197,7 +197,6 @@ const Products = () => {
                       <th>Cost Price</th>
                       <th>Sell Price</th>
                       <th>Stock</th>
-                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -207,7 +206,38 @@ const Products = () => {
                       <tr><td colSpan="7" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No products found.</td></tr>
                     ) : currentProducts.map(p => (
                       <tr key={p.id}>
-                <td><span className="badge" style={{ background: 'var(--surface-hover)' }}>{p.sku}</span></td>
+                <td>
+                  <span className="badge" style={{ background: 'var(--surface-hover)' }}>{p.sku}</span>
+                  <div className="d-flex gap-2" style={{ marginTop: 12 }}>
+                    <button className="btn btn-outline" style={{ padding: '4px 8px', borderColor: 'var(--primary)', color: 'var(--primary)' }} title="Edit Product"
+                      onClick={() => {
+                        setEditProductId(p.id);
+                        setFormData({
+                          name: p.name, category_id: p.category_id, supplier_id: p.supplier_id || '', purchase_price: p.purchase_price,
+                          selling_price: p.selling_price, gst_slab: p.gst_slab || 0, quantity: p.quantity,
+                          min_stock_alert: p.min_stock_alert, unit: p.unit
+                        });
+                        setShowModal(true);
+                      }}>
+                      <Edit2 size={14} /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Edit</span>
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '4px 8px' }} title="Add Stock"
+                      onClick={() => {
+                        setStockModal({ show: true, type: 'add', product: p });
+                        setStockPrice(p.purchase_price);
+                      }}>
+                      <ArrowUpCircle size={14} color="var(--success)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Add Stock</span>
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '4px 8px' }} title="Remove Stock"
+                      onClick={() => setStockModal({ show: true, type: 'remove', product: p })}>
+                      <ArrowDownCircle size={14} color="var(--danger)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Remove Stock</span>
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '4px 8px' }} title="Delete Product"
+                      onClick={() => handleDeleteProduct(p.id)}>
+                      <Trash2 size={14} color="var(--danger)" /> <span className="btn-label" style={{ fontSize: '0.75rem', color: 'var(--danger)' }}>Delete</span>
+                    </button>
+                  </div>
+                </td>
                 <td>
                   <div style={{ fontWeight: 500 }}>{p.name}</div>
                   {p.quantity <= p.min_stock_alert && (
@@ -223,37 +253,6 @@ const Products = () => {
                   <span className={`badge ${p.quantity > p.min_stock_alert ? 'badge-success' : 'badge-danger'}`}>
                     {p.quantity} {p.unit}
                   </span>
-                </td>
-                <td>
-                  <div className="d-flex gap-2">
-                    <button className="btn btn-outline" style={{ padding: '6px 10px', borderColor: 'var(--primary)', color: 'var(--primary)' }} title="Edit Product"
-                      onClick={() => {
-                        setEditProductId(p.id);
-                        setFormData({
-                          name: p.name, category_id: p.category_id, supplier_id: p.supplier_id || '', purchase_price: p.purchase_price,
-                          selling_price: p.selling_price, gst_slab: p.gst_slab || 0, quantity: p.quantity,
-                          min_stock_alert: p.min_stock_alert, unit: p.unit
-                        });
-                        setShowModal(true);
-                      }}>
-                      <Edit2 size={16} />
-                    </button>
-                    <button className="btn btn-outline" style={{ padding: '6px 10px' }} title="Add Stock"
-                      onClick={() => {
-                        setStockModal({ show: true, type: 'add', product: p });
-                        setStockPrice(p.purchase_price);
-                      }}>
-                      <ArrowUpCircle size={16} color="var(--success)" />
-                    </button>
-                    <button className="btn btn-outline" style={{ padding: '6px 10px' }} title="Remove Stock"
-                      onClick={() => setStockModal({ show: true, type: 'remove', product: p })}>
-                      <ArrowDownCircle size={16} color="var(--danger)" />
-                    </button>
-                    <button className="btn btn-outline" style={{ padding: '6px 10px' }} title="Delete Product"
-                      onClick={() => handleDeleteProduct(p.id)}>
-                      <Trash2 size={16} color="var(--danger)" />
-                    </button>
-                  </div>
                 </td>
               </tr>
             ))}

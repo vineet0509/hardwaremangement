@@ -198,25 +198,27 @@ const Expenses = () => {
               <th style={{ padding: '16px' }}>Date</th>
               <th style={{ padding: '16px' }}>Description</th>
               <th style={{ padding: '16px' }}>Amount</th>
-              <th style={{ padding: '16px', textAlign: 'center' }}>Action</th>
             </tr>
           </thead>
           <tbody>
             {currentExpenses.map(exp => (
               <tr key={exp.id} style={{ borderBottom: '1px solid var(--border)' }}>
-                <td style={{ padding: '16px', fontWeight: 600 }}>{new Date(exp.expense_date).toLocaleDateString()}</td>
+                <td style={{ padding: '16px', fontWeight: 600 }}>
+                  {new Date(exp.expense_date).toLocaleDateString()}
+                  <div style={{ marginTop: 12 }}>
+                    <button 
+                      className="btn btn-danger" 
+                      style={{ padding: '4px 8px' }}
+                      title="Delete"
+                      onClick={() => handleDelete(exp.id)}
+                    >
+                      <Trash2 size={14} /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Delete</span>
+                    </button>
+                  </div>
+                </td>
                 <td style={{ padding: '16px' }}>{exp.description}</td>
                 <td style={{ padding: '16px', fontWeight: 700, color: 'var(--danger)' }}>
                   ₹{parseFloat(exp.amount).toFixed(2)}
-                </td>
-                <td style={{ padding: '16px', textAlign: 'center' }}>
-                  <button 
-                    className="btn btn-danger" 
-                    style={{ padding: '6px 10px' }}
-                    onClick={() => handleDelete(exp.id)}
-                  >
-                    <Trash2 size={16} />
-                  </button>
                 </td>
               </tr>
             ))}

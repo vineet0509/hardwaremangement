@@ -426,7 +426,6 @@ const BillsList = () => {
               <th>Due</th>
               <th>Created By</th>
               <th>Status</th>
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -439,40 +438,7 @@ const BillsList = () => {
                 <td style={{ fontWeight: 600, color: b.type === 'return' ? 'var(--danger)' : 'var(--primary)' }}>
                   {b.bill_number}
                   {b.type === 'return' && <span className="badge badge-danger" style={{ marginLeft: 8, fontSize: '0.7rem' }}>RETURN</span>}
-                </td>
-                <td>{new Date(b.created_at).toLocaleString()}</td>
-                <td>
-                  <div style={{ fontWeight: 600 }}>{b.customer_name || 'Walk-in'}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{b.customer_phone}</div>
-                  {b.notes && (
-                    <div style={{ fontSize: '0.8rem', color: 'var(--primary)', marginTop: 4, fontWeight: 500 }}>
-                      {b.notes}
-                    </div>
-                  )}
-                </td>
-                <td style={{ fontWeight: 600 }}>₹{b.total}</td>
-                <td style={{ color: 'var(--success)' }}>
-                  <div style={{ fontWeight: 600 }}>₹{b.paid_amount}</div>
-                  {String(b.payment_method).toLowerCase() === 'razorpay' && b.razorpay_payment_id && (
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 4, display: 'flex', flexDirection: 'column' }}>
-                      <span style={{ color: 'var(--primary)', fontWeight: 600 }}>Razorpay</span>
-                      <span style={{ fontSize: '0.65rem', wordBreak: 'break-all' }}>{b.razorpay_payment_id}</span>
-                    </div>
-                  )}
-                </td>
-                <td style={{ color: 'var(--danger)' }}>₹{b.due_amount}</td>
-                <td>
-                  <div style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontWeight: 500 }}>
-                    {b.creator ? b.creator.name : 'Admin'}
-                  </div>
-                </td>
-                <td>
-                  <span className={`badge ${b.status === 'paid' ? 'badge-success' : b.status === 'partial' ? 'badge-warning' : 'badge-danger'}`}>
-                    {b.status}
-                  </span>
-                </td>
-                <td>
-                  <div className="action-btns">
+                  <div className="action-btns" style={{ marginTop: 12 }}>
                     {b.due_amount > 0 && (
                       <button className="btn btn-outline" style={{ borderColor: 'var(--success)', color: 'var(--success)' }} onClick={() => {
                         setTargetBill(b);
@@ -518,6 +484,37 @@ const BillsList = () => {
                       </button>
                     )}
                   </div>
+                </td>
+                <td>{new Date(b.created_at).toLocaleString()}</td>
+                <td>
+                  <div style={{ fontWeight: 600 }}>{b.customer_name || 'Walk-in'}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{b.customer_phone}</div>
+                  {b.notes && (
+                    <div style={{ fontSize: '0.8rem', color: 'var(--primary)', marginTop: 4, fontWeight: 500 }}>
+                      {b.notes}
+                    </div>
+                  )}
+                </td>
+                <td style={{ fontWeight: 600 }}>₹{b.total}</td>
+                <td style={{ color: 'var(--success)' }}>
+                  <div style={{ fontWeight: 600 }}>₹{b.paid_amount}</div>
+                  {String(b.payment_method).toLowerCase() === 'razorpay' && b.razorpay_payment_id && (
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 4, display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ color: 'var(--primary)', fontWeight: 600 }}>Razorpay</span>
+                      <span style={{ fontSize: '0.65rem', wordBreak: 'break-all' }}>{b.razorpay_payment_id}</span>
+                    </div>
+                  )}
+                </td>
+                <td style={{ color: 'var(--danger)' }}>₹{b.due_amount}</td>
+                <td>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontWeight: 500 }}>
+                    {b.creator ? b.creator.name : 'Admin'}
+                  </div>
+                </td>
+                <td>
+                  <span className={`badge ${b.status === 'paid' ? 'badge-success' : b.status === 'partial' ? 'badge-warning' : 'badge-danger'}`}>
+                    {b.status}
+                  </span>
                 </td>
               </tr>
             ))}

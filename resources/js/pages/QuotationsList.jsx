@@ -228,7 +228,6 @@ const QuotationsList = () => {
               <th>Customer</th>
               <th>Items Count</th>
               <th>Total Estimate</th>
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -238,7 +237,28 @@ const QuotationsList = () => {
               <tr><td colSpan="6" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No quotations found.</td></tr>
             ) : currentQuotations.map(q => (
               <tr key={q.id}>
-                <td style={{ fontWeight: 700, color: '#3b82f6' }}>{q.quotation_number}</td>
+                <td style={{ fontWeight: 700, color: '#3b82f6' }}>
+                  {q.quotation_number}
+                  <div className="action-btns" style={{ marginTop: 12 }}>
+                    <button className="btn btn-outline" style={{ padding: '4px 8px', gap: 5, fontSize: '0.75rem' }} onClick={() => navigate('/quotations/create', { state: { editQuotationId: q.id } })} title="Edit">
+                      <Edit2 size={14} color="var(--primary)" /> Edit
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '4px 8px', gap: 5, fontSize: '0.75rem' }} onClick={() => printQuotation(q.id)} title="Print">
+                      <Printer size={14} color="var(--primary)" /> Print
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '4px 8px', gap: 5, fontSize: '0.75rem', borderColor: '#4f46e5', color: '#4f46e5' }} onClick={() => convertToBill(q)} title="Convert to Bill">
+                      <ArrowRightCircle size={14} /> To Bill
+                    </button>
+                    {q.customer_phone && (
+                      <button className="btn btn-outline" style={{ padding: '4px 8px', gap: 5, fontSize: '0.75rem', borderColor: '#22c55e', color: '#22c55e' }} onClick={() => sendWhatsAppQuote(q)} title="Send WhatsApp">
+                        <MessageSquare size={14} /> WhatsApp
+                      </button>
+                    )}
+                    <button className="btn btn-outline" style={{ padding: '4px 8px', gap: 5, fontSize: '0.75rem' }} onClick={() => deleteQuotation(q.id)} title="Delete">
+                      <Trash2 size={14} color="var(--danger)" /> Delete
+                    </button>
+                  </div>
+                </td>
                 <td style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>{new Date(q.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
                 <td>
                   <div style={{ fontWeight: 600 }}>{q.customer_name || 'Walk-in'}</div>
@@ -247,27 +267,6 @@ const QuotationsList = () => {
                 </td>
                 <td><span className="badge badge-warning">{q.items?.length || 0} items</span></td>
                 <td style={{ color: '#3b82f6', fontWeight: 700, fontSize: '1.05rem' }}>₹{q.total}</td>
-                <td>
-                  <div className="action-btns">
-                    <button className="btn btn-outline" style={{ padding: '6px 10px', gap: 5, fontSize: '0.8rem' }} onClick={() => navigate('/quotations/create', { state: { editQuotationId: q.id } })} title="Edit">
-                      <Edit2 size={14} color="var(--primary)" /> Edit
-                    </button>
-                    <button className="btn btn-outline" style={{ padding: '6px 10px', gap: 5, fontSize: '0.8rem' }} onClick={() => printQuotation(q.id)} title="Print">
-                      <Printer size={14} color="var(--primary)" /> Print
-                    </button>
-                    <button className="btn btn-outline" style={{ padding: '6px 10px', gap: 5, fontSize: '0.8rem', borderColor: '#4f46e5', color: '#4f46e5' }} onClick={() => convertToBill(q)} title="Convert to Bill">
-                      <ArrowRightCircle size={14} /> To Bill
-                    </button>
-                    {q.customer_phone && (
-                      <button className="btn btn-outline" style={{ padding: '6px 10px', gap: 5, fontSize: '0.8rem', borderColor: '#22c55e', color: '#22c55e' }} onClick={() => sendWhatsAppQuote(q)} title="Send WhatsApp">
-                        <MessageSquare size={14} /> WhatsApp
-                      </button>
-                    )}
-                    <button className="btn btn-outline" style={{ padding: '6px 10px', gap: 5, fontSize: '0.8rem' }} onClick={() => deleteQuotation(q.id)} title="Delete">
-                      <Trash2 size={14} color="var(--danger)" /> Delete
-                    </button>
-                  </div>
-                </td>
               </tr>
             ))}
           </tbody>

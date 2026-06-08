@@ -152,7 +152,6 @@ const Suppliers = () => {
               <th style={{ padding: '16px' }}>Phone</th>
               <th style={{ padding: '16px' }}>Address</th>
               <th style={{ padding: '16px' }}>Total Due</th>
-              <th style={{ padding: '16px', textAlign: 'center' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -162,37 +161,39 @@ const Suppliers = () => {
               <tr><td colSpan="5" style={{ padding: '32px', textAlign: 'center', color: 'var(--text-muted)' }}>No suppliers recorded.</td></tr>
             ) : currentSuppliers.map(sup => (
               <tr key={sup.id} style={{ borderBottom: '1px solid var(--border)' }}>
-                <td style={{ padding: '16px', fontWeight: 600 }}>{sup.name}</td>
+                <td style={{ padding: '16px', fontWeight: 600 }}>
+                  {sup.name}
+                  <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                    <button 
+                      className="btn btn-secondary" 
+                      title="Ledger History"
+                      style={{ padding: '4px 8px', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--primary)', borderColor: 'rgba(16, 185, 129, 0.2)' }}
+                      onClick={() => handleOpenLedger(sup)}
+                    >
+                      <FileText size={14} /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Ledger</span>
+                    </button>
+                    <button 
+                      className="btn btn-secondary" 
+                      style={{ padding: '4px 8px' }}
+                      title="Edit"
+                      onClick={() => handleOpenModal(sup)}
+                    >
+                      <Edit size={14} /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Edit</span>
+                    </button>
+                    <button 
+                      className="btn btn-danger" 
+                      style={{ padding: '4px 8px' }}
+                      title="Delete"
+                      onClick={() => handleDelete(sup.id)}
+                    >
+                      <Trash2 size={14} /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Delete</span>
+                    </button>
+                  </div>
+                </td>
                 <td style={{ padding: '16px' }}>{sup.phone || 'N/A'}</td>
                 <td style={{ padding: '16px', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sup.address || 'N/A'}</td>
                 <td style={{ padding: '16px', fontWeight: 700, color: (sup.total_due > 0) ? 'var(--danger)' : 'var(--success)' }}>
                   ₹{sup.total_due || 0}
-                </td>
-                <td style={{ padding: '16px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'center', gap: 8 }}>
-                    <button 
-                      className="btn btn-secondary" 
-                      title="Ledger History"
-                      style={{ padding: '6px 10px', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--primary)', borderColor: 'rgba(16, 185, 129, 0.2)' }}
-                      onClick={() => handleOpenLedger(sup)}
-                    >
-                      <FileText size={16} /> Ledger
-                    </button>
-                    <button 
-                      className="btn btn-secondary" 
-                      style={{ padding: '6px 10px' }}
-                      onClick={() => handleOpenModal(sup)}
-                    >
-                      <Edit size={16} />
-                    </button>
-                    <button 
-                      className="btn btn-danger" 
-                      style={{ padding: '6px 10px' }}
-                      onClick={() => handleDelete(sup.id)}
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
                 </td>
               </tr>
             ))}

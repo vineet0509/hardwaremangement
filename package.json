@@ -9,6 +9,7 @@
     "dependencies": {
         "@capacitor/app": "^8.1.0",
         "@capacitor/core": "^8.4.0",
+        "@capacitor/ios": "^8.4.0",
         "axios": "^1.11.0",
         "date-fns": "^4.1.0",
         "lucide-react": "^0.513.0",

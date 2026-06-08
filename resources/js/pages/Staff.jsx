@@ -216,7 +216,6 @@ const Staff = () => {
               <th style={{ padding: '16px', fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Role & Phone</th>
               <th style={{ padding: '16px', fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Salary Info</th>
               <th style={{ padding: '16px', fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Status</th>
-              <th style={{ padding: '16px', fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -228,6 +227,29 @@ const Staff = () => {
               <tr key={s.id} style={{ borderBottom: '1px solid var(--border)' }}>
                 <td data-label="Staff Name" style={{ padding: '16px' }}>
                   <div style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '1.05rem' }}>{s.name}</div>
+                  <div className="action-btns" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12 }}>
+                    <button className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem' }} onClick={() => handleEditStaff(s)} title="Edit Staff">
+                      <Edit size={14} color="var(--primary)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Edit</span>
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem' }} onClick={() => { setSelectedStaff(s); setShowAdvanceModal(true); }} title="Give Advance">
+                      <Banknote size={14} color="var(--warning)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Advance</span>
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem' }} onClick={() => paySalary(s)} title="Process Salary">
+                      <CheckCircle size={14} color="var(--success)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Salary</span>
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem' }} onClick={() => fetchSalaryHistory(s)} title="Salary History">
+                      <Calendar size={14} color="var(--text-main)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>History</span>
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem' }} onClick={() => fetchPerformance(s)} title="Performance">
+                      <TrendingUp size={14} color="var(--primary)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Performance</span>
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem' }} onClick={() => fetchAttendance(s)} title="Attendance">
+                      <Clock size={14} color="var(--info)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Attendance</span>
+                    </button>
+                    <button className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem', borderColor: s.status === 'active' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(16, 185, 129, 0.3)', color: s.status === 'active' ? 'var(--danger)' : 'var(--success)' }} onClick={() => handleToggleStatus(s)} title={s.status === 'active' ? 'Deactivate' : 'Activate'}>
+                      <Power size={14} /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>{s.status === 'active' ? 'Deactivate' : 'Activate'}</span>
+                    </button>
+                  </div>
                 </td>
                 <td data-label="Role & Phone" style={{ padding: '16px' }}>
                   <div style={{ color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 600 }}>{s.role}</div>
@@ -241,31 +263,6 @@ const Staff = () => {
                   <span className={`badge ${s.status === 'active' ? 'badge-success' : 'badge-danger'}`}>
                     {s.status}
                   </span>
-                </td>
-                <td data-label="Actions" style={{ padding: '16px', textAlign: 'right' }}>
-                  <div className="action-btns" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                    <button className="btn btn-outline" style={{ padding: '6px 10px', fontSize: '0.8rem' }} onClick={() => handleEditStaff(s)} title="Edit Staff">
-                      <Edit size={16} color="var(--primary)" />
-                    </button>
-                    <button className="btn btn-outline" style={{ padding: '6px 10px', fontSize: '0.8rem' }} onClick={() => { setSelectedStaff(s); setShowAdvanceModal(true); }} title="Give Advance">
-                      <Banknote size={16} color="var(--warning)" />
-                    </button>
-                    <button className="btn btn-outline" style={{ padding: '6px 10px', fontSize: '0.8rem' }} onClick={() => paySalary(s)} title="Process Salary">
-                      <CheckCircle size={16} color="var(--success)" />
-                    </button>
-                    <button className="btn btn-outline" style={{ padding: '6px 10px', fontSize: '0.8rem' }} onClick={() => fetchSalaryHistory(s)} title="Salary History">
-                      <Calendar size={16} color="var(--text-main)" />
-                    </button>
-                    <button className="btn btn-outline" style={{ padding: '6px 10px', fontSize: '0.8rem' }} onClick={() => fetchPerformance(s)} title="Performance">
-                      <TrendingUp size={16} color="var(--primary)" />
-                    </button>
-                    <button className="btn btn-outline" style={{ padding: '6px 10px', fontSize: '0.8rem' }} onClick={() => fetchAttendance(s)} title="Attendance">
-                      <Clock size={16} color="var(--info)" />
-                    </button>
-                    <button className="btn btn-outline" style={{ padding: '6px 10px', fontSize: '0.8rem', borderColor: s.status === 'active' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(16, 185, 129, 0.3)', color: s.status === 'active' ? 'var(--danger)' : 'var(--success)' }} onClick={() => handleToggleStatus(s)} title={s.status === 'active' ? 'Deactivate' : 'Activate'}>
-                      <Power size={16} />
-                    </button>
-                  </div>
                 </td>
               </tr>
             ))}
