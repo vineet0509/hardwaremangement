@@ -17,6 +17,11 @@ class StaffController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $settings = \App\Models\Setting::first();
+        if ($settings && !\App\Helpers\PlanHelper::hasFeature($settings->subscription_plan, 'staff_management')) {
+            return response()->json(['message' => 'Staff Management is not available on your current plan. Please upgrade.'], 403);
+        }
+
         $query = Staff::withSum(['advancePayments as pending_advance' => fn($q) => $q->where('status', 'pending')], 'amount');
         if ($request->filled('search')) {
             $query->where('name', 'like', "%{$request->search}%");
@@ -29,6 +34,23 @@ class StaffController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $settings = \App\Models\Setting::first();
+        if ($settings) {
+            if (!\App\Helpers\PlanHelper::hasFeature($settings->subscription_plan, 'staff_management')) {
+                return response()->json(['message' => 'Staff Management is not available on your current plan. Please upgrade.'], 403);
+            }
+            if (!\App\Helpers\PlanHelper::checkLimit($settings->subscription_plan, 'staff', Staff::count())) {
+                return response()->json(['message' => 'Staff limit reached for your current plan. Please upgrade to add more staff.'], 403);
+            }
+            if ($request->enable_login) {
+                // Admin is 1 user + staff with enable_login
+                $currentUsersCount = \App\Models\User::where('business_id', $request->user()->business_id)->count();
+                if (!\App\Helpers\PlanHelper::checkLimit($settings->subscription_plan, 'users', $currentUsersCount)) {
+                    return response()->json(['message' => 'User (login) limit reached for your current plan. Please upgrade to create more users.'], 403);
+                }
+            }
+        }
+
         $data = $request->validate([
             'name'           => 'required|string|max:255',
             'phone'          => 'required_if:enable_login,true|nullable|string|max:20' . ($request->enable_login ? '|unique:users,mobile' : ''),

@@ -240,7 +240,7 @@ const BillsList = () => {
 
             <div class="footer">
               <p>This is a computer generated invoice. No signature required.</p>
-              <p><strong>Terms & Conditions:</strong> ${getTermsAndConditions(settings.business_type)}</p>
+              <p><strong>Terms & Conditions:</strong> ${settings.terms_and_conditions ? settings.terms_and_conditions.replace(/\n/g, '<br/>') : getTermsAndConditions(settings.business_type)}</p>
             </div>
             </div>
             
@@ -448,7 +448,7 @@ const BillsList = () => {
                     <button className="btn btn-outline" style={{ display: 'flex', alignItems: 'center' }} onClick={() => downloadFile(`${window.location.origin}/api/bills/${b.id}/pdf?token=${localStorage.getItem('auth_token')}`, `bill_${b.bill_number}.pdf`, 'application/pdf')} title="Download Official PDF">
                       <FileText size={16} color="var(--primary)" /><span className="btn-label">PDF</span>
                     </button>
-                    {b.customer_phone && (
+                    {b.customer_phone && settings?.plan_limits?.features?.includes('whatsapp_sharing') && (
                       <button 
                         className="btn btn-outline" 
                         style={{ borderColor: '#22c55e', color: '#22c55e', opacity: whatsappLoading === b.id ? 0.5 : 1 }} 

@@ -109,6 +109,11 @@ class ReportController extends Controller
 
     public function gstrExport(Request $request)
     {
+        $settings = \App\Models\Setting::first();
+        if ($settings && !\App\Helpers\PlanHelper::hasFeature($settings->subscription_plan, 'gst_reports')) {
+            return response()->json(['message' => 'GST Reports are not available on your current plan. Please upgrade to STARTER or higher.'], 403);
+        }
+
         $from = $request->get('date_from', now()->startOfMonth()->toDateString());
         $to   = $request->get('date_to', now()->toDateString());
 

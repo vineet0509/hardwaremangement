@@ -18,14 +18,14 @@ class SettingsController extends Controller
         if (!$settings) {
             $settings = Setting::create([
                 'company_name' => $business->name ?? 'VyaparSync',
-                'subscription_plan' => 'full_time',
+                'subscription_plan' => 'free',
             ]);
         }
 
         $isExpired = false;
         $daysRemaining = 0;
         
-        if ($settings->subscription_plan !== 'full_time' && $settings->subscription_expires_at) {
+        if (!in_array($settings->subscription_plan, ['free', 'full_time']) && $settings->subscription_expires_at) {
             $expiresAt = Carbon::parse($settings->subscription_expires_at);
             if (Carbon::now()->startOfDay()->greaterThan($expiresAt)) {
                 $isExpired = true;
@@ -40,6 +40,8 @@ class SettingsController extends Controller
         $data['gst_number'] = $business?->gst_number ?? '';
         $data['business_type'] = $business?->business_type ?? '';
         $data['latest_request'] = \App\Models\SubscriptionRequest::where('business_id', $business->id)->latest()->first();
+        $data['terms_and_conditions'] = $settings->terms_and_conditions;
+        $data['plan_limits'] = \App\Helpers\PlanHelper::getPlanLimits($settings->subscription_plan);
         
 
         $data['upi_qr_code'] = $settings->upi_qr_code;
@@ -54,13 +56,13 @@ class SettingsController extends Controller
         }
 
         $request->validate([
-            'plan_type' => 'required|in:pro,business,enterprise',
+            'plan_type' => 'required|in:starter,business,enterprise',
         ]);
 
         $prices = [
-            'pro' => 2999,
-            'business' => 4999,
-            'enterprise' => 9999
+            'starter' => 999,
+            'business' => 2499,
+            'enterprise' => 4999
         ];
         
         $amount = $prices[$request->plan_type];
@@ -102,7 +104,7 @@ class SettingsController extends Controller
             'razorpay_payment_id' => 'required|string',
             'razorpay_order_id' => 'required|string',
             'razorpay_signature' => 'required|string',
-            'plan_type' => 'required|in:pro,business,enterprise',
+            'plan_type' => 'required|in:starter,business,enterprise',
         ]);
 
         $key = config('services.razorpay.key');
@@ -159,12 +161,13 @@ class SettingsController extends Controller
             'business_type'=> 'nullable|string|max:100',
             'company_phone'=> 'nullable|string|max:50',
             'company_address' => 'nullable|string',
+            'terms_and_conditions' => 'nullable|string',
             'gst_number' => ['nullable', 'string', new \App\Rules\ValidGstin()],
 
             'upi_qr_code' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $data = $request->only(['company_name', 'business_type', 'company_phone', 'company_address']);
+        $data = $request->only(['company_name', 'business_type', 'company_phone', 'company_address', 'terms_and_conditions']);
 
         if ($request->hasFile('upi_qr_code')) {
             $file = $request->file('upi_qr_code');

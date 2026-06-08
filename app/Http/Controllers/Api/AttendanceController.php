@@ -13,11 +13,19 @@ class AttendanceController extends Controller
 {
     public function index(Staff $staff): JsonResponse
     {
+        $settings = \App\Models\Setting::first();
+        if ($settings && !\App\Helpers\PlanHelper::hasFeature($settings->subscription_plan, 'attendance')) {
+            return response()->json(['message' => 'Attendance Management is not available on your current plan. Please upgrade.'], 403);
+        }
         return response()->json($staff->attendances()->orderBy('date', 'desc')->get());
     }
 
     public function allAttendances(Request $request): JsonResponse
     {
+        $settings = \App\Models\Setting::first();
+        if ($settings && !\App\Helpers\PlanHelper::hasFeature($settings->subscription_plan, 'attendance')) {
+            return response()->json(['message' => 'Attendance Management is not available on your current plan. Please upgrade.'], 403);
+        }
         $user = $request->user();
         if ($user->role === 'staff') {
             $staff = Staff::where('user_id', $user->id)->first();
@@ -40,6 +48,10 @@ class AttendanceController extends Controller
 
     public function clockIn(Request $request): JsonResponse
     {
+        $settings = \App\Models\Setting::first();
+        if ($settings && !\App\Helpers\PlanHelper::hasFeature($settings->subscription_plan, 'attendance')) {
+            return response()->json(['message' => 'Attendance Management is not available on your current plan. Please upgrade.'], 403);
+        }
         $user = $request->user();
         if ($user->role !== 'staff') {
             return response()->json(['message' => 'Only staff can clock in.'], 403);
@@ -76,6 +88,10 @@ class AttendanceController extends Controller
 
     public function clockOut(Request $request): JsonResponse
     {
+        $settings = \App\Models\Setting::first();
+        if ($settings && !\App\Helpers\PlanHelper::hasFeature($settings->subscription_plan, 'attendance')) {
+            return response()->json(['message' => 'Attendance Management is not available on your current plan. Please upgrade.'], 403);
+        }
         $user = $request->user();
         if ($user->role !== 'staff') {
             return response()->json(['message' => 'Only staff can clock out.'], 403);
@@ -113,6 +129,10 @@ class AttendanceController extends Controller
 
     public function status(Request $request): JsonResponse
     {
+        $settings = \App\Models\Setting::first();
+        if ($settings && !\App\Helpers\PlanHelper::hasFeature($settings->subscription_plan, 'attendance')) {
+            return response()->json(['status' => 'not_available']);
+        }
         $user = $request->user();
         if ($user->role !== 'staff') {
             return response()->json(['status' => 'not_staff']);

@@ -247,6 +247,31 @@ const Layout = ({ children }) => {
     allNavItems.push({ name: 'Super Admin', path: '/super-admin', icon: Shield });
   }
 
+  // Filter out features based on plan limits
+  if (settings && settings.plan_limits && settings.plan_limits.features) {
+    const features = settings.plan_limits.features;
+    allNavItems = allNavItems.map(item => {
+      if (item.name === 'Management') {
+        let subs = [...item.subItems];
+        if (!features.includes('staff_management')) {
+          subs = subs.filter(s => s.name !== 'Staff' && s.name !== 'Advances');
+        }
+        if (!features.includes('attendance')) {
+          subs = subs.filter(s => s.name !== 'Attendance');
+        }
+        if (!features.includes('expense_tracking')) {
+          subs = subs.filter(s => s.name !== 'Expenses');
+        }
+        if (settings.plan_limits.shops === 1) { // If max shops is 1, no branches
+          subs = subs.filter(s => s.name !== 'Branches');
+        }
+        if (subs.length === 0) return null;
+        return { ...item, subItems: subs };
+      }
+      return item;
+    }).filter(Boolean);
+  }
+
 
 
   return (

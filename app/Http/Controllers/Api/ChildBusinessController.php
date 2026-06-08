@@ -14,6 +14,12 @@ class ChildBusinessController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+        $settings = \App\Models\Setting::where('business_id', $user->business_id)->first();
+        
+        if ($settings && !\App\Helpers\PlanHelper::checkLimit($settings->subscription_plan, 'shops', 1)) {
+            // If plan allows only 1 shop, they shouldn't access child businesses
+            return response()->json(['message' => 'Branch Transfer and multi-shop features are not available on your current plan. Please upgrade.'], 403);
+        }
 
         // Eager-load users so the frontend listing can show admin contact info
         $childBusinesss = Business::where('parent_id', $user->business_id)
@@ -49,22 +55,15 @@ class ChildBusinessController extends Controller
 
         // Check plan limits
         $parentSettings = Setting::withoutGlobalScopes()->where('business_id', $user->business_id)->first();
-        $plan = $parentSettings ? $parentSettings->subscription_plan : 'trial';
-
-        $limits = [
-            'trial'      => 3,
-            'pro'        => 10,
-            'business'   => 50,
-            'enterprise' => 9999999,
-        ];
-
-        $allowedLimit   = $limits[$plan] ?? 3;
-        $currentCount   = Business::where('parent_id', $user->business_id)->where('is_active', true)->count();
-
-        if ($currentCount >= $allowedLimit) {
-            return response()->json([
-                'message' => "You have reached the maximum allowed child shops ({$allowedLimit}) for your current plan. Please upgrade your subscription."
-            ], 403);
+        
+        if ($parentSettings) {
+            $currentCount = Business::where('parent_id', $user->business_id)->where('is_active', true)->count();
+            // Total shops = 1 (parent) + child shops. So check limit against 1 + current child count
+            if (!\App\Helpers\PlanHelper::checkLimit($parentSettings->subscription_plan, 'shops', $currentCount + 1)) {
+                return response()->json([
+                    'message' => "You have reached the maximum allowed shops for your current plan. Please upgrade your subscription."
+                ], 403);
+            }
         }
 
         $request->validate([

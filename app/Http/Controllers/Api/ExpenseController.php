@@ -10,6 +10,11 @@ class ExpenseController extends Controller
 {
     public function index(Request $request)
     {
+        $settings = \App\Models\Setting::first();
+        if ($settings && !\App\Helpers\PlanHelper::hasFeature($settings->subscription_plan, 'expense_tracking')) {
+            return response()->json(['message' => 'Expense Tracking is not available on your current plan. Please upgrade.'], 403);
+        }
+
         $query = Expense::query();
 
         if ($request->date_from) {
@@ -25,6 +30,11 @@ class ExpenseController extends Controller
 
     public function store(Request $request)
     {
+        $settings = \App\Models\Setting::first();
+        if ($settings && !\App\Helpers\PlanHelper::hasFeature($settings->subscription_plan, 'expense_tracking')) {
+            return response()->json(['message' => 'Expense Tracking is not available on your current plan. Please upgrade.'], 403);
+        }
+
         $validated = $request->validate([
             'expense_date' => 'required|date',
             'amount' => 'required|numeric|min:0',

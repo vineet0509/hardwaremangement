@@ -369,7 +369,7 @@ const Billing = () => {
 
             <div class="footer">
               <p>This is a computer generated invoice. No signature required.</p>
-              <p><strong>Terms & Conditions:</strong> ${getTermsAndConditions(settings.business_type)}</p>
+              <p><strong>Terms & Conditions:</strong> ${settings.terms_and_conditions ? settings.terms_and_conditions.replace(/\n/g, '<br/>') : getTermsAndConditions(settings.business_type)}</p>
             </div>
           </div>
           <script>window.onload = function() { window.print(); window.onafterprint = function() { window.close(); }; }</script>
@@ -425,11 +425,13 @@ const Billing = () => {
 
                const msgText = `*${shopName} Invoice* 🧾\n${gstStr}-----------------------------------\n*Bill No:* ${res.data.bill_number}\n*Customer:* ${res.data.customer_name || 'Walk-in'}\n\n*Items:*\n${itemListStr}\n-----------------------------------\n*Total Amount:* Rs. ${res.data.total}\n*Amount Paid:* Rs. ${res.data.paid_amount}\n*Balance Due:* Rs. ${res.data.due_amount}\n*Payment Mode:* ${String(res.data.payment_method).toUpperCase()}\n\n*Download PDF Bill:* ${pdfLink}\n\nThank you for shopping with us!`;
 
-               api.post('/bills/send-whatsapp', {
-                 bill_id: res.data.id,
-                 phone: wapn,
-                 message: msgText
-               }).catch(console.error);
+               if (settings?.plan_limits?.features?.includes('whatsapp_sharing')) {
+                 api.post('/bills/send-whatsapp', {
+                   bill_id: res.data.id,
+                   phone: wapn,
+                   message: msgText
+                 }).catch(console.error);
+               }
              }).catch(console.error);
         }
         
@@ -437,7 +439,7 @@ const Billing = () => {
         
         Swal.fire({
           title: 'Success!',
-          text: `Bill ${res.data.bill_number} generated and sent to WhatsApp.`,
+          text: `Bill ${res.data.bill_number} generated successfully.`,
           icon: 'success',
           timer: 3000
         });

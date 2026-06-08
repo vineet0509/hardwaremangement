@@ -7,7 +7,7 @@ const Settings = () => {
   const [formData, setFormData] = useState({
     company_name: '', company_phone: '', company_address: '', gst_number: '', business_type: '',
     subscription_plan: 'full_time', subscription_expires_at: '', latest_request: null,
-    upi_qr_code: null, upi_qr_code_url: ''
+    terms_and_conditions: '', upi_qr_code: null, upi_qr_code_url: ''
   });
   const [userData, setUserData] = useState({
     name: '', email: '', mobile: ''
@@ -18,29 +18,35 @@ const Settings = () => {
   const [loading, setLoading] = useState(true);
   const [gstChecking, setGstChecking] = useState(false);
   const [gstResult, setGstResult] = useState(null);
-  const [selectedPlan, setSelectedPlan] = useState('pro');
+  const [selectedPlan, setSelectedPlan] = useState('starter');
 
   const planBenefits = {
-    pro: [
-      "Unlimited Invoicing & Billing",
-      "Basic Inventory Management",
-      "Customer & Supplier Tracking",
-      "Standard Reports",
-      "Email Support"
+    free: [
+      "1 Shop",
+      "1 User",
+      "Billing, Inventory, Customers, Suppliers",
+      "Maximum 100 invoices per month"
+    ],
+    starter: [
+      "Everything in FREE",
+      "2 Users",
+      "Unlimited Invoices",
+      "GST Reports",
+      "WhatsApp Invoice Sharing"
     ],
     business: [
-      "All Pro Features",
-      "Multiple Branches / Child Businesses",
-      "Staff & Attendance Management",
-      "Advanced Analytics & Reporting",
-      "Priority Phone Support"
+      "Everything in STARTER",
+      "Staff Management (Max 25)",
+      "Attendance & Salary Management",
+      "Expense Tracking",
+      "Maximum 5 Users"
     ],
     enterprise: [
-      "All Business Features",
-      "Custom API Integrations",
-      "Dedicated Account Manager",
-      "99.9% Uptime SLA",
-      "On-premise / Custom Cloud Deployment"
+      "Everything in BUSINESS",
+      "Unlimited Shops & Users",
+      "Role & Permission Management",
+      "Branch Transfer",
+      "API Access & AI Features"
     ]
   };
 
@@ -75,6 +81,7 @@ const Settings = () => {
           subscription_plan: settingsRes.data.subscription_plan || 'full_time',
           subscription_expires_at: settingsRes.data.subscription_expires_at ? settingsRes.data.subscription_expires_at.split('T')[0] : '',
           latest_request: settingsRes.data.latest_request || null,
+          terms_and_conditions: settingsRes.data.terms_and_conditions || '',
           upi_qr_code: null,
           upi_qr_code_url: settingsRes.data.upi_qr_code || ''
         });
@@ -140,6 +147,16 @@ const Settings = () => {
   const handleSubscriptionRequest = async (e) => {
     e.preventDefault();
     const planType = e.target.plan_type.value;
+
+    const result = await Swal.fire({
+      title: 'Confirm Upgrade',
+      text: "You cannot downgrade your plan once upgraded. Are you sure you want to proceed?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, proceed to payment!'
+    });
+
+    if (!result.isConfirmed) return;
 
     const resLoad = await loadRazorpay();
     if (!resLoad) {
@@ -376,6 +393,11 @@ const Settings = () => {
               <textarea className="form-control" style={{ resize: 'vertical', minHeight: 80 }}
                 value={formData.company_address} onChange={e => setFormData({...formData, company_address: e.target.value})} />
             </div>
+            <div className="form-group">
+              <label className="form-label">Custom Terms & Conditions (For Invoice)</label>
+              <textarea className="form-control" placeholder="Leave blank to use default terms based on your business type..." style={{ resize: 'vertical', minHeight: 80 }}
+                value={formData.terms_and_conditions} onChange={e => setFormData({...formData, terms_and_conditions: e.target.value})} />
+            </div>
             
             <div className="form-group" style={{ marginTop: 20, borderTop: '1px solid var(--border)', paddingTop: 20 }}>
               <h4 style={{ marginBottom: 12 }}>UPI QR Code (Manual Payment)</h4>
@@ -446,9 +468,9 @@ const Settings = () => {
                  <form onSubmit={handleSubscriptionRequest}>
                     <div className="form-group">
                       <select name="plan_type" className="form-control" required style={{ marginBottom: 12 }} value={selectedPlan} onChange={(e) => setSelectedPlan(e.target.value)}>
-                        <option value="pro">Pro Plan - ₹2,999</option>
-                        <option value="business">Business Plan - ₹4,999</option>
-                        <option value="enterprise">Enterprise Plan - ₹9,999</option>
+                        <option value="starter">STARTER Plan - ₹999/year</option>
+                        <option value="business">BUSINESS Plan - ₹2,499/year</option>
+                        <option value="enterprise">ENTERPRISE Plan - ₹4,999/year</option>
                       </select>
                     </div>
 

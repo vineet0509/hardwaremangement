@@ -260,6 +260,11 @@ class BillController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $settings = \App\Models\Setting::first();
+        if ($settings && !\App\Helpers\PlanHelper::checkLimit($settings->subscription_plan, 'invoices_per_month', Bill::whereMonth('created_at', \Carbon\Carbon::now()->month)->count())) {
+            return response()->json(['message' => 'Monthly invoice limit reached for your FREE plan. Please upgrade to create more invoices.'], 403);
+        }
+
         $data = $request->validate([
             'customer_name'    => 'required|string|max:255',
             'customer_phone'   => 'required|string|max:20',
@@ -556,8 +561,13 @@ class BillController extends Controller
     }
 
 
-    public function sendWhatsApp(Request $request): JsonResponse
+    public function sendWhatsApp(Request $request)
     {
+        $settings = \App\Models\Setting::first();
+        if ($settings && !\App\Helpers\PlanHelper::hasFeature($settings->subscription_plan, 'whatsapp_sharing')) {
+            return response()->json(['message' => 'WhatsApp sharing is not available on your current plan. Please upgrade.'], 403);
+        }
+
         $request->validate([
             'bill_id' => 'required|exists:bills,id',
             'phone' => 'required|string',
