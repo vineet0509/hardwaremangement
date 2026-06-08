@@ -251,7 +251,88 @@ class BillController extends Controller
 
         } catch (\Exception $e) {
             Log::error('Razorpay Verify Error: ' . $e->getMessage());
-            return response()->json(['message' => 'Failed to verify payment.'], 400);
+            return response()->json(['message' => 'Failed to verify payment. ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function createRazorpayLink($billId)
+    {
+        $bill = Bill::where('business_id', auth('sanctum')->user()->business_id)->findOrFail($billId);
+        $setting = Setting::where('business_id', auth('sanctum')->user()->business_id)->first();
+        
+        $key = $setting->razorpay_key;
+        $secret = $setting->razorpay_secret;
+
+        if (!$key || !$secret) {
+            return response()->json(['message' => 'Razorpay keys are not configured in settings.'], 500);
+        }
+
+        try {
+            $api = new Api($key, $secret);
+            $linkData = [
+                'amount' => round($bill->total * 100), // create link for total
+                'currency' => 'INR',
+                'accept_partial' => false,
+                'description' => 'Payment for Bill #' . $bill->bill_number,
+                'customer' => [
+                    'name' => $bill->customer_name ?: 'Customer',
+                    'contact' => $bill->customer_phone ?: '',
+                ],
+                'notify' => [
+                    'sms' => false,
+                    'email' => false
+                ],
+                'reminder_enable' => false,
+                'notes' => [
+                    'bill_id' => $bill->id
+                ]
+            ];
+            
+            $linkData['reference_id'] = $bill->id . '_' . time();
+
+            $paymentLink = $api->paymentLink->create($linkData);
+
+            $bill->update([
+                'razorpay_payment_link_id' => $paymentLink['id']
+            ]);
+
+            return response()->json([
+                'short_url' => $paymentLink['short_url'],
+                'id' => $paymentLink['id']
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Razorpay Link Error: ' . $e->getMessage());
+            return response()->json(['message' => 'Failed to generate Razorpay Payment Link. ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function verifyRazorpayLink(Request $request, $billId)
+    {
+        $bill = Bill::where('business_id', auth('sanctum')->user()->business_id)->findOrFail($billId);
+        $setting = Setting::where('business_id', auth('sanctum')->user()->business_id)->first();
+        
+        $key = $setting->razorpay_key;
+        $secret = $setting->razorpay_secret;
+
+        try {
+            $api = new Api($key, $secret);
+            $paymentLink = $api->paymentLink->fetch($bill->razorpay_payment_link_id);
+
+            if ($paymentLink['status'] === 'paid') {
+                $bill->update([
+                    'status' => 'paid',
+                    'due_amount' => 0,
+                    'paid_amount' => $bill->total,
+                    'payment_method' => 'razorpay'
+                ]);
+
+                return response()->json(['status' => 'paid']);
+            }
+
+            return response()->json(['status' => $paymentLink['status']]);
+        } catch (\Exception $e) {
+            Log::error('Razorpay Verify Link Error: ' . $e->getMessage());
+            return response()->json(['message' => 'Failed to verify payment link status. ' . $e->getMessage()], 500);
         }
     }
 

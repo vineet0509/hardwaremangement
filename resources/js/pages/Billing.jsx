@@ -513,6 +513,19 @@ const Billing = () => {
              });
              return; // Stop here, modal will handle finish
         }
+
+        if (payment.method === 'razorpay_qr') {
+             setRazorpayModal({ show: true, loading: true, billId: res.data.id, shortUrl: '' });
+             api.post(`/bills/${res.data.id}/razorpay-link`)
+                .then(linkRes => {
+                    setRazorpayModal({ show: true, loading: false, billId: res.data.id, shortUrl: linkRes.data.short_url });
+                })
+                .catch(err => {
+                    setRazorpayModal({ show: false, loading: false, billId: null, shortUrl: '' });
+                    Swal.fire('Error', 'Failed to generate Razorpay Payment Link: ' + (err.response?.data?.message || ''), 'error');
+                });
+             return; // Stop here
+        }
         
         Swal.fire({
           title: 'Success!',
@@ -880,8 +893,9 @@ const Billing = () => {
             <div className="responsive-payment-grid">
               {[
                 { value: 'cash', label: 'Cash', emoji: '💵', color: '#10b981', bg: 'rgba(16,185,129,0.08)' },
-                { value: 'upi', label: 'UPI', emoji: '📱', color: '#3b82f6', bg: 'rgba(59,130,246,0.08)' },
-                { value: 'razorpay', label: 'Razorpay', emoji: '🟦', color: '#0052cc', bg: 'rgba(0,82,204,0.08)' },
+                { value: 'card', label: 'Card (Swipe)', emoji: '💳', color: '#8b5cf6', bg: 'rgba(139,92,246,0.08)' },
+                { value: 'razorpay', label: 'Razorpay (Checkout)', emoji: '🟦', color: '#0052cc', bg: 'rgba(0,82,204,0.08)' },
+                { value: 'razorpay_qr', label: 'Razorpay (QR Code)', emoji: '📱', color: '#0052cc', bg: 'rgba(0,82,204,0.08)' },
                 { value: 'credit', label: 'Credit', emoji: '📝', color: '#f59e0b', bg: 'rgba(245,158,11,0.08)' },
               ].map(mode => (
                 <button
@@ -969,10 +983,53 @@ const Billing = () => {
         {/* Footer Checkout Button */}
         <div className="panel-footer" style={{ padding: '12px 16px', background: 'var(--surface)', borderTop: '1px solid var(--border)', flexShrink: 0 }}>
           <button className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '14px', fontSize: '1.05rem', fontWeight: 800, borderRadius: '8px', letterSpacing: '0.02em', boxShadow: '0 4px 10px rgba(79, 70, 229, 0.3)' }} onClick={handleCheckout}>
-            {payment.method === 'razorpay' ? <><QrCode size={20} /> Open Checkout</> : <><Save size={20} /> {editBillId ? 'Save Adjusted Bill' : 'Complete Order & Print'}</>}
+            {payment.method.includes('razorpay') ? <><QrCode size={20} /> {payment.method === 'razorpay_qr' ? 'Generate QR Code' : 'Open Checkout'}</> : <><Save size={20} /> {editBillId ? 'Save Adjusted Bill' : 'Complete Order & Print'}</>}
           </button>
         </div>
       </div>
+
+      {/* Razorpay QR Modal */}
+      {razorpayModal.show && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: 'var(--surface)', padding: 24, borderRadius: 12, width: '90%', maxWidth: 400, textAlign: 'center', boxShadow: '0 10px 25px rgba(0,0,0,0.2)' }}>
+            <h3 style={{ marginBottom: 16 }}>Scan to Pay</h3>
+            {razorpayModal.loading ? (
+               <div style={{ padding: 40, color: 'var(--text-muted)' }}>Generating QR Code...</div>
+            ) : razorpayModal.shortUrl ? (
+               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+                 <div style={{ padding: 16, background: '#fff', borderRadius: 8 }}>
+                   <QRCodeSVG value={razorpayModal.shortUrl} size={200} />
+                 </div>
+                 <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Ask the customer to scan this QR code with any UPI app or their phone camera.</p>
+                 <button className="btn btn-primary" style={{ width: '100%', padding: 12, display: 'flex', justifyContent: 'center', gap: 8 }} onClick={() => {
+                     // Check status
+                     api.post(`/bills/${razorpayModal.billId}/razorpay-link-verify`).then(res => {
+                         if (res.data.status === 'paid') {
+                             Swal.fire('Payment Received!', 'The bill has been marked as paid.', 'success');
+                             setRazorpayModal({ show: false, billId: null, shortUrl: '', loading: false });
+                             localStorage.removeItem('billing_draft');
+                             setCart([]);
+                             setCustomerInfo({ name: '', phone: '', address: '' });
+                             setPayment({ method: 'cash', paid: 0, discount: 0, other_charges: 0, upi_digits: '' });
+                             api.get('/udhar').then(res => setUdharCustomers(res.data)).catch(console.error);
+                             navigate('/bills');
+                         } else {
+                             Swal.fire('Not Paid', 'The payment has not been received yet. Status: ' + res.data.status, 'warning');
+                         }
+                     }).catch(err => Swal.fire('Error', 'Failed to check status', 'error'));
+                 }}>
+                   Check Payment Status
+                 </button>
+                 <button className="btn btn-outline" style={{ width: '100%', padding: 12, color: 'var(--text-muted)', border: 'none' }} onClick={() => setRazorpayModal({ show: false, billId: null, shortUrl: '', loading: false })}>
+                   Cancel / Close
+                 </button>
+               </div>
+            ) : (
+               <div style={{ color: 'var(--danger)' }}>Failed to load QR code.</div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -70,6 +70,8 @@ Route::post('/bills/{bill}/return', [BillController::class, 'returnItems']);
 Route::get('/bills/{bill}/pdf', [BillController::class, 'downloadPDF']);
 Route::post('/bills/{bill}/razorpay-order', [BillController::class, 'createRazorpayOrder']);
 Route::post('/bills/{bill}/razorpay-verify', [BillController::class, 'verifyRazorpayPayment']);
+Route::post('/bills/{bill}/razorpay-link', [BillController::class, 'createRazorpayLink']);
+Route::post('/bills/{bill}/razorpay-link-verify', [BillController::class, 'verifyRazorpayLink']);
 Route::get('/bills/export', [BillController::class, 'exportCSV']);
 Route::post('/bills/send-whatsapp', [BillController::class, 'sendWhatsApp']);
 Route::apiResource('bills', BillController::class);
