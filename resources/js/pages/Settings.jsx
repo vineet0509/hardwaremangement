@@ -7,7 +7,7 @@ const Settings = () => {
   const [formData, setFormData] = useState({
     company_name: '', company_phone: '', company_address: '', gst_number: '', business_type: '',
     subscription_plan: 'full_time', subscription_expires_at: '', latest_request: null,
-    terms_and_conditions: '', upi_qr_code: null, upi_qr_code_url: ''
+    terms_and_conditions: '', upi_qr_code: '', upi_qr_code_url: ''
   });
   const [userData, setUserData] = useState({
     name: '', email: '', mobile: ''
@@ -82,8 +82,8 @@ const Settings = () => {
           subscription_expires_at: settingsRes.data.subscription_expires_at ? settingsRes.data.subscription_expires_at.split('T')[0] : '',
           latest_request: settingsRes.data.latest_request || null,
           terms_and_conditions: settingsRes.data.terms_and_conditions || '',
-          upi_qr_code: null,
-          upi_qr_code_url: settingsRes.data.upi_qr_code || ''
+          upi_qr_code: settingsRes.data.upi_qr_code || '',
+          upi_qr_code_url: ''
         });
         if (settingsRes.data.latest_request && settingsRes.data.latest_request.status === 'pending') {
           setSelectedPlan(settingsRes.data.latest_request.plan_type);
