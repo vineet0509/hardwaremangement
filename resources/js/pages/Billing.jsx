@@ -520,7 +520,7 @@ const Billing = () => {
               <td className="tally-cell-search" style={{ padding: '12px', position: 'relative' }}>
                 <input 
                   type="text" 
-                  placeholder="Type to search and add item..." 
+                  placeholder="🔍 Search products by name or SKU..." 
                   value={search} 
                   onChange={e => setSearch(e.target.value)}
                   onKeyDown={e => {
@@ -530,17 +530,20 @@ const Billing = () => {
                       else if (products.length > 0) { addToCart(products[0]); setSearch(''); }
                     }
                   }}
-                  style={{ width: '100%', padding: '8px 12px', border: '1.5px dashed #94a3b8', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', background: '#ffffff', color: '#0f172a' }} 
+                  style={{ width: '100%', padding: '12px 16px', border: '2px solid #3b82f6', borderRadius: '8px', fontSize: '1rem', outline: 'none', background: '#ffffff', color: '#0f172a', fontWeight: 600, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }} 
                 />
                 {search && products.length > 0 && (
-                  <div style={{ position: 'absolute', top: '100%', left: '12px', right: '12px', zIndex: 100, background: '#fff', border: '1px solid #cbd5e1', borderRadius: '6px', maxHeight: '250px', overflowY: 'auto', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}>
+                  <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 1000, background: '#fff', border: '1px solid #cbd5e1', borderRadius: '8px', maxHeight: '300px', overflowY: 'auto', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)', marginTop: '8px' }}>
                     {products.map(p => (
-                      <div key={p.id} onClick={() => { addToCart(p); setSearch(''); }} style={{ padding: '10px 12px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div>
-                          <div style={{ fontWeight: 600, color: '#0f172a' }}>{p.name}</div>
-                          <div style={{ fontSize: '0.8rem', color: '#64748b' }}>Stock: {p.quantity} {p.unit}</div>
+                      <div key={p.id} onClick={() => { addToCart(p); setSearch(''); }} style={{ padding: '14px 16px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '1.05rem', marginBottom: '4px' }}>{p.name}</div>
+                          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                            <span style={{ fontSize: '0.8rem', color: '#64748b', background: '#f1f5f9', padding: '2px 8px', borderRadius: '12px', fontWeight: 600 }}>Stock: {p.quantity} {p.unit}</span>
+                            {p.sku && <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>SKU: {p.sku}</span>}
+                          </div>
                         </div>
-                        <div style={{ fontWeight: 700, color: '#10b981' }}>₹{p.selling_price}</div>
+                        <div style={{ fontWeight: 800, color: '#10b981', fontSize: '1.1rem', textAlign: 'right' }}>₹{p.selling_price}</div>
                       </div>
                     ))}
                   </div>
