@@ -1,6 +1,6 @@
 {
   "appId": "com.vineet0509.hardwaremanager",
-  "appName": "Hardware Manager",
+  "appName": "VyaparSync",
   "webDir": "build",
   "bundledWebRuntime": false,
   "server": {

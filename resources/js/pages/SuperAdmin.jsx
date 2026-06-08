@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
-import { Shield, Store, Users, Calendar, CheckCircle, XCircle, ToggleLeft, ToggleRight } from 'lucide-react';
+import { Shield, Store, Users, Calendar, CheckCircle, XCircle, ToggleLeft, ToggleRight, Phone, Mail } from 'lucide-react';
 
 import Swal from 'sweetalert2';
 
@@ -178,7 +178,7 @@ const SuperAdmin = () => {
               <tr style={{ borderBottom: '2px solid var(--border)', color: 'var(--text-muted)' }}>
                 <th style={{ padding: '12px 16px' }}>ID</th>
                 <th style={{ padding: '12px 16px' }}>Business Name</th>
-                <th style={{ padding: '12px 16px' }}>Domain</th>
+                <th style={{ padding: '12px 16px' }}>Contact Details</th>
                 <th style={{ padding: '12px 16px' }}>Users</th>
                 <th style={{ padding: '12px 16px' }}>Plan</th>
                 <th style={{ padding: '12px 16px' }}>Expires</th>
@@ -191,7 +191,20 @@ const SuperAdmin = () => {
                 <tr key={shop.id} style={{ borderBottom: '1px solid var(--border)', transition: 'background-color 0.2s' }}>
                   <td style={{ padding: '16px' }}>{shop.id}</td>
                   <td style={{ padding: '16px', fontWeight: 600 }}>{shop.name}</td>
-                  <td style={{ padding: '16px', color: 'var(--text-muted)' }}>{shop.domain}</td>
+                  <td style={{ padding: '16px', color: 'var(--text-muted)' }}>
+                    {shop.users && shop.users.length > 0 ? (
+                      <>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                          <Phone size={14} /> <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>{shop.users[0].mobile || 'No Mobile'}</span>
+                        </div>
+                        {shop.users[0].email && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.85rem' }}>
+                            <Mail size={14} /> <span>{shop.users[0].email}</span>
+                          </div>
+                        )}
+                      </>
+                    ) : 'No User'}
+                  </td>
                   <td style={{ padding: '16px' }}>
                     <button 
                       className="btn btn-secondary" 
