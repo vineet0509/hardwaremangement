@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
 import { downloadFile, downloadBlob } from '../utils/webview';
 import { Plus, Search, AlertTriangle, ArrowUpCircle, ArrowDownCircle, Edit2, Trash2 } from 'lucide-react';
+import Pagination from '../components/Pagination';
 
 import Swal from 'sweetalert2';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const [categories, setCategories] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -74,7 +77,10 @@ const Products = () => {
   const fetchData = () => {
     setLoading(true);
     api.get(`/products?search=${search}`)
-      .then(res => setProducts(res.data.data || res.data))
+      .then(res => {
+        setProducts(res.data.data || res.data);
+        setCurrentPage(1);
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   };
@@ -174,26 +180,33 @@ const Products = () => {
         </div>
       </div>
 
-      <div className="table-container">
-        <div className="table-responsive"><table>
-          <thead>
-            <tr>
-              <th>SKU</th>
-              <th>Product Name</th>
-              <th>Category</th>
-              <th>Cost Price</th>
-              <th>Sell Price</th>
-              <th>Stock</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td colSpan="7" style={{ textAlign: 'center' }}>Loading...</td></tr>
-            ) : (!products || !Array.isArray(products) || products.length === 0) ? (
-              <tr><td colSpan="7" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No products found.</td></tr>
-            ) : products.map(p => (
-              <tr key={p.id}>
+      <div className="card" style={{ overflowX: 'auto', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
+        {(() => {
+          const totalPages = Math.ceil((products || []).length / itemsPerPage);
+          const currentProducts = (products || []).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+          
+          return (
+            <>
+              <div className="table-responsive">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>SKU</th>
+                      <th>Product Name</th>
+                      <th>Category</th>
+                      <th>Cost Price</th>
+                      <th>Sell Price</th>
+                      <th>Stock</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loading ? (
+                      <tr><td colSpan="7" style={{ textAlign: 'center' }}>Loading...</td></tr>
+                    ) : (!currentProducts || !Array.isArray(currentProducts) || currentProducts.length === 0) ? (
+                      <tr><td colSpan="7" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No products found.</td></tr>
+                    ) : currentProducts.map(p => (
+                      <tr key={p.id}>
                 <td><span className="badge" style={{ background: 'var(--surface-hover)' }}>{p.sku}</span></td>
                 <td>
                   <div style={{ fontWeight: 500 }}>{p.name}</div>
@@ -244,8 +257,13 @@ const Products = () => {
                 </td>
               </tr>
             ))}
-          </tbody>
-        </table></div>
+                  </tbody>
+                </table>
+              </div>
+              <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+            </>
+          );
+        })()}
       </div>
 
       {showModal && (

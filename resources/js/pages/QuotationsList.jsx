@@ -5,9 +5,12 @@ import { printHtml, openWhatsApp } from '../utils/webview';
 import { getTermsAndConditions } from '../utils/terms';
 import { Search, Printer, Trash2, MessageSquare, Plus, FileText, Edit2, ArrowRightCircle } from 'lucide-react';
 import Swal from 'sweetalert2';
+import Pagination from '../components/Pagination';
 
 const QuotationsList = () => {
   const [quotations, setQuotations] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
@@ -29,6 +32,10 @@ const QuotationsList = () => {
     (q.customer_name?.toLowerCase().includes(search.toLowerCase())) ||
     (q.customer_phone?.includes(search))
   );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
 
   const deleteQuotation = (id) => {
     Swal.fire({ title: 'Delete Quotation?', text: 'This action cannot be undone.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Yes, delete it' })
@@ -139,9 +146,23 @@ const QuotationsList = () => {
             <div class="totals">
               <div class="row"><span>Subtotal:</span> <span>₹${quote.subtotal}</span></div>
               <div class="row"><span>Discount:</span> <span>₹${quote.discount}</span></div>
-              ${parseFloat(quote.other_charges) > 0 ? `
-              <div class="row"><span>Other Charges:</span> <span>+ ₹${quote.other_charges}</span></div>
-              ` : ''}
+              ${parseFloat(quote.other_charges) > 0 ? (
+                (() => {
+                  let details = quote.other_charges_details;
+                  if (typeof details === 'string') {
+                    try { details = JSON.parse(details); } catch(e) { details = []; }
+                  }
+                  if (Array.isArray(details) && details.length > 0) {
+                    return details.map(charge => `
+                      <div class="row"><span>${charge.name || 'Other Charge'}:</span> <span>+ ₹${charge.amount || 0}</span></div>
+                    `).join('');
+                  } else {
+                    return `
+                      <div class="row"><span>Other Charges:</span> <span>+ ₹${quote.other_charges}</span></div>
+                    `;
+                  }
+                })()
+              ) : ''}
               ${quote.is_gst ? `
                 <div class="row"><span>CGST (9%):</span> <span>₹${(quote.tax / 2).toFixed(2)}</span></div>
                 <div class="row"><span>SGST (9%):</span> <span>₹${(quote.tax / 2).toFixed(2)}</span></div>
@@ -191,9 +212,16 @@ const QuotationsList = () => {
         </div>
       </div>
 
-      <div className="table-container">
-        <div className="table-responsive"><table>
-          <thead>
+      <div className="card" style={{ overflowX: 'auto', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
+        {(() => {
+          const totalPages = Math.ceil((filteredQuotations || []).length / itemsPerPage);
+          const currentQuotations = (filteredQuotations || []).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+          
+          return (
+            <>
+              <div className="table-responsive">
+                <table className="table">
+                  <thead>
             <tr>
               <th>Quotation No</th>
               <th>Date</th>
@@ -206,9 +234,9 @@ const QuotationsList = () => {
           <tbody>
             {loading ? (
               <tr><td colSpan="6" style={{ textAlign: 'center' }}>Loading...</td></tr>
-            ) : (!filteredQuotations || filteredQuotations.length === 0) ? (
+            ) : (!currentQuotations || currentQuotations.length === 0) ? (
               <tr><td colSpan="6" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No quotations found.</td></tr>
-            ) : filteredQuotations.map(q => (
+            ) : currentQuotations.map(q => (
               <tr key={q.id}>
                 <td style={{ fontWeight: 700, color: '#3b82f6' }}>{q.quotation_number}</td>
                 <td style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>{new Date(q.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
@@ -243,7 +271,12 @@ const QuotationsList = () => {
               </tr>
             ))}
           </tbody>
-        </table></div>
+        </table>
+        </div>
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        </>
+        );
+      })()}
       </div>
     </div>
   );

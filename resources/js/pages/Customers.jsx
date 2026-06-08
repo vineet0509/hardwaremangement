@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Search, UserCheck, TrendingUp, AlertCircle, Eye, Edit2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
+import Pagination from '../components/Pagination';
 
 import Swal from 'sweetalert2';
 
 const Customers = () => {
   const [customers, setCustomers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
@@ -16,7 +19,10 @@ const Customers = () => {
   const fetchCustomers = () => {
     setLoading(true);
     api.get(`/customers?search=${search}`)
-       .then(res => setCustomers(res.data.data || res.data))
+       .then(res => {
+          setCustomers(res.data.data || res.data);
+          setCurrentPage(1);
+       })
        .catch(err => console.error(err))
        .finally(() => setLoading(false));
   };
@@ -53,9 +59,16 @@ const Customers = () => {
         </div>
       </div>
 
-      <div className="table-container">
-        <div className="table-responsive"><table>
-          <thead>
+      <div className="card" style={{ overflowX: 'auto', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
+        {(() => {
+          const totalPages = Math.ceil((customers || []).length / itemsPerPage);
+          const currentCustomers = (customers || []).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+          
+          return (
+            <>
+              <div className="table-responsive">
+                <table className="table">
+                  <thead>
             <tr>
               <th>Customer details</th>
               <th>Address</th>
@@ -69,9 +82,9 @@ const Customers = () => {
           <tbody>
             {loading ? (
               <tr><td colSpan="7" style={{ textAlign: 'center', padding: 40 }}>Loading customers database...</td></tr>
-            ) : (!customers || customers.length === 0) ? (
+            ) : (!currentCustomers || currentCustomers.length === 0) ? (
               <tr><td colSpan="7" style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>No customers found matching that query.</td></tr>
-            ) : customers.map((c, i) => (
+            ) : currentCustomers.map((c, i) => (
               <tr key={i}>
                 <td>
                   <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>{c.customer_name}</div>
@@ -119,7 +132,12 @@ const Customers = () => {
               </tr>
             ))}
           </tbody>
-        </table></div>
+        </table>
+        </div>
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        </>
+        );
+      })()}
       </div>
 
       {showModal && (

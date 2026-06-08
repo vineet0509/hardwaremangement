@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
 import { Truck, Phone, Mail, MapPin, Plus, Edit, Trash2, Save, X, IndianRupee, FileText } from 'lucide-react';
+import Pagination from '../components/Pagination';
 
 import Swal from 'sweetalert2';
 
 const Suppliers = () => {
   const [suppliers, setSuppliers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingSupplier, setEditingSupplier] = useState(null);
@@ -134,9 +137,16 @@ const Suppliers = () => {
         </button>
       </div>
 
-      <div className="table-responsive">
-        <table style={{ width: '100%', borderCollapse: 'collapse', background: 'var(--surface)', borderRadius: '12px', overflow: 'hidden' }}>
-          <thead>
+      <div className="card" style={{ overflowX: 'auto', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
+        {(() => {
+          const totalPages = Math.ceil((suppliers || []).length / itemsPerPage);
+          const currentSuppliers = (suppliers || []).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+          
+          return (
+            <>
+              <div className="table-responsive">
+                <table className="table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                  <thead>
             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: '2px solid var(--border)', textAlign: 'left' }}>
               <th style={{ padding: '16px' }}>Name</th>
               <th style={{ padding: '16px' }}>Phone</th>
@@ -146,7 +156,11 @@ const Suppliers = () => {
             </tr>
           </thead>
           <tbody>
-            {suppliers.map(sup => (
+            {loading ? (
+              <tr><td colSpan="5" style={{ padding: '32px', textAlign: 'center' }}>Loading suppliers...</td></tr>
+            ) : (!currentSuppliers || currentSuppliers.length === 0) ? (
+              <tr><td colSpan="5" style={{ padding: '32px', textAlign: 'center', color: 'var(--text-muted)' }}>No suppliers recorded.</td></tr>
+            ) : currentSuppliers.map(sup => (
               <tr key={sup.id} style={{ borderBottom: '1px solid var(--border)' }}>
                 <td style={{ padding: '16px', fontWeight: 600 }}>{sup.name}</td>
                 <td style={{ padding: '16px' }}>{sup.phone || 'N/A'}</td>
@@ -182,13 +196,13 @@ const Suppliers = () => {
                 </td>
               </tr>
             ))}
-            {suppliers.length === 0 && (
-              <tr>
-                <td colSpan="5" style={{ padding: '32px', textAlign: 'center', color: 'var(--text-muted)' }}>No suppliers recorded.</td>
-              </tr>
-            )}
           </tbody>
         </table>
+        </div>
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        </>
+        );
+      })()}
       </div>
 
       {/* Add / Edit Modal */}

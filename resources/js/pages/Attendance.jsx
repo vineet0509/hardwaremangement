@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
 import { Calendar, MapPin, Clock } from 'lucide-react';
+import Pagination from '../components/Pagination';
 
 const Attendance = ({ user }) => {
   const [attendances, setAttendances] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const [loading, setLoading] = useState(true);
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [mapLocation, setMapLocation] = useState(null);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [fromDate, toDate]);
 
   useEffect(() => {
     api.get('/attendance/all')
@@ -58,14 +65,20 @@ const Attendance = ({ user }) => {
           <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No attendance records found.</div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {attendances
-              .filter(record => {
+            {(() => {
+              const filteredAttendances = attendances.filter(record => {
                 const recordDateStr = record.date.substring(0, 10);
                 if (fromDate && recordDateStr < fromDate) return false;
                 if (toDate && recordDateStr > toDate) return false;
                 return true;
-              })
-              .map(record => (
+              });
+              
+              const totalPages = Math.ceil(filteredAttendances.length / itemsPerPage);
+              const currentAttendances = filteredAttendances.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+              return (
+                <>
+                  {currentAttendances.map(record => (
               <div key={record.id} style={{ display: 'flex', flexDirection: 'column', gap: '12px', padding: '16px', border: '1px solid var(--border)', borderRadius: '12px', background: 'var(--surface-hover)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border)', paddingBottom: '8px' }}>
                   {user?.role !== 'staff' ? (
@@ -109,18 +122,18 @@ const Attendance = ({ user }) => {
                   </div>
                 </div>
               </div>
-            ))}
-            
-            {attendances.filter(record => {
-                const recordDateStr = record.date.substring(0, 10);
-                if (fromDate && recordDateStr < fromDate) return false;
-                if (toDate && recordDateStr > toDate) return false;
-                return true;
-            }).length === 0 && (
-              <div style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)' }}>
-                No records found for the selected date.
-              </div>
-            )}
+                  ))}
+                  
+                  {filteredAttendances.length === 0 && (
+                    <div style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)' }}>
+                      No records found for the selected date.
+                    </div>
+                  )}
+                  
+                  <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+                </>
+              );
+            })()}
           </div>
         )}
       </div>

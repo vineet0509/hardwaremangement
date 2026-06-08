@@ -4,11 +4,14 @@ import api from '../utils/api';
 import { printHtml, downloadFile, openWhatsApp } from '../utils/webview';
 import { getTermsAndConditions } from '../utils/terms';
 import { Search, Receipt, Printer, Trash2, Banknote, X, Edit2, MessageSquare, FileText } from 'lucide-react';
+import Pagination from '../components/Pagination';
 
 import Swal from 'sweetalert2';
 
 const BillsList = () => {
   const [bills, setBills] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [summary, setSummary] = useState({ total_sale: 0, total_due: 0 });
@@ -41,6 +44,7 @@ const BillsList = () => {
     api.get(url)
       .then(res => {
         setBills(res.data.data || res.data);
+        setCurrentPage(1);
         if (res.data.summary_total_sale !== undefined) {
           setSummary({
             total_sale: res.data.summary_total_sale,
@@ -375,8 +379,15 @@ const BillsList = () => {
         </div>
       </div>
 
-      <div className="table-container">
-        <div className="table-responsive"><table>
+      <div className="card" style={{ overflowX: 'auto', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
+        {(() => {
+          const totalPages = Math.ceil((bills || []).length / itemsPerPage);
+          const currentBills = (bills || []).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+          
+          return (
+            <>
+              <div className="table-responsive">
+                <table className="table">
           <thead>
             <tr>
               <th>Bill No</th>
@@ -393,9 +404,9 @@ const BillsList = () => {
           <tbody>
             {loading ? (
               <tr><td colSpan="8" style={{ textAlign: 'center' }}>Loading...</td></tr>
-            ) : (!bills || !Array.isArray(bills) || bills.length === 0) ? (
+            ) : (!currentBills || !Array.isArray(currentBills) || currentBills.length === 0) ? (
               <tr><td colSpan="8" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No bills found.</td></tr>
-            ) : bills.map(b => (
+            ) : currentBills.map(b => (
               <tr key={b.id} style={{ background: b.type === 'return' ? 'rgba(239, 68, 68, 0.05)' : 'transparent' }}>
                 <td style={{ fontWeight: 600, color: b.type === 'return' ? 'var(--danger)' : 'var(--primary)' }}>
                   {b.bill_number}
@@ -483,7 +494,12 @@ const BillsList = () => {
               </tr>
             ))}
           </tbody>
-        </table></div>
+                </table>
+              </div>
+              <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+            </>
+          );
+        })()}
         
         <div style={{ padding: '16px', background: 'var(--surface)', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'flex-end', gap: '24px', fontWeight: 'bold' }}>
            <div style={{ fontSize: '1.1rem' }}>Total Sale: <span style={{ color: 'var(--primary)' }}>₹{Number(summary.total_sale).toFixed(2)}</span></div>

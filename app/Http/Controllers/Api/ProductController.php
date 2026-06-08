@@ -34,7 +34,7 @@ class ProductController extends Controller
             $query->whereColumn('quantity', '<=', 'min_stock_alert');
         }
 
-        $products = $query->orderBy('name')->paginate(20);
+        $products = $query->orderBy('name')->get();
         return response()->json($products);
     }
 

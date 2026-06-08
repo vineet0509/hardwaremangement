@@ -20,7 +20,7 @@ const QuotationCreate = () => {
   const [customerInfo, setCustomerInfo] = useState({ name: '', phone: '', address: '' });
   const [customerResults, setCustomerResults] = useState([]);
   const [discount, setDiscount] = useState(0);
-  const [otherCharges, setOtherCharges] = useState(0);
+  const [otherChargesDetails, setOtherChargesDetails] = useState([]);
   const [isGst, setIsGst] = useState(false);
   const [notes, setNotes] = useState('');
   const [mobileTab, setMobileTab] = useState('products');
@@ -58,7 +58,17 @@ const QuotationCreate = () => {
         setCustomerInfo({ name: q.customer_name || '', phone: q.customer_phone || '', address: q.customer_address || '' });
         setIsGst(q.is_gst || false);
         setDiscount(q.discount);
-        setOtherCharges(q.other_charges || 0);
+        let details = q.other_charges_details;
+        if (typeof details === 'string') {
+          try { details = JSON.parse(details); } catch(e) { details = []; }
+        }
+        if (Array.isArray(details) && details.length > 0) {
+          setOtherChargesDetails(details);
+        } else if (q.other_charges > 0) {
+          setOtherChargesDetails([{ name: 'Other Charge', amount: q.other_charges }]);
+        } else {
+          setOtherChargesDetails([]);
+        }
         setNotes(q.notes || '');
         setCart(q.items.map(i => ({
            product_id: i.product_id,
@@ -81,7 +91,11 @@ const QuotationCreate = () => {
           setCart(draft.cart);
           if (draft.customerInfo) setCustomerInfo(draft.customerInfo);
           if (draft.discount !== undefined) setDiscount(draft.discount);
-          if (draft.otherCharges !== undefined) setOtherCharges(draft.otherCharges);
+          if (draft.otherChargesDetails !== undefined) {
+             setOtherChargesDetails(draft.otherChargesDetails);
+          } else if (draft.otherCharges !== undefined) {
+             setOtherChargesDetails(draft.otherCharges > 0 ? [{ name: 'Other Charge', amount: draft.otherCharges }] : []);
+          }
           if (draft.notes) setNotes(draft.notes);
           if (draft.isGst !== undefined) setIsGst(draft.isGst);
         }
@@ -94,13 +108,23 @@ const QuotationCreate = () => {
     if (!editQuotationId) {
       if (cart.length > 0 || customerInfo.name) {
         localStorage.setItem('quotation_draft', JSON.stringify({
-          cart, customerInfo, discount, otherCharges, notes, isGst
+          cart, customerInfo, discount, otherChargesDetails, notes, isGst
         }));
       } else {
         localStorage.removeItem('quotation_draft');
       }
     }
-  }, [cart, customerInfo, discount, otherCharges, notes, isGst]);
+  }, [cart, customerInfo, discount, otherChargesDetails, notes, isGst]);
+
+  const addOtherCharge = () => setOtherChargesDetails(prev => [...prev, { name: '', amount: '' }]);
+  const updateOtherCharge = (index, field, value) => {
+    setOtherChargesDetails(prev => {
+      const newDetails = [...prev];
+      newDetails[index][field] = value;
+      return newDetails;
+    });
+  };
+  const removeOtherCharge = (index) => setOtherChargesDetails(prev => prev.filter((_, i) => i !== index));
 
   const addToCart = (product) => {
     setCart(prev => {
@@ -137,7 +161,7 @@ const QuotationCreate = () => {
 
   const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const discountAmount = parseFloat(discount) || 0;
-  const otherChargesAmount = parseFloat(otherCharges) || 0;
+  const otherChargesAmount = otherChargesDetails.reduce((sum, charge) => sum + (parseFloat(charge.amount) || 0), 0);
   const tax = isGst ? cart.reduce((acc, item) => {
     const itemTotal = item.price * item.quantity;
     const itemDiscount = subtotal > 0 && discountAmount > 0 ? (itemTotal / subtotal) * discountAmount : 0;
@@ -232,12 +256,26 @@ const QuotationCreate = () => {
                 <td>Discount:</td>
                 <td class="text-right">- ₹${parseFloat(discount) || 0}</td>
               </tr>
-              ${parseFloat(otherCharges) > 0 ? `
-              <tr>
-                <td>Other Charges:</td>
-                <td class="text-right">+ ₹${otherCharges}</td>
-              </tr>
-              ` : ''}
+              ${otherChargesAmount > 0 ? (
+                (() => {
+                  let details = otherChargesDetails;
+                  if (Array.isArray(details) && details.length > 0) {
+                    return details.map(charge => `
+                      <tr>
+                        <td>${charge.name || 'Other Charge'}:</td>
+                        <td class="text-right">+ ₹${charge.amount || 0}</td>
+                      </tr>
+                    `).join('');
+                  } else {
+                    return `
+                      <tr>
+                        <td>Other Charges:</td>
+                        <td class="text-right">+ ₹${otherChargesAmount}</td>
+                      </tr>
+                    `;
+                  }
+                })()
+              ) : ''}
               ${Math.round(rawTotal) !== rawTotal ? `
               <tr>
                 <td>Round Off:</td>
@@ -279,7 +317,8 @@ const QuotationCreate = () => {
       customer_phone: customerInfo.phone,
       customer_address: customerInfo.address,
       discount: parseFloat(discount) || 0,
-      other_charges: parseFloat(otherCharges) || 0,
+      other_charges: otherChargesAmount,
+      other_charges_details: otherChargesDetails,
       tax: tax,
       is_gst: isGst,
       notes: notes,
@@ -317,7 +356,7 @@ const QuotationCreate = () => {
         setCart([]);
         setCustomerInfo({ name: '', phone: '', address: '' });
         setDiscount(0);
-        setOtherCharges(0);
+        setOtherChargesDetails([]);
         setNotes('');
         navigate('/quotations');
       })
@@ -500,10 +539,45 @@ const QuotationCreate = () => {
             <span>Discount (₹)</span>
             <input type="number" className="form-control" value={discount} onChange={e => setDiscount(e.target.value)} style={{ width: 100, padding: '4px 8px', textAlign: 'right' }} />
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-            <span>Other Charges (₹)</span>
-            <input type="number" className="form-control" value={otherCharges} onChange={e => setOtherCharges(e.target.value)} style={{ width: 100, padding: '4px 8px', textAlign: 'right' }} />
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span>Other Charges</span>
+              <button type="button" onClick={addOtherCharge} style={{ background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '4px', padding: '2px 6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                 <PlusCircle size={14} />
+              </button>
+            </div>
+            <span>₹{otherChargesAmount.toFixed(2)}</span>
           </div>
+
+          {otherChargesDetails.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '16px' }}>
+              {otherChargesDetails.map((charge, index) => (
+                <div key={index} style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'rgba(245, 158, 11, 0.05)', border: '1px solid rgba(245, 158, 11, 0.2)', padding: '6px 10px', borderRadius: '8px' }}>
+                  <input
+                    type="text"
+                    placeholder="Charge Name (e.g. Delivery)"
+                    value={charge.name}
+                    onChange={e => updateOtherCharge(index, 'name', e.target.value)}
+                    style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', fontSize: '0.8rem', fontWeight: 600 }}
+                  />
+                  <div style={{ display: 'flex', alignItems: 'center', width: '70px', background: 'var(--surface)', padding: '2px 6px', borderRadius: '4px', border: '1px solid var(--border)' }}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginRight: '2px' }}>₹</span>
+                    <input
+                      type="number"
+                      value={charge.amount}
+                      onChange={e => updateOtherCharge(index, 'amount', e.target.value)}
+                      style={{ width: '100%', border: 'none', outline: 'none', textAlign: 'right', fontWeight: 700, fontSize: '0.8rem', background: 'transparent' }}
+                    />
+                  </div>
+                  <button onClick={() => removeOtherCharge(index)} style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', border: 'none', borderRadius: '4px', padding: '4px', cursor: 'pointer' }}>
+                    <Trash2 size={12} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
           {isGst && (
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, color: 'var(--primary)', fontWeight: 600 }}>
               <span>Tax (GST 18%)</span>

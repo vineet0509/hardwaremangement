@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
 import { Receipt, Plus, Trash2, Save, X } from 'lucide-react';
+import Pagination from '../components/Pagination';
 import Swal from 'sweetalert2';
 
 const Expenses = () => {
   const [expenses, setExpenses] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -29,6 +32,7 @@ const Expenses = () => {
     api.get(url)
       .then(res => {
         setExpenses(res.data);
+        setCurrentPage(1);
         setLoading(false);
       })
       .catch(err => {
@@ -151,9 +155,16 @@ const Expenses = () => {
         </div>
       </div>
 
-      <div className="table-responsive">
-        <table style={{ width: '100%', borderCollapse: 'collapse', background: 'var(--surface)', borderRadius: '12px', overflow: 'hidden' }}>
-          <thead>
+      <div className="card" style={{ overflowX: 'auto', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
+        {(() => {
+          const totalPages = Math.ceil((expenses || []).length / itemsPerPage);
+          const currentExpenses = (expenses || []).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+          
+          return (
+            <>
+              <div className="table-responsive">
+                <table className="table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                  <thead>
             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: '2px solid var(--border)', textAlign: 'left' }}>
               <th style={{ padding: '16px' }}>Date</th>
               <th style={{ padding: '16px' }}>Description</th>
@@ -162,7 +173,7 @@ const Expenses = () => {
             </tr>
           </thead>
           <tbody>
-            {expenses.map(exp => (
+            {currentExpenses.map(exp => (
               <tr key={exp.id} style={{ borderBottom: '1px solid var(--border)' }}>
                 <td style={{ padding: '16px', fontWeight: 600 }}>{new Date(exp.expense_date).toLocaleDateString()}</td>
                 <td style={{ padding: '16px' }}>{exp.description}</td>
@@ -187,6 +198,11 @@ const Expenses = () => {
             )}
           </tbody>
         </table>
+        </div>
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        </>
+        );
+      })()}
       </div>
 
       {showModal && (
