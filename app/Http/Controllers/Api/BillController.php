@@ -644,10 +644,15 @@ class BillController extends Controller
     public function downloadPDF(Bill $bill)
     {
         $bill->load('items');
-        $settings = Setting::where('business_id', $bill->business_id)->first();
+        // Try getting settings with business_id if column exists, else just first()
+        try {
+            $settings = Setting::where('business_id', $bill->business_id)->first() ?? Setting::first();
+        } catch (\Exception $e) {
+            $settings = Setting::first();
+        }
         $business = \App\Models\Business::find($bill->business_id);
         
-        $pdf = Pdf::loadView('pdf.bill', compact('bill', 'settings', 'business'));
-        return $pdf->download("bill-{$bill->bill_number}.pdf");
+        $pdf = Pdf::setOptions(['isRemoteEnabled' => true])->loadView('pdf.bill', compact('bill', 'settings', 'business'));
+        return $pdf->download("bill_{$bill->bill_number}.pdf");
     }
 }
