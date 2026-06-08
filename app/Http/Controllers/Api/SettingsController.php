@@ -164,17 +164,10 @@ class SettingsController extends Controller
             'terms_and_conditions' => 'nullable|string',
             'gst_number' => ['nullable', 'string', new \App\Rules\ValidGstin()],
 
-            'upi_qr_code' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'upi_qr_code' => 'nullable|string|max:255',
         ]);
 
-        $data = $request->only(['company_name', 'business_type', 'company_phone', 'company_address', 'terms_and_conditions']);
-
-        if ($request->hasFile('upi_qr_code')) {
-            $file = $request->file('upi_qr_code');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('images/qr_codes'), $filename);
-            $data['upi_qr_code'] = '/images/qr_codes/' . $filename;
-        }
+        $data = $request->only(['company_name', 'business_type', 'company_phone', 'company_address', 'terms_and_conditions', 'upi_qr_code']);
 
         if ($settings) {
             $settings->update($data);

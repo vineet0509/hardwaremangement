@@ -363,8 +363,9 @@ const Billing = () => {
 
             ${(billData.payment_method === 'upi' && settings.upi_qr_code) ? `
               <div style="text-align: center; margin-top: 20px;">
-                <p style="margin: 0 0 10px 0;"><strong>Scan to Pay via UPI</strong></p>
-                <img src="${settings.upi_qr_code}" alt="UPI QR" style="width: 120px; height: 120px; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
+                <p style="margin: 0 0 10px 0;"><strong>Scan to Pay ₹${billData.total} via UPI</strong></p>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(`upi://pay?pa=${settings.upi_qr_code}&pn=${settings.company_name || 'Merchant'}&am=${billData.total}&cu=INR`)}" alt="UPI QR" style="width: 120px; height: 120px; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
+                <p style="margin: 5px 0 0 0; font-size: 10px; color: #666;">UPI ID: ${settings.upi_qr_code}</p>
               </div>
             ` : ''}
 
@@ -490,7 +491,7 @@ const Billing = () => {
                 ))}
               </div>
             )}
-            <input type="text" placeholder="Address (Optional)" value={customerInfo.address} onChange={e => setCustomerInfo({...customerInfo, address: e.target.value})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', marginTop: '10px' }} />
+            <textarea placeholder="Address (Optional)" value={customerInfo.address} onChange={e => setCustomerInfo({...customerInfo, address: e.target.value})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', marginTop: '10px', minHeight: '60px', resize: 'vertical' }}></textarea>
           </div>
 
 
@@ -620,9 +621,10 @@ const Billing = () => {
           </div>
           
           {payment.method === 'upi' && settings?.upi_qr_code && (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-               <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '8px' }}>Scan to Pay</span>
-               <img src={settings.upi_qr_code} alt="UPI QR Code" style={{ width: '150px', height: '150px', borderRadius: '8px', border: '1px solid #cbd5e1', objectFit: 'contain' }} />
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', marginTop: '16px' }}>
+               <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '8px' }}>Scan to Pay ₹{total.toFixed(2)}</span>
+               <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`upi://pay?pa=${settings.upi_qr_code}&pn=${settings.company_name || 'Merchant'}&am=${total.toFixed(2)}&cu=INR`)}`} alt="UPI QR Code" style={{ width: '150px', height: '150px', borderRadius: '8px', border: '1px solid #cbd5e1', objectFit: 'contain' }} />
+               <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', marginTop: '8px' }}>UPI ID: {settings.upi_qr_code}</span>
             </div>
           )}
           

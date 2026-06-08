@@ -113,14 +113,14 @@ const Settings = () => {
       }
     }
 
-    const payload = new FormData();
+    const submitData = new FormData();
     Object.keys(formData).forEach(key => {
-      if (key !== 'upi_qr_code_url' && formData[key] !== null && formData[key] !== undefined) {
-        payload.append(key, formData[key]);
+      if (formData[key] !== null && formData[key] !== undefined) {
+        submitData.append(key, formData[key]);
       }
     });
 
-    api.post('/settings', payload, { headers: { 'Content-Type': 'multipart/form-data' } })
+    api.post('/settings', submitData)
       .then(res => {
         Swal.fire('Success', 'Settings saved successfully!', 'success').then(() => {
            window.location.reload(); 
@@ -400,17 +400,12 @@ const Settings = () => {
             </div>
             
             <div className="form-group" style={{ marginTop: 20, borderTop: '1px solid var(--border)', paddingTop: 20 }}>
-              <h4 style={{ marginBottom: 12 }}>UPI QR Code (Manual Payment)</h4>
+              <h4 style={{ marginBottom: 12 }}>UPI ID for Payments</h4>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: 12 }}>
-                Upload your shop's UPI QR Code. It will be shown on the billing page when you choose "UPI" as the payment method.
+                Enter your shop's UPI ID (e.g. 9876543210@ybl). A dynamic QR Code with the bill amount will be generated on the billing screen when UPI is selected.
               </p>
-              {formData.upi_qr_code_url && (
-                <div style={{ marginBottom: 12 }}>
-                  <img src={formData.upi_qr_code_url} alt="UPI QR" style={{ height: 120, borderRadius: 8, border: '1px solid var(--border)' }} />
-                </div>
-              )}
-              <input type="file" className="form-control" accept="image/*"
-                onChange={e => setFormData({...formData, upi_qr_code: e.target.files[0]})} />
+              <input type="text" className="form-control" placeholder="example@upi"
+                value={formData.upi_qr_code || ''} onChange={e => setFormData({...formData, upi_qr_code: e.target.value})} />
             </div>
             <button type="submit" className="btn btn-primary" style={{ marginTop: 16 }}>
               <Save size={18} /> Save Settings

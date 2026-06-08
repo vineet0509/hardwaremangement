@@ -399,7 +399,7 @@ const QuotationCreate = () => {
                 ))}
               </div>
             )}
-            <input type="text" placeholder="Address (Optional)" value={customerInfo.address} onChange={e => setCustomerInfo({...customerInfo, address: e.target.value})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', marginTop: '10px' }} />
+            <textarea placeholder="Address (Optional)" value={customerInfo.address} onChange={e => setCustomerInfo({...customerInfo, address: e.target.value})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', marginTop: '10px', minHeight: '60px', resize: 'vertical' }}></textarea>
           </div>
 
 
