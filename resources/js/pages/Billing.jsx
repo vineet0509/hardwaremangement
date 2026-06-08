@@ -70,10 +70,11 @@ const Billing = () => {
         
         setCart(b.items.map(i => ({
            product_id: i.product_id,
-           name: i.product_name || i.product?.name,
+           name: i.product_name || i.product?.name || 'Unknown Product',
            description: i.description,
            unit: i.unit,
            price: i.price,
+           gst_slab: i.gst_slab || i.product?.gst_slab || 0,
            quantity: i.quantity,
            stock: (i.product?.quantity || 0) + i.quantity
         })));

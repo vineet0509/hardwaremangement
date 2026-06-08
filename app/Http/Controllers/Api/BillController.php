@@ -618,6 +618,29 @@ class BillController extends Controller
             $tax      = $data['tax'] ?? 0;
             $total    = round($subtotal - $discount + $other_charges);
             $paid     = $data['paid_amount'];
+            
+            // Handle Razorpay Refund if total is reduced
+            $refundAmount = 0;
+            if ($bill->payment_method === 'razorpay' && $bill->razorpay_payment_id && $total < $bill->paid_amount) {
+                $refundAmount = $bill->paid_amount - $total;
+                try {
+                    $setting = \App\Models\Setting::where('business_id', $bill->business_id)->first();
+                    $api = new \Razorpay\Api\Api($setting->razorpay_key, $setting->razorpay_secret);
+                    $api->refund->create([
+                        'payment_id' => $bill->razorpay_payment_id,
+                        'amount' => round($refundAmount * 100), // paise
+                        'notes' => [
+                            'bill_number' => $bill->bill_number,
+                            'reason' => 'Bill updated and amount reduced'
+                        ]
+                    ]);
+                    $paid -= $refundAmount; // Adjust paid amount down since we refunded
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('Razorpay Refund Error: ' . $e->getMessage());
+                    throw new \Exception("Razorpay refund failed: " . $e->getMessage());
+                }
+            }
+
             $due      = $total - $paid; 
             
             $status   = $due == 0 ? 'paid' : ($paid > 0 && $due > 0 ? 'partial' : 'pending');
