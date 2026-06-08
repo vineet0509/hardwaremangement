@@ -23,9 +23,7 @@ const BillsList = () => {
   const [targetBill, setTargetBill] = useState(null);
   const [repayData, setRepayData] = useState({ amount: '', method: 'cash', upi_digits: '' });
 
-  const [showReturnModal, setShowReturnModal] = useState(false);
-  const [returnBill, setReturnBill] = useState(null);
-  const [returnItemsState, setReturnItemsState] = useState({});
+
 
   const navigate = useNavigate();
 
@@ -96,24 +94,7 @@ const BillsList = () => {
       .catch(err => Swal.fire(err.response?.data?.message || 'Error processing repayment.'));
   };
 
-  const handleReturnSubmit = (e) => {
-    e.preventDefault();
-    const itemsToReturn = Object.entries(returnItemsState)
-      .filter(([id, qty]) => qty > 0)
-      .map(([id, qty]) => ({ id: parseInt(id), return_qty: parseInt(qty) }));
 
-    if (itemsToReturn.length === 0) {
-      return Swal.fire('Please specify at least one item to return.');
-    }
-
-    api.post(`/bills/${returnBill.id}/return`, { items: itemsToReturn })
-      .then(res => {
-        Swal.fire(res.data.message);
-        setShowReturnModal(false);
-        fetchBills();
-      })
-      .catch(err => Swal.fire(err.response?.data?.message || 'Error processing return.'));
-  };
 
   const sendWhatsAppReminder = async (billId) => {
     try {
@@ -248,10 +229,19 @@ const BillsList = () => {
               <div style="height: 15px;"></div>
               <div class="row" style="color: #10b981;"><span>Amount Paid:</span> <span>₹${bill.paid_amount}</span></div>
               <div class="row" style="color: #ef4444;"><span>Balance Due:</span> <span>₹${bill.due_amount}</span></div>
-              <div class="footer">
-                <p>This is a computer generated invoice. No signature required.</p>
-                <p><strong>Terms & Conditions:</strong> ${getTermsAndConditions(settings.business_type)}</p>
+            </div>
+            
+            ${(bill.payment_method === 'upi' && settings.upi_qr_code) ? `
+              <div style="text-align: center; margin-top: 20px;">
+                <p style="margin: 0 0 10px 0;"><strong>Scan to Pay via UPI</strong></p>
+                <img src="${settings.upi_qr_code}" alt="UPI QR" style="width: 120px; height: 120px; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
               </div>
+            ` : ''}
+
+            <div class="footer">
+              <p>This is a computer generated invoice. No signature required.</p>
+              <p><strong>Terms & Conditions:</strong> ${getTermsAndConditions(settings.business_type)}</p>
+            </div>
             </div>
             
             <script>
@@ -448,16 +438,7 @@ const BillsList = () => {
                         <Banknote size={16} /><span className="btn-label">Settle</span>
                       </button>
                     )}
-                    {b.type !== 'return' && (
-                      <button className="btn btn-outline" style={{ borderColor: 'var(--warning)', color: 'var(--warning)' }} onClick={() => {
-                          setReturnBill(b);
-                          setReturnItemsState({});
-                          setShowReturnModal(true);
-                      }} title="Return Items / Refund">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline><path d="M10 16l-3 3 3 3"></path><path d="M7 19h10"></path></svg>
-                        <span className="btn-label">Return</span>
-                      </button>
-                    )}
+
                     <button className="btn btn-outline" onClick={() => navigate('/billing', { state: { editBillId: b.id } })} title="Edit Bill">
                       <Edit2 size={16} color="var(--primary)" /><span className="btn-label">Edit</span>
                     </button>
@@ -498,12 +479,6 @@ const BillsList = () => {
                 <td style={{ fontWeight: 600 }}>₹{b.total}</td>
                 <td style={{ color: 'var(--success)' }}>
                   <div style={{ fontWeight: 600 }}>₹{b.paid_amount}</div>
-                  {String(b.payment_method).toLowerCase() === 'razorpay' && b.razorpay_payment_id && (
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 4, display: 'flex', flexDirection: 'column' }}>
-                      <span style={{ color: 'var(--primary)', fontWeight: 600 }}>Razorpay</span>
-                      <span style={{ fontSize: '0.65rem', wordBreak: 'break-all' }}>{b.razorpay_payment_id}</span>
-                    </div>
-                  )}
                 </td>
                 <td style={{ color: 'var(--danger)' }}>₹{b.due_amount}</td>
                 <td>
@@ -572,67 +547,7 @@ const BillsList = () => {
         </div>
       )}
 
-      {showReturnModal && (
-        <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: '600px' }}>
-            <div className="modal-header">
-              <h3>Return Items (Bill #{returnBill?.bill_number})</h3>
-              <button className="close-btn" onClick={() => setShowReturnModal(false)}><X size={20} /></button>
-            </div>
-            <div className="modal-body">
-              <p style={{ marginBottom: 16, color: 'var(--text-muted)' }}>
-                Select the quantity of items to return. Stock will be restored automatically and the bill total will be adjusted.
-              </p>
-              <form onSubmit={handleReturnSubmit}>
-                <div className="table-responsive" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                  <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
-                    <thead style={{ position: 'sticky', top: 0, background: 'var(--surface)', zIndex: 1 }}>
-                      <tr>
-                        <th style={{ padding: '10px 8px', borderBottom: '1px solid var(--border)' }}>Product</th>
-                        <th style={{ padding: '10px 8px', borderBottom: '1px solid var(--border)' }}>Sold</th>
-                        <th style={{ padding: '10px 8px', borderBottom: '1px solid var(--border)' }}>Returned</th>
-                        <th style={{ padding: '10px 8px', borderBottom: '1px solid var(--border)', width: '100px' }}>Return Qty</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {returnBill?.items?.map(item => {
-                        const returnedQty = item.returned_quantity || 0;
-                        const maxReturnable = item.quantity - returnedQty;
-                        return (
-                          <tr key={item.id} style={{ borderBottom: '1px solid var(--border)' }}>
-                            <td style={{ padding: '10px 8px', fontWeight: 500 }}>{item.product_name}</td>
-                            <td style={{ padding: '10px 8px' }}>{item.quantity} {item.unit}</td>
-                            <td style={{ padding: '10px 8px', color: 'var(--danger)' }}>{returnedQty > 0 ? returnedQty : '-'}</td>
-                            <td style={{ padding: '10px 8px' }}>
-                              <input 
-                                type="number" 
-                                className="form-control" 
-                                min="0" 
-                                max={maxReturnable} 
-                                value={returnItemsState[item.id] || ''} 
-                                onChange={e => {
-                                  const val = parseInt(e.target.value) || 0;
-                                  if (val > maxReturnable) return Swal.fire('Cannot return more than purchased.');
-                                  setReturnItemsState({...returnItemsState, [item.id]: val});
-                                }}
-                                disabled={maxReturnable === 0}
-                                style={{ padding: '6px', textAlign: 'center' }}
-                              />
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-                <div className="modal-footer" style={{ marginTop: 24, padding: 0 }}>
-                  <button type="submit" className="btn btn-danger" style={{ width: '100%', padding: '12px', fontWeight: 'bold' }}>Confirm Return & Refund</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
+
     </div>
   );
 };
