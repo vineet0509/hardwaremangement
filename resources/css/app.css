@@ -354,8 +354,22 @@ tr:hover td { background: var(--surface-hover); }
 .pos-grid {
   display: grid;
   grid-template-columns: 2fr 1.3fr;
-  gap: 24px;
+  gap: 20px;
+  height: calc(100vh - 100px);
 }
+
+.responsive-customer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.responsive-payment-grid {
+  display: flex;
+  gap: 6px;
+}
+
 .pos-products-panel, .pos-cart-panel {
   background: var(--surface);
   border-radius: 16px;
@@ -611,6 +625,15 @@ tr:hover td { background: var(--surface-hover); }
     gap: 8px;
     cursor: pointer;
     transition: all 0.2s;
+  }
+  
+  .responsive-customer-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .responsive-payment-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
   }
   .mobile-pos-tabs button.active {
     background: var(--primary);

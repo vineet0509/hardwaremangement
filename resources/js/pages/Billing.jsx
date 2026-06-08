@@ -708,7 +708,7 @@ const Billing = () => {
           <div style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>Customer Details</div>
           
           <div style={{ position: 'relative' }}>
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+            <div className="responsive-customer-grid">
               <div style={{ flex: 1, display: 'flex', alignItems: 'center', background: 'var(--surface)', border: '1.5px solid var(--border)', borderRadius: '8px', padding: '2px 10px' }}>
                 <User size={15} color="var(--primary)" />
                 <input type="text" placeholder="Full Name *" required value={customerInfo.name} onChange={e => setCustomerInfo({...customerInfo, name: e.target.value})} style={{ border: 'none', outline: 'none', background: 'transparent', padding: '6px 6px', width: '100%', fontSize: '0.88rem' }}/>
@@ -876,7 +876,7 @@ const Billing = () => {
 
           {/* Payment Mode Selection */}
           <div style={{ marginBottom: '8px' }}>
-            <div style={{ display: 'flex', gap: '6px' }}>
+            <div className="responsive-payment-grid">
               {[
                 { value: 'cash', label: 'Cash', emoji: '💵', color: '#10b981', bg: 'rgba(16,185,129,0.08)' },
                 { value: 'upi', label: 'UPI', emoji: '📱', color: '#3b82f6', bg: 'rgba(59,130,246,0.08)' },
