@@ -116,6 +116,7 @@ class AuthController extends Controller
             'business_id' => $user->business_id,
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
+            'device_type' => $request->input('device_type', 'browser'),
             'login_at' => now(),
         ]);
 

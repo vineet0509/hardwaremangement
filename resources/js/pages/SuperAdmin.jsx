@@ -341,7 +341,7 @@ const SuperAdmin = () => {
                     <th style={{ padding: '12px 16px' }}>User</th>
                     <th style={{ padding: '12px 16px' }}>Business</th>
                     <th style={{ padding: '12px 16px' }}>IP Address</th>
-                    <th style={{ padding: '12px 16px' }}>User Agent</th>
+                    <th style={{ padding: '12px 16px' }}>Source</th>
                     <th style={{ padding: '12px 16px' }}>Login Time</th>
                   </tr>
                 </thead>
@@ -351,8 +351,8 @@ const SuperAdmin = () => {
                       <td style={{ padding: '16px' }}>{log.user?.name || 'Unknown User'} ({log.user?.email || 'N/A'})</td>
                       <td style={{ padding: '16px' }}>{log.shop?.name || 'Unknown Business'}</td>
                       <td style={{ padding: '16px' }}>{log.ip_address}</td>
-                      <td style={{ padding: '16px', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={log.user_agent}>
-                        {log.user_agent}
+                      <td style={{ padding: '16px', fontWeight: 600, color: log.device_type === 'mobile' ? 'var(--primary)' : 'var(--text-color)' }}>
+                        {log.device_type === 'mobile' ? 'Mobile App' : 'Browser'}
                       </td>
                       <td style={{ padding: '16px' }}>{new Date(log.login_at).toLocaleString()}</td>
                     </tr>

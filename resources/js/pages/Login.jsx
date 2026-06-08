@@ -33,7 +33,10 @@ const Login = () => {
 
     // Fetch CSRF cookie before login
     axios.get(`${window.location.origin}/sanctum/csrf-cookie`).then(() => {
-        api.post('/login', formData)
+        const payload = { ...formData };
+        payload.device_type = typeof window !== 'undefined' && window.Capacitor && window.Capacitor.isNativePlatform() ? 'mobile' : 'browser';
+
+        api.post('/login', payload)
           .then(res => {
          const token = res.data.access_token;
          localStorage.setItem('auth_token', token);

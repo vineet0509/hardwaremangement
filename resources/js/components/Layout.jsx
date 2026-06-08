@@ -101,7 +101,7 @@ const Layout = ({ children }) => {
     if (loginDate && loginDate !== new Date().toDateString()) {
         localStorage.removeItem('auth_token');
         localStorage.removeItem('login_date');
-        window.location.href = '/?session_expired=1';
+        window.location.href = '/login?session_expired=1';
         return;
     }
 
@@ -208,7 +208,7 @@ const Layout = ({ children }) => {
         api.post('/logout').catch(console.error).finally(() => {
           localStorage.removeItem('auth_token');
           localStorage.removeItem('login_date');
-          window.location.href = '/';
+          window.location.href = '/login';
         });
       }
     });

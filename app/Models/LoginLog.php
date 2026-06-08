@@ -13,6 +13,7 @@ class LoginLog extends Model
         'business_id',
         'ip_address',
         'user_agent',
+        'device_type',
         'login_at'
     ];
 

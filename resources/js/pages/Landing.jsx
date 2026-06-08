@@ -102,7 +102,10 @@ const Landing = () => {
     setLoginError(null);
 
     axios.get(`${window.location.origin}/sanctum/csrf-cookie`).then(() => {
-      api.post('/login', loginData)
+      const payload = { ...loginData };
+      payload.device_type = typeof window !== 'undefined' && window.Capacitor && window.Capacitor.isNativePlatform() ? 'mobile' : 'browser';
+
+      api.post('/login', payload)
         .then(res => {
           const token = res.data.access_token;
           localStorage.setItem('auth_token', token);
