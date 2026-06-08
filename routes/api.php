@@ -109,10 +109,10 @@ Route::get('/staff/{staff}/attendances', [AttendanceController::class, 'index'])
 
     // Super Admin
     Route::get('/super-admin/shops', [SuperAdminController::class, 'index']);
-    Route::post('/super-admin/shops/{shop}/toggle-status', [SuperAdminController::class, 'toggleStatus']);
-    Route::post('/super-admin/shops/{shop}/extend-plan', [SuperAdminController::class, 'extendPlan']);
-    Route::post('/super-admin/shops/{shop}/update-plan', [SuperAdminController::class, 'updatePlan']);
-    Route::delete('/super-admin/shops/{shop}', [SuperAdminController::class, 'deleteShop']);
+    Route::post('/super-admin/shops/{business}/toggle-status', [SuperAdminController::class, 'toggleStatus']);
+    Route::post('/super-admin/shops/{business}/extend-plan', [SuperAdminController::class, 'extendPlan']);
+    Route::post('/super-admin/shops/{business}/update-plan', [SuperAdminController::class, 'updatePlan']);
+    Route::delete('/super-admin/shops/{business}', [SuperAdminController::class, 'deleteShop']);
     Route::get('/super-admin/login-logs', [SuperAdminController::class, 'loginLogs']);
     
     Route::get('/super-admin/subscription-requests', [SuperAdminController::class, 'subscriptionRequests']);

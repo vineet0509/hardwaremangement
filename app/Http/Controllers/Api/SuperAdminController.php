@@ -91,7 +91,7 @@ class SuperAdminController extends Controller
         if (!$setting) {
             $setting = new Setting();
             $setting->business_id = $business->id;
-            $setting->company_name = $business->name;
+            $setting->company_name = $business->name ?? 'VyaparSync';
         }
         $setting->subscription_expires_at = $business->trial_ends_at;
         $setting->save();
@@ -117,7 +117,7 @@ class SuperAdminController extends Controller
         if (!$setting) {
             $setting = new Setting();
             $setting->business_id = $business->id;
-            $setting->company_name = $business->name;
+            $setting->company_name = $business->name ?? 'VyaparSync';
         }
 
         $setting->subscription_plan = $request->plan_type;
