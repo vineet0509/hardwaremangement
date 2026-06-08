@@ -475,9 +475,9 @@ const Billing = () => {
           {/* Party Details */}
           <div className="tally-panel-party" style={{ position: 'relative' }}>
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '6px' }}>Party A/c Name *</label>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <input type="text" placeholder="Customer Name" value={customerInfo.name} onChange={e => setCustomerInfo({...customerInfo, name: e.target.value})} style={{ flex: 1, padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none' }} />
-              <input type="text" placeholder="Phone" value={customerInfo.phone} onChange={e => setCustomerInfo({...customerInfo, phone: e.target.value})} style={{ flex: 1, padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none' }} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <input type="text" placeholder="Customer Name" value={customerInfo.name} onChange={e => setCustomerInfo({...customerInfo, name: e.target.value})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none' }} />
+              <input type="text" placeholder="Phone" value={customerInfo.phone} onChange={e => setCustomerInfo({...customerInfo, phone: e.target.value})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none' }} />
             </div>
             {customerResults.length > 0 && (
               <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 100, background: '#fff', border: '1px solid #cbd5e1', borderRadius: '6px', marginTop: '4px', maxHeight: '200px', overflowY: 'auto', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
@@ -614,7 +614,14 @@ const Billing = () => {
             <textarea value={payment.notes || ''} onChange={e => setPayment({...payment, notes: e.target.value})} style={{ width: '100%', padding: '10px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', minHeight: '80px', resize: 'none' }} placeholder="Additional notes..."></textarea>
           </div>
           
-          <div style={{ display: 'flex', gap: '12px' }}>
+          {payment.method === 'upi' && settings?.upi_qr_code && (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+               <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '8px' }}>Scan to Pay</span>
+               <img src={settings.upi_qr_code} alt="UPI QR Code" style={{ width: '150px', height: '150px', borderRadius: '8px', border: '1px solid #cbd5e1', objectFit: 'contain' }} />
+            </div>
+          )}
+          
+          <div style={{ display: 'flex', gap: '12px', marginTop: 'auto' }}>
             <button onClick={() => { setCart([]); localStorage.removeItem('billing_draft'); }} style={{ flex: 1, padding: '14px', background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
               <XCircle size={18} /> Clear
             </button>
