@@ -1041,7 +1041,7 @@ tr:hover td { background: var(--surface-hover); }
   
   /* Tally Table Mobile View */
   .tally-table-container {
-    overflow-x: hidden !important;
+    overflow: visible !important;
   }
   .tally-table-container table {
     min-width: 100% !important;

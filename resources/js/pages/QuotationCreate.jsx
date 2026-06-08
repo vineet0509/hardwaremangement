@@ -471,7 +471,7 @@ const QuotationCreate = () => {
                       else if (products.length > 0) { addToCart(products[0]); setSearch(''); }
                     }
                   }}
-                  style={{ width: '100%', padding: '8px 12px', border: '1.5px dashed #94a3b8', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', background: 'transparent' }} 
+                  style={{ width: '100%', padding: '8px 12px', border: '1.5px dashed #94a3b8', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', background: '#ffffff', color: '#0f172a' }} 
                 />
                 {search && products.length > 0 && (
                   <div style={{ position: 'absolute', top: '100%', left: '12px', right: '12px', zIndex: 100, background: '#fff', border: '1px solid #cbd5e1', borderRadius: '6px', maxHeight: '250px', overflowY: 'auto', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}>
@@ -502,17 +502,6 @@ const QuotationCreate = () => {
             <textarea value={notes} onChange={e => setNotes(e.target.value)} style={{ width: '100%', padding: '10px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', minHeight: '80px', resize: 'none' }} placeholder="Additional notes..."></textarea>
           </div>
           
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <button onClick={() => { setCart([]); localStorage.removeItem('quotation_draft'); }} style={{ flex: 1, padding: '14px', background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
-              <XCircle size={18} /> Clear
-            </button>
-            <button onClick={handlePreview} style={{ flex: 1, padding: '14px', background: '#e0e7ff', color: '#4f46e5', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
-              <FileText size={18} /> Preview
-            </button>
-            <button onClick={handleCheckout} style={{ flex: 2, padding: '14px', background: '#10b981', color: '#ffffff', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.2)' }}>
-              <Save size={18} /> {editQuotationId ? 'Update Quotation' : 'Save & Send Quotation'}
-            </button>
-          </div>
         </div>
 
         {/* Totals */}
@@ -566,6 +555,19 @@ const QuotationCreate = () => {
             </div>
           </div>
         </div>
+      </div>
+      
+      {/* Action Buttons */}
+      <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '10px' }}>
+        <button onClick={() => { setCart([]); localStorage.removeItem('quotation_draft'); }} style={{ padding: '14px 24px', background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+          <XCircle size={18} /> Clear
+        </button>
+        <button onClick={handlePreview} style={{ padding: '14px 24px', background: '#e0e7ff', color: '#4f46e5', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+          <FileText size={18} /> Preview
+        </button>
+        <button onClick={handleCheckout} style={{ padding: '14px 32px', background: '#10b981', color: '#ffffff', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.2)' }}>
+          <Save size={18} /> {editQuotationId ? 'Update Quotation' : 'Save & Send Quotation'}
+        </button>
       </div>
     </div>
   );
