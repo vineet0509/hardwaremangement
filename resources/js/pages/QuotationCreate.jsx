@@ -39,7 +39,8 @@ const QuotationCreate = () => {
   }, [search, selectedCategory]);
 
   useEffect(() => {
-    if (customerInfo.phone.length >= 3 || customerInfo.name.length >= 3) {
+    if (customerInfo.selected) return;
+    if (customerInfo.phone?.length >= 3 || customerInfo.name?.length >= 3) {
       const delayFn = setTimeout(() => {
         api.get(`/customers/search?q=${customerInfo.phone || customerInfo.name}`)
            .then(res => setCustomerResults(res.data))
@@ -49,7 +50,7 @@ const QuotationCreate = () => {
     } else {
       setCustomerResults([]);
     }
-  }, [customerInfo.phone, customerInfo.name]);
+  }, [customerInfo.phone, customerInfo.name, customerInfo.selected]);
 
   useEffect(() => {
     if (editQuotationId) {
@@ -385,13 +386,13 @@ const QuotationCreate = () => {
           <div className="tally-panel-party" style={{ position: 'relative' }}>
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '6px' }}>Customer Name *</label>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <input type="text" placeholder="Customer Name" value={customerInfo.name} onChange={e => setCustomerInfo({...customerInfo, name: e.target.value})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none' }} />
-              <input type="text" placeholder="Phone" value={customerInfo.phone} onChange={e => setCustomerInfo({...customerInfo, phone: e.target.value})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none' }} />
+              <input type="text" placeholder="Customer Name" value={customerInfo.name} onChange={e => setCustomerInfo({...customerInfo, name: e.target.value, selected: false})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none' }} />
+              <input type="text" placeholder="Phone" value={customerInfo.phone} onChange={e => setCustomerInfo({...customerInfo, phone: e.target.value, selected: false})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none' }} />
             </div>
             {customerResults.length > 0 && (
               <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 100, background: '#fff', border: '1px solid #cbd5e1', borderRadius: '6px', marginTop: '4px', maxHeight: '200px', overflowY: 'auto', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
                 {customerResults.map((c, i) => (
-                  <div key={i} style={{ padding: '10px 12px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9' }} onClick={() => { setCustomerInfo({ name: c.customer_name, phone: c.customer_phone || '', address: c.customer_address || '' }); setCustomerResults([]); }}>
+                  <div key={i} style={{ padding: '10px 12px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9' }} onClick={() => { setCustomerInfo({ name: c.customer_name, phone: c.customer_phone || '', address: c.customer_address || '', selected: true }); setCustomerResults([]); }}>
                     <div style={{ fontWeight: 600, color: '#0f172a' }}>{c.customer_name}</div>
                     <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{c.customer_phone}</div>
                   </div>
@@ -401,14 +402,7 @@ const QuotationCreate = () => {
             <input type="text" placeholder="Address (Optional)" value={customerInfo.address} onChange={e => setCustomerInfo({...customerInfo, address: e.target.value})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', marginTop: '10px' }} />
           </div>
 
-          {/* Sales Ledger / Meta */}
-          <div className="tally-panel-meta">
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '6px' }}>Quotation Type</label>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: isGst ? '#eff6ff' : '#f8fafc', padding: '8px 12px', borderRadius: '6px', border: isGst ? '1px solid #bfdbfe' : '1px solid #cbd5e1', cursor: 'pointer' }} onClick={() => setIsGst(!isGst)}>
-              <input type="checkbox" checked={isGst} readOnly style={{ width: 16, height: 16, cursor: 'pointer' }} />
-              <span style={{ fontSize: '0.95rem', fontWeight: 600, color: isGst ? '#1d4ed8' : '#475569' }}>GST Quotation @ 18%</span>
-            </div>
-          </div>
+
         </div>
       </div>
 
@@ -428,33 +422,6 @@ const QuotationCreate = () => {
             </tr>
           </thead>
           <tbody>
-            {cart.map((item, index) => {
-              const itemTotal = item.price * item.quantity;
-              const itemDiscount = subtotal > 0 && discountAmount > 0 ? (itemTotal / subtotal) * discountAmount : 0;
-              const discountedTotal = itemTotal - itemDiscount;
-              const basePrice = discountedTotal / (1 + ((item.gst_slab || 0) / 100));
-              const itemGstAmt = discountedTotal - basePrice;
-
-              return (
-                <tr key={item.product_id} className="tally-item-row" style={{ borderBottom: '1px solid #e2e8f0' }}>
-                  <td className="tally-cell-sno" style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontWeight: 600 }}>{index + 1}</td>
-                  <td className="tally-cell-name" style={{ padding: '12px', fontWeight: 600, color: '#0f172a' }}>{item.name}</td>
-                  <td className="tally-cell-qty" style={{ padding: '12px', textAlign: 'right' }}>
-                    <input type="number" min="0" value={item.quantity} onChange={e => updateQuantity(item.product_id, e.target.value)} style={{ width: '80px', textAlign: 'right', padding: '6px', border: '1px solid #cbd5e1', borderRadius: '4px', outline: 'none' }} />
-                  </td>
-                  {isGst && <td className="tally-cell-baserate" style={{ padding: '12px', textAlign: 'right', color: '#475569' }}>₹{(basePrice / (item.quantity || 1)).toFixed(2)}</td>}
-                  <td className="tally-cell-rate" style={{ padding: '12px', textAlign: 'right' }}>
-                    <input type="number" min="0" step="0.01" value={item.price} onChange={e => updateRate(item.product_id, e.target.value)} style={{ width: '100px', textAlign: 'right', padding: '6px', border: '1px solid #cbd5e1', borderRadius: '4px', outline: 'none' }} />
-                  </td>
-                  {isGst && <td className="tally-cell-gst" style={{ padding: '12px', textAlign: 'right', color: '#475569' }}>₹{itemGstAmt.toFixed(2)}</td>}
-                  <td className="tally-cell-amount" style={{ padding: '12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>₹{itemTotal.toFixed(2)}</td>
-                  <td className="tally-cell-action" style={{ padding: '12px', textAlign: 'center' }}>
-                    <Trash2 size={16} color="#ef4444" style={{ cursor: 'pointer' }} onClick={() => removeFromCart(item.product_id)} />
-                  </td>
-                </tr>
-              );
-            })}
-            
             {/* Auto-complete Entry Row */}
             <tr className="tally-entry-row" style={{ background: '#f8fafc' }}>
               <td className="tally-cell-sno" style={{ padding: '12px', textAlign: 'center', color: '#94a3b8', fontWeight: 600 }}>*</td>
@@ -489,6 +456,35 @@ const QuotationCreate = () => {
               </td>
               <td className="tally-cell-filler" colSpan={isGst ? 6 : 4}></td>
             </tr>
+
+            {cart.map((item, index) => {
+              const itemTotal = item.price * item.quantity;
+              const itemDiscount = subtotal > 0 && discountAmount > 0 ? (itemTotal / subtotal) * discountAmount : 0;
+              const discountedTotal = itemTotal - itemDiscount;
+              const basePrice = discountedTotal / (1 + ((item.gst_slab || 0) / 100));
+              const itemGstAmt = discountedTotal - basePrice;
+
+              return (
+                <tr key={item.product_id} className="tally-item-row" style={{ borderBottom: '1px solid #e2e8f0' }}>
+                  <td className="tally-cell-sno" style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontWeight: 600 }}>{index + 1}</td>
+                  <td className="tally-cell-name" style={{ padding: '12px', fontWeight: 600, color: '#0f172a' }}>{item.name}</td>
+                  <td className="tally-cell-qty" style={{ padding: '12px', textAlign: 'right' }}>
+                    <input type="number" min="0" value={item.quantity} onChange={e => updateQuantity(item.product_id, e.target.value)} style={{ width: '80px', textAlign: 'right', padding: '6px', border: '1px solid #cbd5e1', borderRadius: '4px', outline: 'none' }} />
+                  </td>
+                  {isGst && <td className="tally-cell-baserate" style={{ padding: '12px', textAlign: 'right', color: '#475569' }}>₹{(basePrice / (item.quantity || 1)).toFixed(2)}</td>}
+                  <td className="tally-cell-rate" style={{ padding: '12px', textAlign: 'right' }}>
+                    <input type="number" min="0" step="0.01" value={item.price} onChange={e => updateRate(item.product_id, e.target.value)} style={{ width: '100px', textAlign: 'right', padding: '6px', border: '1px solid #cbd5e1', borderRadius: '4px', outline: 'none' }} />
+                  </td>
+                  {isGst && <td className="tally-cell-gst" style={{ padding: '12px', textAlign: 'right', color: '#475569' }}>₹{itemGstAmt.toFixed(2)}</td>}
+                  <td className="tally-cell-amount" style={{ padding: '12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>₹{itemTotal.toFixed(2)}</td>
+                  <td className="tally-cell-action" style={{ padding: '12px', textAlign: 'center' }}>
+                    <Trash2 size={16} color="#ef4444" style={{ cursor: 'pointer' }} onClick={() => removeFromCart(item.product_id)} />
+                  </td>
+                </tr>
+              );
+            })}
+            
+
           </tbody>
         </table>
       </div>
@@ -499,7 +495,16 @@ const QuotationCreate = () => {
         <div className="tally-panel-notes">
           <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '8px' }}>Notes / Remarks</label>
-            <textarea value={notes} onChange={e => setNotes(e.target.value)} style={{ width: '100%', padding: '10px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', minHeight: '80px', resize: 'none' }} placeholder="Additional notes..."></textarea>
+            <textarea value={notes} onChange={e => setNotes(e.target.value)} style={{ width: '100%', padding: '10px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', minHeight: '80px', resize: 'none', marginBottom: '16px' }} placeholder="Additional notes..."></textarea>
+
+            {/* Sales Ledger / Meta (Moved below Narration) */}
+            <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '16px' }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '6px' }}>Quotation Type</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: isGst ? '#eff6ff' : '#f8fafc', padding: '8px 12px', borderRadius: '6px', border: isGst ? '1px solid #bfdbfe' : '1px solid #cbd5e1', cursor: 'pointer' }} onClick={() => setIsGst(!isGst)}>
+                <input type="checkbox" checked={isGst} readOnly style={{ width: 16, height: 16, cursor: 'pointer' }} />
+                <span style={{ fontSize: '0.95rem', fontWeight: 600, color: isGst ? '#1d4ed8' : '#475569' }}>GST Quotation @ 18%</span>
+              </div>
+            </div>
           </div>
           
         </div>

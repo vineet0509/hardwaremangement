@@ -41,7 +41,8 @@ const Billing = () => {
   }, [search, selectedCategory]);
 
   useEffect(() => {
-    if ((customerInfo.phone.length >= 3 || customerInfo.name.length >= 3) && !editBillId) {
+    if (customerInfo.selected) return;
+    if ((customerInfo.phone?.length >= 3 || customerInfo.name?.length >= 3) && !editBillId) {
       const delayFn = setTimeout(() => {
         api.get(`/customers/search?q=${customerInfo.phone || customerInfo.name}`)
            .then(res => setCustomerResults(res.data))
@@ -51,7 +52,7 @@ const Billing = () => {
     } else {
       setCustomerResults([]);
     }
-  }, [customerInfo.phone, customerInfo.name, editBillId]);
+  }, [customerInfo.phone, customerInfo.name, editBillId, customerInfo.selected]);
 
   useEffect(() => {
     if (editBillId) {
@@ -476,13 +477,13 @@ const Billing = () => {
           <div className="tally-panel-party" style={{ position: 'relative' }}>
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '6px' }}>Party A/c Name *</label>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <input type="text" placeholder="Customer Name" value={customerInfo.name} onChange={e => setCustomerInfo({...customerInfo, name: e.target.value})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none' }} />
-              <input type="text" placeholder="Phone" value={customerInfo.phone} onChange={e => setCustomerInfo({...customerInfo, phone: e.target.value})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none' }} />
+              <input type="text" placeholder="Customer Name" value={customerInfo.name} onChange={e => setCustomerInfo({...customerInfo, name: e.target.value, selected: false})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none' }} />
+              <input type="text" placeholder="Phone" value={customerInfo.phone} onChange={e => setCustomerInfo({...customerInfo, phone: e.target.value, selected: false})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none' }} />
             </div>
             {customerResults.length > 0 && (
               <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 100, background: '#fff', border: '1px solid #cbd5e1', borderRadius: '6px', marginTop: '4px', maxHeight: '200px', overflowY: 'auto', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
                 {customerResults.map((c, i) => (
-                  <div key={i} style={{ padding: '10px 12px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9' }} onClick={() => { setCustomerInfo({ name: c.customer_name, phone: c.customer_phone || '', address: c.customer_address || '' }); setCustomerResults([]); }}>
+                  <div key={i} style={{ padding: '10px 12px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9' }} onClick={() => { setCustomerInfo({ name: c.customer_name, phone: c.customer_phone || '', address: c.customer_address || '', selected: true }); setCustomerResults([]); }}>
                     <div style={{ fontWeight: 600, color: '#0f172a' }}>{c.customer_name}</div>
                     <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{c.customer_phone}</div>
                   </div>
@@ -492,35 +493,7 @@ const Billing = () => {
             <input type="text" placeholder="Address (Optional)" value={customerInfo.address} onChange={e => setCustomerInfo({...customerInfo, address: e.target.value})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', marginTop: '10px' }} />
           </div>
 
-          {/* Sales Ledger / Meta */}
-          <div className="tally-panel-meta">
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '6px' }}>Sales Ledger</label>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: isGstBill ? '#eff6ff' : '#f8fafc', padding: '8px 12px', borderRadius: '6px', border: isGstBill ? '1px solid #bfdbfe' : '1px solid #cbd5e1', cursor: 'pointer' }} onClick={() => setIsGstBill(!isGstBill)}>
-              <input type="checkbox" checked={isGstBill} readOnly style={{ width: 16, height: 16, cursor: 'pointer' }} />
-              <span style={{ fontSize: '0.95rem', fontWeight: 600, color: isGstBill ? '#1d4ed8' : '#475569' }}>GST Sales @ 18%</span>
-            </div>
 
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '6px', marginTop: '16px' }}>Payment Mode</label>
-            <select value={payment.method} onChange={e => setPayment({...payment, method: e.target.value})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', backgroundColor: '#fff' }}>
-              <option value="cash">Cash</option>
-              <option value="upi">UPI</option>
-              <option value="card">Card</option>
-              <option value="credit">Credit (Udhar)</option>
-            </select>
-            {payment.method === 'upi' && (
-              <input type="text" maxLength="5" placeholder="Last 5 Digits of UPI Ref" value={payment.upi_digits} onChange={e => setPayment({...payment, upi_digits: e.target.value.replace(/[^0-9]/g, '')})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', marginTop: '10px' }} />
-            )}
-            {payment.method === 'credit' && udharCustomers.length > 0 && (
-              <div style={{ marginTop: '10px' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748b' }}>Quick Select Udhar Customer:</span>
-                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px' }}>
-                  {udharCustomers.map((cust, i) => (
-                    <span key={i} onClick={() => setCustomerInfo({ name: cust.customer_name, phone: cust.customer_phone || '', address: customerInfo.address })} style={{ fontSize: '0.75rem', padding: '4px 8px', background: '#f1f5f9', border: '1px solid #e2e8f0', borderRadius: '4px', cursor: 'pointer', color: '#0f172a' }}>{cust.customer_name}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       </div>
 
@@ -540,33 +513,6 @@ const Billing = () => {
             </tr>
           </thead>
           <tbody>
-            {cart.map((item, index) => {
-              const itemTotal = item.price * item.quantity;
-              const itemDiscount = subtotal > 0 && discountAmount > 0 ? (itemTotal / subtotal) * discountAmount : 0;
-              const discountedTotal = itemTotal - itemDiscount;
-              const basePrice = discountedTotal / (1 + ((item.gst_slab || 0) / 100));
-              const itemGstAmt = discountedTotal - basePrice;
-
-              return (
-                <tr key={item.product_id} className="tally-item-row" style={{ borderBottom: '1px solid #e2e8f0' }}>
-                  <td className="tally-cell-sno" style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontWeight: 600 }}>{index + 1}</td>
-                  <td className="tally-cell-name" style={{ padding: '12px', fontWeight: 600, color: '#0f172a' }}>{item.name}</td>
-                  <td className="tally-cell-qty" style={{ padding: '12px', textAlign: 'right' }}>
-                    <input type="number" min="0" value={item.quantity} onChange={e => updateQuantity(item.product_id, e.target.value)} style={{ width: '80px', textAlign: 'right', padding: '6px', border: '1px solid #cbd5e1', borderRadius: '4px', outline: 'none' }} />
-                  </td>
-                  {isGstBill && <td className="tally-cell-baserate" style={{ padding: '12px', textAlign: 'right', color: '#475569' }}>₹{(basePrice / (item.quantity || 1)).toFixed(2)}</td>}
-                  <td className="tally-cell-rate" style={{ padding: '12px', textAlign: 'right' }}>
-                    <input type="number" min="0" step="0.01" value={item.price} onChange={e => updateRate(item.product_id, e.target.value)} style={{ width: '100px', textAlign: 'right', padding: '6px', border: '1px solid #cbd5e1', borderRadius: '4px', outline: 'none' }} />
-                  </td>
-                  {isGstBill && <td className="tally-cell-gst" style={{ padding: '12px', textAlign: 'right', color: '#475569' }}>₹{itemGstAmt.toFixed(2)}</td>}
-                  <td className="tally-cell-amount" style={{ padding: '12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>₹{itemTotal.toFixed(2)}</td>
-                  <td className="tally-cell-action" style={{ padding: '12px', textAlign: 'center' }}>
-                    <Trash2 size={16} color="#ef4444" style={{ cursor: 'pointer' }} onClick={() => removeFromCart(item.product_id)} />
-                  </td>
-                </tr>
-              );
-            })}
-            
             {/* Auto-complete Entry Row */}
             <tr className="tally-entry-row" style={{ background: '#f8fafc' }}>
               <td className="tally-cell-sno" style={{ padding: '12px', textAlign: 'center', color: '#94a3b8', fontWeight: 600 }}>*</td>
@@ -601,6 +547,35 @@ const Billing = () => {
               </td>
               <td className="tally-cell-filler" colSpan={isGstBill ? 6 : 4}></td>
             </tr>
+
+            {cart.map((item, index) => {
+              const itemTotal = item.price * item.quantity;
+              const itemDiscount = subtotal > 0 && discountAmount > 0 ? (itemTotal / subtotal) * discountAmount : 0;
+              const discountedTotal = itemTotal - itemDiscount;
+              const basePrice = discountedTotal / (1 + ((item.gst_slab || 0) / 100));
+              const itemGstAmt = discountedTotal - basePrice;
+
+              return (
+                <tr key={item.product_id} className="tally-item-row" style={{ borderBottom: '1px solid #e2e8f0' }}>
+                  <td className="tally-cell-sno" style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontWeight: 600 }}>{index + 1}</td>
+                  <td className="tally-cell-name" style={{ padding: '12px', fontWeight: 600, color: '#0f172a' }}>{item.name}</td>
+                  <td className="tally-cell-qty" style={{ padding: '12px', textAlign: 'right' }}>
+                    <input type="number" min="0" value={item.quantity} onChange={e => updateQuantity(item.product_id, e.target.value)} style={{ width: '80px', textAlign: 'right', padding: '6px', border: '1px solid #cbd5e1', borderRadius: '4px', outline: 'none' }} />
+                  </td>
+                  {isGstBill && <td className="tally-cell-baserate" style={{ padding: '12px', textAlign: 'right', color: '#475569' }}>₹{(basePrice / (item.quantity || 1)).toFixed(2)}</td>}
+                  <td className="tally-cell-rate" style={{ padding: '12px', textAlign: 'right' }}>
+                    <input type="number" min="0" step="0.01" value={item.price} onChange={e => updateRate(item.product_id, e.target.value)} style={{ width: '100px', textAlign: 'right', padding: '6px', border: '1px solid #cbd5e1', borderRadius: '4px', outline: 'none' }} />
+                  </td>
+                  {isGstBill && <td className="tally-cell-gst" style={{ padding: '12px', textAlign: 'right', color: '#475569' }}>₹{itemGstAmt.toFixed(2)}</td>}
+                  <td className="tally-cell-amount" style={{ padding: '12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>₹{itemTotal.toFixed(2)}</td>
+                  <td className="tally-cell-action" style={{ padding: '12px', textAlign: 'center' }}>
+                    <Trash2 size={16} color="#ef4444" style={{ cursor: 'pointer' }} onClick={() => removeFromCart(item.product_id)} />
+                  </td>
+                </tr>
+              );
+            })}
+            
+
           </tbody>
         </table>
       </div>
@@ -611,7 +586,37 @@ const Billing = () => {
         <div className="tally-panel-notes">
           <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '8px' }}>Narration (Notes)</label>
-            <textarea value={payment.notes || ''} onChange={e => setPayment({...payment, notes: e.target.value})} style={{ width: '100%', padding: '10px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', minHeight: '80px', resize: 'none' }} placeholder="Additional notes..."></textarea>
+            <textarea value={payment.notes || ''} onChange={e => setPayment({...payment, notes: e.target.value})} style={{ width: '100%', padding: '10px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', minHeight: '80px', resize: 'none', marginBottom: '16px' }} placeholder="Additional notes..."></textarea>
+
+            {/* Sales Ledger / Meta (Moved below Narration) */}
+            <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '16px' }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '6px' }}>Sales Ledger</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: isGstBill ? '#eff6ff' : '#f8fafc', padding: '8px 12px', borderRadius: '6px', border: isGstBill ? '1px solid #bfdbfe' : '1px solid #cbd5e1', cursor: 'pointer' }} onClick={() => setIsGstBill(!isGstBill)}>
+                <input type="checkbox" checked={isGstBill} readOnly style={{ width: 16, height: 16, cursor: 'pointer' }} />
+                <span style={{ fontSize: '0.95rem', fontWeight: 600, color: isGstBill ? '#1d4ed8' : '#475569' }}>GST Sales @ 18%</span>
+              </div>
+
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '6px', marginTop: '16px' }}>Payment Mode</label>
+              <select value={payment.method} onChange={e => setPayment({...payment, method: e.target.value})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', backgroundColor: '#fff' }}>
+                <option value="cash">Cash</option>
+                <option value="upi">UPI</option>
+                <option value="card">Card</option>
+                <option value="credit">Credit (Udhar)</option>
+              </select>
+              {payment.method === 'upi' && (
+                <input type="text" maxLength="5" placeholder="Last 5 Digits of UPI Ref" value={payment.upi_digits} onChange={e => setPayment({...payment, upi_digits: e.target.value.replace(/[^0-9]/g, '')})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', marginTop: '10px' }} />
+              )}
+              {payment.method === 'credit' && udharCustomers.length > 0 && (
+                <div style={{ marginTop: '10px' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748b' }}>Quick Select Udhar Customer:</span>
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px' }}>
+                    {udharCustomers.map((cust, i) => (
+                      <span key={i} onClick={() => setCustomerInfo({ name: cust.customer_name, phone: cust.customer_phone || '', address: customerInfo.address, selected: true })} style={{ fontSize: '0.75rem', padding: '4px 8px', background: '#f1f5f9', border: '1px solid #e2e8f0', borderRadius: '4px', cursor: 'pointer', color: '#0f172a' }}>{cust.customer_name}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
           
           {payment.method === 'upi' && settings?.upi_qr_code && (
