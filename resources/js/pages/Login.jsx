@@ -30,7 +30,7 @@ const Login = () => {
 
     setLoading(true);
     setError(null);
-    
+
     // Fetch CSRF cookie before login
     axios.get(`${window.location.origin}/sanctum/csrf-cookie`).then(() => {
         api.post('/login', formData)
@@ -116,7 +116,7 @@ const Login = () => {
                <input type="text" required className="form-control"
                   value={formData.login} onChange={e => setFormData({...formData, login: e.target.value})} />
              </div>
-             
+
              <div className="form-group" style={{ marginBottom: 24 }}>
                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                  <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6, margin: 0 }}><Lock size={16} /> Password</label>
@@ -143,7 +143,7 @@ const Login = () => {
         <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--surface)', padding: '8px 16px', borderRadius: 20, boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}>
             <Languages size={18} color="var(--primary)" />
-            <select 
+            <select
               style={{ border: 'none', outline: 'none', background: 'transparent', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)' }}
               onChange={(e) => {
                 const lang = e.target.value;
@@ -171,7 +171,7 @@ const Login = () => {
               <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
             </select>
           </div>
-          
+
           <div style={{ display: 'flex', gap: 20, fontSize: '0.85rem' }}>
             <Link to="/privacy-policy" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}><Shield size={14} /> Privacy Policy</Link>
             <Link to="/terms" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}><FileText size={14} /> Terms & Conditions</Link>

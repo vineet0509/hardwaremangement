@@ -34,7 +34,7 @@ const Register = () => {
     if(formData.password !== formData.password_confirmation) {
        return setError("Passwords do not match");
     }
-    
+
     // Indian GSTIN format validation
     if (formData.gst_number) {
       const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i;
@@ -45,13 +45,14 @@ const Register = () => {
 
     setLoading(true);
     setError(null);
+
     // Fetch CSRF cookie before registration
     axios.get(`${window.location.origin}/sanctum/csrf-cookie`).then(() => {
         api.post('/register', formData)
           .then(res => {
               localStorage.setItem('auth_token', res.data.access_token);
               sessionStorage.setItem('just_registered', 'true');
-              window.location.href = '/dashboard';
+              navigate('/dashboard');
           })
           .catch(err => {
               setError(err.response?.data?.message || 'Registration error');
@@ -74,7 +75,7 @@ const Register = () => {
                 <span style={{ color: '#00a8ff' }}>Sync</span>
              </h2>
              <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Start managing your business today.</p>
-             
+
              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#ecfdf5', color: '#059669', padding: '6px 14px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold', marginTop: '16px', border: '1px solid #d1fae5' }}>
                <BadgeCheck size={16} /> 30-Day Trial Period Included
              </div>
@@ -89,20 +90,20 @@ const Register = () => {
                   <Store size={14} /> Store Information
                </h4>
                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  <input 
-                    type="text" 
-                    name="shop_name" 
-                    className="form-control" 
-                    placeholder="Official Business Name (Ex: Apex Store)" 
-                    required 
-                    value={formData.shop_name} 
-                    onChange={handleChange} 
+                  <input
+                    type="text"
+                    name="shop_name"
+                    className="form-control"
+                    placeholder="Official Business Name (Ex: Apex Store)"
+                    required
+                    value={formData.shop_name}
+                    onChange={handleChange}
                   />
-                  <select 
-                    name="business_type" 
-                    className="form-control" 
-                    required 
-                    value={formData.business_type} 
+                  <select
+                    name="business_type"
+                    className="form-control"
+                    required
+                    value={formData.business_type}
                     onChange={handleChange}
                   >
                     <option value="" disabled>Select Type of Business</option>
@@ -112,13 +113,13 @@ const Register = () => {
                     <option value="Clothing / Garments">Clothing / Garments</option>
                     <option value="Services / General">Services / General</option>
                   </select>
-                  <input 
-                    type="text" 
-                    name="gst_number" 
-                    className="form-control" 
-                    placeholder="GST Number (Optional)" 
-                    value={formData.gst_number} 
-                    onChange={handleChange} 
+                  <input
+                    type="text"
+                    name="gst_number"
+                    className="form-control"
+                    placeholder="GST Number (Optional)"
+                    value={formData.gst_number}
+                    onChange={handleChange}
                   />
                </div>
             </div>
@@ -159,7 +160,7 @@ const Register = () => {
                 Sign In Here
               </Link>
             </div>
-            
+
             <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '0.7rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
               By continuing, you agree to our <Link to="/terms" style={{ color: 'inherit', textDecoration: 'underline' }}>Terms of Service</Link> and <Link to="/privacy-policy" style={{ color: 'inherit', textDecoration: 'underline' }}>Privacy Policy</Link>.
             </p>
@@ -170,7 +171,7 @@ const Register = () => {
         <div style={{ marginTop: 0, marginBottom: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--surface)', padding: '8px 16px', borderRadius: 20, boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}>
             <Languages size={18} color="var(--primary)" />
-            <select 
+            <select
               style={{ border: 'none', outline: 'none', background: 'transparent', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)' }}
               onChange={(e) => {
                 const lang = e.target.value;
@@ -198,7 +199,7 @@ const Register = () => {
               <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
             </select>
           </div>
-          
+
           <div style={{ display: 'flex', gap: 20, fontSize: '0.85rem' }}>
             <Link to="/privacy-policy" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}><Shield size={14} /> Privacy Policy</Link>
             <Link to="/terms" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}><FileText size={14} /> Terms & Conditions</Link>

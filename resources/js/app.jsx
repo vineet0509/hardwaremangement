@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { App as CapApp } from '@capacitor/app';
 import axios from 'axios';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
@@ -66,6 +67,20 @@ function App() {
   useEffect(() => {
     // Standard CSRF fetch for stateful forms
     axios.get(`${window.location.origin}/sanctum/csrf-cookie`).catch(console.error);
+
+    // Handle Capacitor Android Hardware Back Button
+    if (typeof window !== 'undefined' && window.Capacitor && window.Capacitor.isNativePlatform()) {
+      CapApp.addListener('backButton', ({ canGoBack }) => {
+        const path = window.location.pathname;
+        const rootPaths = ['/', '/login', '/dashboard', '/register'];
+        
+        if (rootPaths.includes(path)) {
+          CapApp.exitApp();
+        } else {
+          window.history.back();
+        }
+      });
+    }
   }, []);
 
   return (
@@ -76,7 +91,7 @@ function App() {
         <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
         <Route path="/forgot-password" element={<GuestRoute><ForgotPassword /></GuestRoute>} />
         <Route path="/reset-password" element={<GuestRoute><ResetPassword /></GuestRoute>} />
-        
+
         <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
         <Route path="/products" element={<ProtectedRoute><Layout><Products /></Layout></ProtectedRoute>} />
         <Route path="/customers" element={<ProtectedRoute><Layout><Customers /></Layout></ProtectedRoute>} />
@@ -97,7 +112,7 @@ function App() {
         <Route path="/contact-us" element={<PublicOrPrivateLayout><ContactUs /></PublicOrPrivateLayout>} />
         <Route path="/privacy-policy" element={<PublicOrPrivateLayout><PrivacyPolicy /></PublicOrPrivateLayout>} />
         <Route path="/terms" element={<PublicOrPrivateLayout><Terms /></PublicOrPrivateLayout>} />
-        
+
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </Router>

@@ -474,7 +474,23 @@ const Billing = () => {
                                 contact: customerInfo.phone || ''
                             },
                             theme: {
-                                color: '#4f46e5'
+                                color: '#14b8a6'
+                            },
+                            config: {
+                                display: {
+                                    blocks: {
+                                        qr: {
+                                            name: 'Pay via QR Code',
+                                            instruments: [{ method: 'upi', flows: ['qr'] }]
+                                        },
+                                        other: {
+                                            name: 'Other Methods',
+                                            instruments: [{ method: 'upi' }, { method: 'card' }, { method: 'netbanking' }, { method: 'wallet' }]
+                                        }
+                                    },
+                                    sequence: ['block.qr', 'block.other'],
+                                    preferences: { show_default_blocks: false }
+                                }
                             }
                         };
                         const rzp = new window.Razorpay(options);
