@@ -88,10 +88,13 @@ class SuperAdminController extends Controller
 
         // Sync with Setting
         $setting = Setting::withoutGlobalScopes()->where('business_id', $business->id)->first();
-        if ($setting) {
-            $setting->subscription_expires_at = $business->trial_ends_at;
-            $setting->save();
+        if (!$setting) {
+            $setting = new Setting();
+            $setting->business_id = $business->id;
+            $setting->company_name = $business->name;
         }
+        $setting->subscription_expires_at = $business->trial_ends_at;
+        $setting->save();
 
         return response()->json([
             'message' => "Plan extended by {$request->days} days successfully.",
@@ -112,7 +115,9 @@ class SuperAdminController extends Controller
 
         $setting = Setting::withoutGlobalScopes()->where('business_id', $business->id)->first();
         if (!$setting) {
-            return response()->json(['message' => 'Settings not found for this business.'], 404);
+            $setting = new Setting();
+            $setting->business_id = $business->id;
+            $setting->company_name = $business->name;
         }
 
         $setting->subscription_plan = $request->plan_type;
