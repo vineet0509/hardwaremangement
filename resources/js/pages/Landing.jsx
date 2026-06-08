@@ -940,7 +940,7 @@ const Landing = () => {
             maxWidth: '1200px',
             margin: '0 auto'
           }}>
-            {/* Plan 1: Trial */}
+            {/* Plan 1: Free */}
             <div className="pricing-card" style={{
               background: 'rgba(21, 28, 44, 0.65)',
               border: '1px solid rgba(255, 255, 255, 0.08)',
@@ -954,18 +954,18 @@ const Landing = () => {
               transition: 'all 0.3s'
             }}>
               <div>
-                <span style={{ fontSize: '0.75rem', color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Trial Plan</span>
+                <span style={{ fontSize: '0.75rem', color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Free Plan</span>
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Evaluation</h3>
                 
                 <div style={{ margin: '16px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
                   <span style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>₹0</span>
-                  <span style={{ color: '#94a3b8' }}>/ 30 Days</span>
+                  <span style={{ color: '#94a3b8' }}>/ month</span>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#10b981" /> Up to 3 Branches</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Full POS Billing Access</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Basic Reporting</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#10b981" /> 1 Shop & 1 User</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Billing, Inventory & Customers</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Maximum 100 invoices/mo</div>
                 </div>
               </div>
 
@@ -974,11 +974,11 @@ const Landing = () => {
                 className="btn" 
                 style={{ width: '100%', padding: '12px', borderRadius: '10px', marginTop: 24, fontWeight: 'bold', cursor: 'pointer', background: 'rgba(255, 255, 255, 0.05)', color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.25)' }}
               >
-                Start Trial
+                Start For Free
               </button>
             </div>
 
-            {/* Plan 2: Pro */}
+            {/* Plan 2: Starter */}
             <div className="pricing-card" style={{
               background: 'rgba(21, 28, 44, 0.65)',
               border: '1px solid rgba(255, 255, 255, 0.08)',
@@ -992,18 +992,18 @@ const Landing = () => {
               transition: 'all 0.3s'
             }}>
               <div>
-                <span style={{ fontSize: '0.75rem', color: '#3b82f6', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Pro</span>
-                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Standard Business</h3>
+                <span style={{ fontSize: '0.75rem', color: '#3b82f6', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Starter</span>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Small Business</h3>
                 
                 <div style={{ margin: '16px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                  <span style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>₹2,999</span>
+                  <span style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>₹999</span>
                   <span style={{ color: '#94a3b8' }}>/ year</span>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#3b82f6" /> Up to 10 Branches</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#3b82f6" /> All Trial Features</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#3b82f6" /> Custom Domain Mapping</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#3b82f6" /> 1 Shop & 2 Users</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#3b82f6" /> Unlimited Invoices</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#3b82f6" /> GST Reports & WhatsApp Sharing</div>
                 </div>
               </div>
 
@@ -1012,7 +1012,7 @@ const Landing = () => {
                 className="btn" 
                 style={{ width: '100%', padding: '12px', borderRadius: '10px', marginTop: 24, fontWeight: 'bold', cursor: 'pointer', background: 'rgba(255, 255, 255, 0.05)', color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.25)' }}
               >
-                Get Pro
+                Get Starter
               </button>
             </div>
 
@@ -1033,17 +1033,17 @@ const Landing = () => {
               <div style={{ position: 'absolute', top: -12, right: 20, background: 'var(--primary)', color: '#fff', fontSize: '0.7rem', fontWeight: 800, padding: '4px 10px', borderRadius: '20px', textTransform: 'uppercase' }}>Recommended</div>
               <div>
                 <span style={{ fontSize: '0.75rem', color: 'var(--primary)', background: 'rgba(79, 70, 229, 0.1)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Business</span>
-                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Wholesale Plan</h3>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Growing Team</h3>
                 
                 <div style={{ margin: '16px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                  <span style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>₹4,999</span>
+                  <span style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>₹2,499</span>
                   <span style={{ color: '#94a3b8' }}>/ year</span>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="var(--primary)" /> Up to 50 Branches</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="var(--primary)" /> All Pro Features Included</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="var(--primary)" /> Priority Support</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="var(--primary)" /> 1 Shop & 5 Users</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="var(--primary)" /> Staff Management (Max 25)</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="var(--primary)" /> Attendance, Salary & Expenses</div>
                 </div>
               </div>
 
@@ -1074,14 +1074,14 @@ const Landing = () => {
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Max Control</h3>
                 
                 <div style={{ margin: '16px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                  <span style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>₹9,999</span>
+                  <span style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>₹4,999</span>
                   <span style={{ color: '#94a3b8' }}>/ year</span>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#f59e0b" /> Unlimited Branches</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#f59e0b" /> Dedicated Account Manager</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#f59e0b" /> Full API Access</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#f59e0b" /> Unlimited Shops & Users</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#f59e0b" /> Role & Branch Management</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#f59e0b" /> API Access & AI Features</div>
                 </div>
               </div>
 
