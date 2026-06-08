@@ -44,6 +44,7 @@ class SettingsController extends Controller
         $data['razorpay_key'] = $settings->razorpay_key;
         $data['razorpay_secret'] = $settings->razorpay_secret;
         $data['razorpay_webhook_secret'] = $settings->razorpay_webhook_secret;
+        $data['upi_qr_code'] = $settings->upi_qr_code;
 
         return response()->json($data);
     }
@@ -164,9 +165,17 @@ class SettingsController extends Controller
             'razorpay_key' => 'nullable|string|max:255',
             'razorpay_secret' => 'nullable|string|max:255',
             'razorpay_webhook_secret' => 'nullable|string|max:255',
+            'upi_qr_code' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $data = $request->only(['company_name', 'business_type', 'company_phone', 'company_address', 'razorpay_key', 'razorpay_secret', 'razorpay_webhook_secret']);
+
+        if ($request->hasFile('upi_qr_code')) {
+            $file = $request->file('upi_qr_code');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images/qr_codes'), $filename);
+            $data['upi_qr_code'] = '/images/qr_codes/' . $filename;
+        }
 
         if ($settings) {
             $settings->update($data);

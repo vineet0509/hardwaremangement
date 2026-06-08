@@ -134,6 +134,13 @@
     </div>
     <div class="clear"></div>
 
+    @if($bill->payment_method === 'upi' && isset($settings) && $settings->upi_qr_code)
+        <div style="text-align: center; margin-top: 20px;">
+            <p style="margin: 0 0 10px 0;"><strong>Scan to Pay via UPI</strong></p>
+            <img src="{{ public_path(ltrim($settings->upi_qr_code, '/')) }}" alt="UPI QR" style="width: 120px; height: 120px; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
+        </div>
+    @endif
+
     <div class="footer">
         <p>This is a computer generated invoice. No signature required.</p>
         <p><strong>Terms & Conditions:</strong> {{ $business->terms ?? 'Thank you for your business!' }}</p>

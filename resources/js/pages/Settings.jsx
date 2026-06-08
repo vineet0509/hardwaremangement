@@ -7,7 +7,8 @@ const Settings = () => {
   const [formData, setFormData] = useState({
     company_name: '', company_phone: '', company_address: '', gst_number: '', business_type: '',
     subscription_plan: 'full_time', subscription_expires_at: '', latest_request: null,
-    razorpay_key: '', razorpay_secret: '', razorpay_webhook_secret: ''
+    razorpay_key: '', razorpay_secret: '', razorpay_webhook_secret: '',
+    upi_qr_code: null, upi_qr_code_url: ''
   });
   const [userData, setUserData] = useState({
     name: '', email: '', mobile: ''
@@ -77,7 +78,9 @@ const Settings = () => {
           latest_request: settingsRes.data.latest_request || null,
           razorpay_key: settingsRes.data.razorpay_key || '',
           razorpay_secret: settingsRes.data.razorpay_secret || '',
-          razorpay_webhook_secret: settingsRes.data.razorpay_webhook_secret || ''
+          razorpay_webhook_secret: settingsRes.data.razorpay_webhook_secret || '',
+          upi_qr_code: null,
+          upi_qr_code_url: settingsRes.data.upi_qr_code || ''
         });
         if (settingsRes.data.latest_request && settingsRes.data.latest_request.status === 'pending') {
           setSelectedPlan(settingsRes.data.latest_request.plan_type);
@@ -107,7 +110,14 @@ const Settings = () => {
       }
     }
 
-    api.post('/settings', formData)
+    const payload = new FormData();
+    Object.keys(formData).forEach(key => {
+      if (key !== 'upi_qr_code_url' && formData[key] !== null && formData[key] !== undefined) {
+        payload.append(key, formData[key]);
+      }
+    });
+
+    api.post('/settings', payload, { headers: { 'Content-Type': 'multipart/form-data' } })
       .then(res => {
         Swal.fire('Success', 'Settings saved successfully!', 'success').then(() => {
            window.location.reload(); 
@@ -370,8 +380,21 @@ const Settings = () => {
               <textarea className="form-control" style={{ resize: 'vertical', minHeight: 80 }}
                 value={formData.company_address} onChange={e => setFormData({...formData, company_address: e.target.value})} />
             </div>
-
-            <button type="submit" className="btn btn-primary" style={{ marginTop: 12 }}>
+            
+            <div className="form-group" style={{ marginTop: 20, borderTop: '1px solid var(--border)', paddingTop: 20 }}>
+              <h4 style={{ marginBottom: 12 }}>UPI QR Code (Manual Payment)</h4>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: 12 }}>
+                Upload your shop's UPI QR Code. It will be shown on the billing page when you choose "UPI" as the payment method.
+              </p>
+              {formData.upi_qr_code_url && (
+                <div style={{ marginBottom: 12 }}>
+                  <img src={formData.upi_qr_code_url} alt="UPI QR" style={{ height: 120, borderRadius: 8, border: '1px solid var(--border)' }} />
+                </div>
+              )}
+              <input type="file" className="form-control" accept="image/*"
+                onChange={e => setFormData({...formData, upi_qr_code: e.target.files[0]})} />
+            </div>
+            <button type="submit" className="btn btn-primary" style={{ marginTop: 16 }}>
               <Save size={18} /> Save Settings
             </button>
           </form>

@@ -18,7 +18,8 @@ class Setting extends Model
         'subscription_expires_at',
         'razorpay_key',
         'razorpay_secret',
-        'razorpay_webhook_secret'
+        'razorpay_webhook_secret',
+        'upi_qr_code'
     ];
 
     protected $casts = [

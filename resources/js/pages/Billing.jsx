@@ -372,6 +372,13 @@ const Billing = () => {
               ` : ''}
             </table>
 
+            ${(billData.payment_method === 'upi' && settings.upi_qr_code) ? `
+              <div style="text-align: center; margin-top: 20px;">
+                <p style="margin: 0 0 10px 0;"><strong>Scan to Pay via UPI</strong></p>
+                <img src="${settings.upi_qr_code}" alt="UPI QR" style="width: 120px; height: 120px; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
+              </div>
+            ` : ''}
+
             <div class="footer">
               <p>This is a computer generated invoice. No signature required.</p>
               <p><strong>Terms & Conditions:</strong> ${getTermsAndConditions(settings.business_type)}</p>
@@ -796,28 +803,30 @@ const Billing = () => {
         <div style={{ padding: '12px 16px', background: 'var(--surface)', borderTop: '1px solid var(--border)', flexShrink: 0 }}>
           
           {/* Subtotal & Discount Row */}
-          <div style={{ display: 'flex', gap: '12px', marginBottom: '8px' }}>
-            <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--surface-hover)', borderRadius: '8px', padding: '6px 12px', border: '1px solid var(--border)' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)' }}>Subtotal</span>
-              <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>₹{typeof subtotal === 'number' ? subtotal.toFixed(2) : subtotal}</span>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--surface-hover)', borderRadius: '8px', padding: '6px 10px', border: '1px solid var(--border)' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)' }}>Subtotal</span>
+              <span style={{ fontSize: '0.85rem', fontWeight: 700 }}>₹{typeof subtotal === 'number' ? subtotal.toFixed(2) : subtotal}</span>
             </div>
             
-            <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--surface-hover)', borderRadius: '8px', padding: '4px 10px', border: '1px solid var(--border)' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)' }}>Discount</span>
-              <div style={{ display: 'flex', alignItems: 'center', width: '70px' }}>
-                 <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginRight: '2px' }}>₹</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--surface-hover)', borderRadius: '8px', padding: '6px 10px', border: '1px solid var(--border)' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)' }}>Discount</span>
+              <div style={{ display: 'flex', alignItems: 'center', width: '60px' }}>
+                 <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginRight: '2px' }}>₹</span>
                  <input type="number" value={payment.discount} onChange={e => setPayment({...payment, discount: e.target.value})} style={{ width: '100%', border: 'none', outline: 'none', textAlign: 'right', fontWeight: 700, fontSize: '0.85rem', background: 'transparent' }} />
               </div>
             </div>
-            <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--surface-hover)', borderRadius: '8px', padding: '4px 10px', border: '1px solid var(--border)' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)' }}>Other Chg</span>
-              <div style={{ display: 'flex', alignItems: 'center', width: '70px', justifyContent: 'flex-end' }}>
-                 <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginRight: '2px' }}>₹</span>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--surface-hover)', borderRadius: '8px', padding: '6px 10px', border: '1px solid var(--border)' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)' }}>Other Chg</span>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                 <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginRight: '2px' }}>₹</span>
                  <span style={{ fontWeight: 700, fontSize: '0.85rem' }}>{payment.other_charges || 0}</span>
               </div>
             </div>
-            <button type="button" onClick={addOtherCharge} style={{ background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '8px', padding: '0 10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Add Other Charge">
-               <PlusCircle size={16} />
+
+            <button type="button" onClick={addOtherCharge} style={{ background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '8px', padding: '6px 10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '0.75rem', fontWeight: 600 }} title="Add Other Charge">
+               <PlusCircle size={14} /> Add Charge
             </button>
           </div>
 
@@ -922,9 +931,16 @@ const Billing = () => {
 
           {/* Conditional UPI Digits Input */}
           {payment.method === 'upi' && (
-            <div style={{ marginBottom: '8px', padding: '8px 12px', background: 'rgba(79, 70, 229, 0.03)', border: '1px dashed rgba(79, 70, 229, 0.2)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-               <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--primary)' }}>UPI Last 5 Digits *</label>
-               <input type="text" maxLength="5" placeholder="e.g. 12345" value={payment.upi_digits} onChange={e => setPayment({...payment, upi_digits: e.target.value.replace(/[^0-9]/g, '')})} style={{ fontWeight: 700, letterSpacing: '2px', fontSize: '0.85rem', textAlign: 'center', width: '90px', padding: '4px', border: '1px solid var(--border)', borderRadius: '4px', background: 'var(--surface)' }} />
+            <div style={{ marginBottom: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {settings?.upi_qr_code && (
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '8px', background: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--border)' }}>
+                  <img src={settings.upi_qr_code} alt="UPI QR Code" style={{ width: '150px', height: '150px', objectFit: 'contain', borderRadius: '8px' }} />
+                </div>
+              )}
+              <div style={{ padding: '8px 12px', background: 'rgba(79, 70, 229, 0.03)', border: '1px dashed rgba(79, 70, 229, 0.2)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                 <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--primary)' }}>UPI Last 5 Digits *</label>
+                 <input type="text" maxLength="5" placeholder="e.g. 12345" value={payment.upi_digits} onChange={e => setPayment({...payment, upi_digits: e.target.value.replace(/[^0-9]/g, '')})} style={{ fontWeight: 700, letterSpacing: '2px', fontSize: '0.85rem', textAlign: 'center', width: '90px', padding: '4px', border: '1px solid var(--border)', borderRadius: '4px', background: 'var(--surface)' }} />
+              </div>
             </div>
           )}
 
