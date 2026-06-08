@@ -933,8 +933,8 @@ const Billing = () => {
           {payment.method === 'upi' && (
             <div style={{ marginBottom: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {settings?.upi_qr_code && (
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '8px', background: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                  <img src={settings.upi_qr_code} alt="UPI QR Code" style={{ width: '150px', height: '150px', objectFit: 'contain', borderRadius: '8px' }} />
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '12px', background: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--border)' }}>
+                  <img src={settings.upi_qr_code} alt="UPI QR Code" style={{ width: '100%', maxWidth: '280px', height: 'auto', maxHeight: '280px', objectFit: 'contain', borderRadius: '8px' }} />
                 </div>
               )}
               <div style={{ padding: '8px 12px', background: 'rgba(79, 70, 229, 0.03)', border: '1px dashed rgba(79, 70, 229, 0.2)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
