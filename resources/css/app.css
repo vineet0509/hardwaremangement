@@ -966,3 +966,76 @@ tr:hover td { background: var(--surface-hover); }
     box-shadow: 0 2px 4px rgba(0,0,0,0.04);
   }
 }
+
+/* Tally View Responsive Styles */
+.tally-wrapper {
+  padding: 20px;
+  background: #f8fafc;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.tally-top-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.tally-panel-party, .tally-panel-meta {
+  flex: 1;
+  min-width: 280px;
+}
+.tally-table-container {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.tally-table-container table {
+  min-width: 800px;
+}
+.tally-bottom-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.tally-panel-notes {
+  flex: 1;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.tally-panel-totals {
+  flex: 1;
+  min-width: 280px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+@media (max-width: 768px) {
+  .tally-wrapper {
+    padding: 10px;
+    gap: 12px;
+  }
+  .tally-top-row {
+    gap: 12px;
+  }
+  .tally-bottom-row {
+    gap: 12px;
+  }
+  .tally-panel-party, .tally-panel-meta, .tally-panel-notes, .tally-panel-totals {
+    min-width: 100%;
+  }
+  .tally-panel-totals {
+    padding: 12px;
+  }
+}

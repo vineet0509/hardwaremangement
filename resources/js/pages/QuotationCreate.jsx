@@ -364,7 +364,7 @@ const QuotationCreate = () => {
   };
 
   return (
-    <div style={{ padding: '20px', background: '#f8fafc', minHeight: 'calc(100vh - 60px)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <div className="tally-wrapper">
       
       {/* HEADER SECTION */}
       <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
@@ -380,9 +380,9 @@ const QuotationCreate = () => {
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+        <div className="tally-top-row">
           {/* Party Details */}
-          <div style={{ flex: 2, minWidth: '300px', position: 'relative' }}>
+          <div className="tally-panel-party" style={{ position: 'relative' }}>
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '6px' }}>Customer Name *</label>
             <div style={{ display: 'flex', gap: '10px' }}>
               <input type="text" placeholder="Customer Name" value={customerInfo.name} onChange={e => setCustomerInfo({...customerInfo, name: e.target.value})} style={{ flex: 1, padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none' }} />
@@ -402,7 +402,7 @@ const QuotationCreate = () => {
           </div>
 
           {/* Sales Ledger / Meta */}
-          <div style={{ flex: 1, minWidth: '250px' }}>
+          <div className="tally-panel-meta">
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '6px' }}>Quotation Type</label>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: isGst ? '#eff6ff' : '#f8fafc', padding: '8px 12px', borderRadius: '6px', border: isGst ? '1px solid #bfdbfe' : '1px solid #cbd5e1', cursor: 'pointer' }} onClick={() => setIsGst(!isGst)}>
               <input type="checkbox" checked={isGst} readOnly style={{ width: 16, height: 16, cursor: 'pointer' }} />
@@ -413,7 +413,7 @@ const QuotationCreate = () => {
       </div>
 
       {/* GRID SECTION */}
-      <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', flex: 1, display: 'flex', flexDirection: 'column', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+      <div className="tally-table-container">
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead style={{ background: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
             <tr>
@@ -494,9 +494,9 @@ const QuotationCreate = () => {
       </div>
 
       {/* FOOTER SECTION */}
-      <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+      <div className="tally-bottom-row">
         {/* Narration & Actions */}
-        <div style={{ flex: 1, minWidth: '300px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="tally-panel-notes">
           <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '8px' }}>Notes / Remarks</label>
             <textarea value={notes} onChange={e => setNotes(e.target.value)} style={{ width: '100%', padding: '10px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none', minHeight: '80px', resize: 'none' }} placeholder="Additional notes..."></textarea>
@@ -516,7 +516,7 @@ const QuotationCreate = () => {
         </div>
 
         {/* Totals */}
-        <div style={{ flex: 1, minWidth: '350px', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+        <div className="tally-panel-totals">
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', fontSize: '0.95rem', fontWeight: 600, color: '#475569' }}>
             <span>Subtotal</span>
             <span>₹{typeof subtotal === 'number' ? subtotal.toFixed(2) : subtotal}</span>
