@@ -7,7 +7,6 @@ const Settings = () => {
   const [formData, setFormData] = useState({
     company_name: '', company_phone: '', company_address: '', gst_number: '', business_type: '',
     subscription_plan: 'full_time', subscription_expires_at: '', latest_request: null,
-    razorpay_key: '', razorpay_secret: '', razorpay_webhook_secret: '',
     upi_qr_code: null, upi_qr_code_url: ''
   });
   const [userData, setUserData] = useState({
@@ -76,9 +75,6 @@ const Settings = () => {
           subscription_plan: settingsRes.data.subscription_plan || 'full_time',
           subscription_expires_at: settingsRes.data.subscription_expires_at ? settingsRes.data.subscription_expires_at.split('T')[0] : '',
           latest_request: settingsRes.data.latest_request || null,
-          razorpay_key: settingsRes.data.razorpay_key || '',
-          razorpay_secret: settingsRes.data.razorpay_secret || '',
-          razorpay_webhook_secret: settingsRes.data.razorpay_webhook_secret || '',
           upi_qr_code: null,
           upi_qr_code_url: settingsRes.data.upi_qr_code || ''
         });
@@ -400,38 +396,7 @@ const Settings = () => {
           </form>
         </div>
 
-        {/* Payment Gateway Settings */}
-        <div className="stat-card" style={{ flex: 1, minWidth: '300px' }}>
-          <h3 style={{ borderBottom: '1px solid var(--border)', paddingBottom: 12, marginBottom: 16 }}>Payment Gateway (Razorpay)</h3>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: 16 }}>
-            Configure your own Razorpay API keys to receive money directly into your bank account via UPI/Cards. Leave blank to disable.
-          </p>
-          <form onSubmit={handleSave}>
-            <div className="form-group">
-              <label className="form-label">Razorpay Key ID</label>
-              <input type="text" className="form-control" placeholder="rzp_live_..."
-                value={formData.razorpay_key} onChange={e => setFormData({...formData, razorpay_key: e.target.value})} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Razorpay Key Secret</label>
-              <input type="password" className="form-control" placeholder="Hidden..."
-                value={formData.razorpay_secret} onChange={e => setFormData({...formData, razorpay_secret: e.target.value})} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Webhook Secret (Optional)</label>
-              <input type="password" className="form-control" placeholder="Required for auto-polling..."
-                value={formData.razorpay_webhook_secret} onChange={e => setFormData({...formData, razorpay_webhook_secret: e.target.value})} />
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 4 }}>
-                If set, your Webhook URL is: <br/>
-                <code style={{ background: 'rgba(0,0,0,0.1)', padding: '2px 4px', borderRadius: 4 }}>{window.location.origin}/api/razorpay-webhook</code>
-              </div>
-            </div>
 
-            <button type="submit" className="btn btn-primary" style={{ marginTop: 12 }}>
-              <Save size={18} /> Save Keys
-            </button>
-          </form>
-        </div>
 
         {/* Subscription Plan Settings */}
         <div className="stat-card" style={{ flex: 1, minWidth: '300px', backgroundColor: 'var(--surface-hover)' }}>
