@@ -436,19 +436,19 @@ const QuotationCreate = () => {
               const itemGstAmt = discountedTotal - basePrice;
 
               return (
-                <tr key={item.product_id} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                  <td style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontWeight: 600 }}>{index + 1}</td>
-                  <td style={{ padding: '12px', fontWeight: 600, color: '#0f172a' }}>{item.name}</td>
-                  <td style={{ padding: '12px', textAlign: 'right' }}>
+                <tr key={item.product_id} className="tally-item-row" style={{ borderBottom: '1px solid #e2e8f0' }}>
+                  <td className="tally-cell-sno" style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontWeight: 600 }}>{index + 1}</td>
+                  <td className="tally-cell-name" style={{ padding: '12px', fontWeight: 600, color: '#0f172a' }}>{item.name}</td>
+                  <td className="tally-cell-qty" style={{ padding: '12px', textAlign: 'right' }}>
                     <input type="number" min="0" value={item.quantity} onChange={e => updateQuantity(item.product_id, e.target.value)} style={{ width: '80px', textAlign: 'right', padding: '6px', border: '1px solid #cbd5e1', borderRadius: '4px', outline: 'none' }} />
                   </td>
-                  {isGst && <td style={{ padding: '12px', textAlign: 'right', color: '#475569' }}>₹{(basePrice / (item.quantity || 1)).toFixed(2)}</td>}
-                  <td style={{ padding: '12px', textAlign: 'right' }}>
+                  {isGst && <td className="tally-cell-baserate" style={{ padding: '12px', textAlign: 'right', color: '#475569' }}>₹{(basePrice / (item.quantity || 1)).toFixed(2)}</td>}
+                  <td className="tally-cell-rate" style={{ padding: '12px', textAlign: 'right' }}>
                     <input type="number" min="0" step="0.01" value={item.price} onChange={e => updateRate(item.product_id, e.target.value)} style={{ width: '100px', textAlign: 'right', padding: '6px', border: '1px solid #cbd5e1', borderRadius: '4px', outline: 'none' }} />
                   </td>
-                  {isGst && <td style={{ padding: '12px', textAlign: 'right', color: '#475569' }}>₹{itemGstAmt.toFixed(2)}</td>}
-                  <td style={{ padding: '12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>₹{itemTotal.toFixed(2)}</td>
-                  <td style={{ padding: '12px', textAlign: 'center' }}>
+                  {isGst && <td className="tally-cell-gst" style={{ padding: '12px', textAlign: 'right', color: '#475569' }}>₹{itemGstAmt.toFixed(2)}</td>}
+                  <td className="tally-cell-amount" style={{ padding: '12px', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>₹{itemTotal.toFixed(2)}</td>
+                  <td className="tally-cell-action" style={{ padding: '12px', textAlign: 'center' }}>
                     <Trash2 size={16} color="#ef4444" style={{ cursor: 'pointer' }} onClick={() => removeFromCart(item.product_id)} />
                   </td>
                 </tr>
@@ -456,9 +456,9 @@ const QuotationCreate = () => {
             })}
             
             {/* Auto-complete Entry Row */}
-            <tr style={{ background: '#f8fafc' }}>
-              <td style={{ padding: '12px', textAlign: 'center', color: '#94a3b8', fontWeight: 600 }}>*</td>
-              <td style={{ padding: '12px', position: 'relative' }}>
+            <tr className="tally-entry-row" style={{ background: '#f8fafc' }}>
+              <td className="tally-cell-sno" style={{ padding: '12px', textAlign: 'center', color: '#94a3b8', fontWeight: 600 }}>*</td>
+              <td className="tally-cell-search" style={{ padding: '12px', position: 'relative' }}>
                 <input 
                   type="text" 
                   placeholder="Type to search and add item..." 
@@ -487,7 +487,7 @@ const QuotationCreate = () => {
                   </div>
                 )}
               </td>
-              <td colSpan={isGst ? 6 : 4}></td>
+              <td className="tally-cell-filler" colSpan={isGst ? 6 : 4}></td>
             </tr>
           </tbody>
         </table>

@@ -1038,4 +1038,90 @@ tr:hover td { background: var(--surface-hover); }
   .tally-panel-totals {
     padding: 12px;
   }
+  
+  /* Tally Table Mobile View */
+  .tally-table-container {
+    overflow-x: hidden !important;
+  }
+  .tally-table-container table {
+    min-width: 100% !important;
+    display: block;
+  }
+  .tally-table-container thead {
+    display: none;
+  }
+  .tally-table-container tbody {
+    display: block;
+    width: 100%;
+  }
+  .tally-item-row {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e2e8f0;
+    position: relative;
+    background: #fff;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  .tally-cell-sno {
+    display: none !important;
+  }
+  .tally-cell-name {
+    width: 80% !important;
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+    padding: 4px 12px !important;
+    border: none !important;
+  }
+  .tally-cell-action {
+    width: 20% !important;
+    text-align: right !important;
+    padding: 4px 12px !important;
+    border: none !important;
+  }
+  .tally-cell-qty, .tally-cell-rate, .tally-cell-amount {
+    width: 33.33% !important;
+    display: flex !important;
+    flex-direction: column;
+    padding: 8px 12px !important;
+    border: none !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+  }
+  .tally-cell-qty input, .tally-cell-rate input {
+    width: 100% !important;
+    text-align: left !important;
+  }
+  .tally-cell-qty::before { content: "Qty"; font-size: 0.75rem; color: #64748b; font-weight: 700; margin-bottom: 4px; }
+  .tally-cell-rate::before { content: "Rate"; font-size: 0.75rem; color: #64748b; font-weight: 700; margin-bottom: 4px; }
+  .tally-cell-amount::before { content: "Amount"; font-size: 0.75rem; color: #64748b; font-weight: 700; margin-bottom: 4px; }
+  
+  .tally-cell-baserate, .tally-cell-gst {
+    width: 50% !important;
+    padding: 4px 12px !important;
+    border: none !important;
+    font-size: 0.85rem !important;
+    color: #64748b !important;
+    text-align: left !important;
+  }
+  .tally-cell-baserate::before { content: "Base: "; font-weight: 700; }
+  .tally-cell-gst::before { content: "GST: "; font-weight: 700; }
+  
+  .tally-entry-row {
+    display: block !important;
+    padding: 12px;
+    background: transparent !important;
+  }
+  .tally-entry-row td {
+    display: block !important;
+    width: 100% !important;
+    padding: 4px 0 !important;
+    border: none !important;
+  }
+  .tally-cell-filler {
+    display: none !important;
+  }
 }
