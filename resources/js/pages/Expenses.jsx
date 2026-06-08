@@ -16,8 +16,9 @@ const Expenses = () => {
     description: ''
   });
   
-  const [dateFrom, setDateFrom] = useState('');
-  const [dateTo, setDateTo] = useState('');
+  const today = new Date().toISOString().split('T')[0];
+  const [dateFrom, setDateFrom] = useState(today);
+  const [dateTo, setDateTo] = useState(today);
 
   useEffect(() => {
     fetchExpenses();
@@ -130,7 +131,19 @@ const Expenses = () => {
               type="date" 
               className="form-control" 
               value={dateFrom} 
-              onChange={(e) => setDateFrom(e.target.value)} 
+              onChange={(e) => {
+                const newFrom = e.target.value;
+                setDateFrom(newFrom);
+                if (newFrom && dateTo) {
+                  const from = new Date(newFrom);
+                  const to = new Date(dateTo);
+                  if (to < from || (to - from) / (1000 * 60 * 60 * 24) > 31) {
+                    const newTo = new Date(from);
+                    newTo.setDate(newTo.getDate() + 31);
+                    setDateTo(newTo.toISOString().split('T')[0]);
+                  }
+                }
+              }} 
               style={{ fontSize: '0.9rem' }}
             />
           </div>
@@ -141,7 +154,23 @@ const Expenses = () => {
               type="date" 
               className="form-control" 
               value={dateTo} 
-              onChange={(e) => setDateTo(e.target.value)} 
+              min={dateFrom}
+              max={dateFrom ? new Date(new Date(dateFrom).getTime() + 31 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : ''}
+              onChange={(e) => {
+                const newTo = e.target.value;
+                if (dateFrom) {
+                  const from = new Date(dateFrom);
+                  const to = new Date(newTo);
+                  if (to < from) return setDateTo(dateFrom);
+                  if ((to - from) / (1000 * 60 * 60 * 24) > 31) {
+                    Swal.fire('Notice', 'Maximum date range is 1 month.', 'info');
+                    const maxTo = new Date(from);
+                    maxTo.setDate(maxTo.getDate() + 31);
+                    return setDateTo(maxTo.toISOString().split('T')[0]);
+                  }
+                }
+                setDateTo(newTo);
+              }} 
               style={{ fontSize: '0.9rem' }}
             />
           </div>

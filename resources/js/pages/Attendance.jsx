@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
 import { Calendar, MapPin, Clock } from 'lucide-react';
 import Pagination from '../components/Pagination';
+import Swal from 'sweetalert2';
 
 const Attendance = ({ user }) => {
   const [attendances, setAttendances] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [loading, setLoading] = useState(true);
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
+  const today = new Date().toISOString().split('T')[0];
+  const [fromDate, setFromDate] = useState(today);
+  const [toDate, setToDate] = useState(today);
   const [mapLocation, setMapLocation] = useState(null);
 
   useEffect(() => {
@@ -37,7 +39,19 @@ const Attendance = ({ user }) => {
               className="form-control" 
               style={{ width: 'auto' }}
               value={fromDate} 
-              onChange={(e) => setFromDate(e.target.value)} 
+              onChange={(e) => {
+                const newFrom = e.target.value;
+                setFromDate(newFrom);
+                if (newFrom && toDate) {
+                  const from = new Date(newFrom);
+                  const to = new Date(toDate);
+                  if (to < from || (to - from) / (1000 * 60 * 60 * 24) > 31) {
+                    const newTo = new Date(from);
+                    newTo.setDate(newTo.getDate() + 31);
+                    setToDate(newTo.toISOString().split('T')[0]);
+                  }
+                }
+              }} 
             />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -47,14 +61,28 @@ const Attendance = ({ user }) => {
               className="form-control" 
               style={{ width: 'auto' }}
               value={toDate} 
-              onChange={(e) => setToDate(e.target.value)} 
+              min={fromDate}
+              max={fromDate ? new Date(new Date(fromDate).getTime() + 31 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : ''}
+              onChange={(e) => {
+                const newTo = e.target.value;
+                if (fromDate) {
+                  const from = new Date(fromDate);
+                  const to = new Date(newTo);
+                  if (to < from) return setToDate(fromDate);
+                  if ((to - from) / (1000 * 60 * 60 * 24) > 31) {
+                    Swal.fire('Notice', 'Maximum date range is 1 month.', 'info');
+                    const maxTo = new Date(from);
+                    maxTo.setDate(maxTo.getDate() + 31);
+                    return setToDate(maxTo.toISOString().split('T')[0]);
+                  }
+                }
+                setToDate(newTo);
+              }} 
             />
           </div>
-          {(fromDate || toDate) && (
-            <button className="btn btn-outline" style={{ padding: '6px 12px' }} onClick={() => { setFromDate(''); setToDate(''); }}>
-              Clear
-            </button>
-          )}
+          <button className="btn btn-outline" style={{ padding: '6px 12px' }} onClick={() => { setFromDate(today); setToDate(today); }}>
+            Reset to Today
+          </button>
         </div>
       </div>
 
