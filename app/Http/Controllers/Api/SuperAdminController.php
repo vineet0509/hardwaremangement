@@ -41,7 +41,7 @@ class SuperAdminController extends Controller
         return response()->json($businesses);
     }
 
-    public function toggleStatus(Request $request, Shop $business)
+    public function toggleStatus(Request $request, Business $business)
     {
         if (!$request->user()->is_super_admin) {
             return response()->json(['message' => 'Unauthorized.'], 403);
@@ -68,7 +68,7 @@ class SuperAdminController extends Controller
         return response()->json($logs);
     }
     
-    public function extendPlan(Request $request, Shop $business)
+    public function extendPlan(Request $request, Business $business)
     {
         if (!$request->user()->is_super_admin) {
             return response()->json(['message' => 'Unauthorized.'], 403);
@@ -99,7 +99,46 @@ class SuperAdminController extends Controller
         ]);
     }
 
-    public function deleteShop(Request $request, Shop $business)
+    public function updatePlan(Request $request, Business $business)
+    {
+        if (!$request->user()->is_super_admin) {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+
+        $request->validate([
+            'plan_type' => 'required|in:free,starter,business,enterprise,full_time',
+            'days' => 'nullable|integer|min:1'
+        ]);
+
+        $setting = Setting::withoutGlobalScopes()->where('business_id', $business->id)->first();
+        if (!$setting) {
+            return response()->json(['message' => 'Settings not found for this business.'], 404);
+        }
+
+        $setting->subscription_plan = $request->plan_type;
+        
+        if ($request->has('days') && $request->days > 0) {
+            $baseDate = $business->trial_ends_at && \Carbon\Carbon::parse($business->trial_ends_at)->isFuture() 
+                        ? \Carbon\Carbon::parse($business->trial_ends_at) 
+                        : now();
+            $business->trial_ends_at = $baseDate->addDays($request->days);
+            $business->save();
+            $setting->subscription_expires_at = $business->trial_ends_at;
+        } elseif ($request->plan_type === 'full_time') {
+            $business->trial_ends_at = null;
+            $business->save();
+            $setting->subscription_expires_at = null;
+        }
+
+        $setting->save();
+
+        return response()->json([
+            'message' => "Subscription updated to " . strtoupper($request->plan_type) . " successfully.",
+            'business' => $business
+        ]);
+    }
+
+    public function deleteShop(Request $request, Business $business)
     {
         if (!$request->user()->is_super_admin) {
             return response()->json(['message' => 'Unauthorized.'], 403);

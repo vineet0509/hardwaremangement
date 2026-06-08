@@ -70,6 +70,39 @@ const SuperAdmin = () => {
     }
   };
 
+  const handleUpdatePlan = async (businessId) => {
+    const { value: formValues } = await Swal.fire({
+      title: 'Change Plan Manually',
+      html: `
+        <select id="swal-plan" class="swal2-input" style="width:80%; padding:10px;">
+          <option value="free">Free</option>
+          <option value="starter">Starter</option>
+          <option value="business">Business</option>
+          <option value="enterprise">Enterprise</option>
+          <option value="full_time">Full Time (Lifetime)</option>
+        </select>
+        <br/><br/>
+        <input id="swal-days" type="number" class="swal2-input" placeholder="Days to extend (optional)" style="width:80%; padding:10px;">
+      `,
+      focusConfirm: false,
+      showCancelButton: true,
+      preConfirm: () => {
+        const plan = document.getElementById('swal-plan').value;
+        const days = document.getElementById('swal-days').value;
+        return { plan_type: plan, days: days ? parseInt(days) : null };
+      }
+    });
+
+    if (formValues) {
+      api.post(`/super-admin/shops/${businessId}/update-plan`, formValues)
+        .then(res => {
+          Swal.fire('Success', res.data.message, 'success');
+          fetchBusinesses();
+        })
+        .catch(err => Swal.fire('Error', err.response?.data?.message || 'Error updating plan', 'error'));
+    }
+  };
+
   const handleApproveRequest = (id) => {
     Swal.fire({
       title: 'Approve Request?',
@@ -255,6 +288,13 @@ const SuperAdmin = () => {
                         onClick={() => handleExtendPlan(shop.id)}
                       >
                         Extend 
+                      </button>
+                      <button 
+                        className="btn btn-primary"
+                        style={{ padding: '6px 12px', fontSize: '0.85rem', background: '#3b82f6', border: 'none' }}
+                        onClick={() => handleUpdatePlan(shop.id)}
+                      >
+                        Change Plan
                       </button>
                       <button 
                         className={`btn ${shop.is_active ? 'btn-danger' : 'btn-primary'}`}
