@@ -525,7 +525,7 @@ const Billing = () => {
       </div>
 
       {/* GRID SECTION */}
-      <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden', flex: 1, display: 'flex', flexDirection: 'column', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+      <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', flex: 1, display: 'flex', flexDirection: 'column', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead style={{ background: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
             <tr>
