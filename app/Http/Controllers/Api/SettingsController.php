@@ -156,6 +156,10 @@ class SettingsController extends Controller
             $request->merge(['gst_number' => strtoupper(trim($request->gst_number))]);
         }
 
+        if (!$request->hasFile('company_logo')) {
+            $request->request->remove('company_logo');
+        }
+
         $request->validate([
             'company_name' => 'required|string|max:255',
             'business_type'=> 'nullable|string|max:100',
