@@ -224,25 +224,27 @@ const Billing = () => {
         <head>
           <title>Invoice - ${billData.bill_number}</title>
           <style>
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; color: #333; line-height: 1.4; }
-            .invoice-box { max-width: 800px; margin: auto; padding: 20px; border: 1px solid #eee; }
-            .header { display: flex; justify-content: space-between; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 20px; }
-            .shop-info h1 { margin: 0; color: #000; font-size: 24px; }
-            .shop-info p { margin: 5px 0; font-size: 14px; }
-            .bill-info { text-align: right; }
-            .bill-info h2 { margin: 0; color: #666; font-size: 20px; }
-            .customer-section { margin-bottom: 30px; display: flex; justify-content: space-between; }
-            .customer-details h3 { margin: 0 0 10px 0; font-size: 16px; color: #666; border-bottom: 1px solid #eee; display: inline-block; }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-            th { background: #f9f9f9; text-align: left; padding: 12px; border-bottom: 2px solid #eee; font-size: 14px; }
-            td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
-            .text-right { text-align: right; }
-            .summary-table { width: 250px; margin-left: auto; margin-top: 20px; }
-            .summary-table td { border: none; padding: 5px 10px; }
-            .total-row { font-weight: bold; font-size: 18px; border-top: 2px solid #333 !important; }
-            .footer { margin-top: 50px; text-align: center; font-size: 12px; color: #999; border-top: 1px dashed #eee; padding-top: 20px; }
-            @media print { .no-print { display: none; } }
-          </style>
+              body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; color: #333; line-height: 1.4; }
+              .invoice-box { max-width: 800px; margin: auto; padding: 20px; border: 1px solid #eee; }
+              .header { display: flex; flex-direction: row-reverse; justify-content: space-between; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 20px; }
+              .shop-info { text-align: right; }
+              .shop-info h1 { margin: 0; color: #000; font-size: 24px; }
+              .shop-info p { margin: 5px 0; font-size: 14px; }
+              .bill-info { text-align: left; }
+              .bill-info h2 { margin: 0; color: #666; font-size: 20px; }
+              .customer-section { margin-bottom: 30px; display: flex; justify-content: space-between; }
+              .customer-details h3 { margin: 0 0 10px 0; font-size: 16px; color: #666; border-bottom: 1px solid #eee; display: inline-block; }
+              table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+              th { background: #f9f9f9; text-align: left; padding: 12px; border-bottom: 2px solid #eee; font-size: 14px; }
+              td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+              .text-right { text-align: right; }
+              .summary-table { width: 250px; margin-left: auto; margin-top: 20px; }
+              .summary-table td { border: none; padding: 5px 10px; }
+              .total-row { font-weight: bold; font-size: 18px; border-top: 2px solid #333 !important; }
+              .footer { margin-top: 50px; text-align: center; font-size: 12px; color: #999; border-top: 1px dashed #eee; padding-top: 20px; }
+              .terms-block { text-align: left; margin-top: 10px; color: #333; }
+              @media print { .no-print { display: none; } .invoice-box { border: none; } }
+            </style>
         </head>
         <body>
           <div class="invoice-box">
@@ -362,17 +364,12 @@ const Billing = () => {
               ` : ''}
             </table>
 
-            ${(billData.payment_method === 'upi' && settings.upi_qr_code) ? `
-              <div style="text-align: center; margin-top: 20px;">
-                <p style="margin: 0 0 10px 0;"><strong>Scan to Pay ₹${billData.total} via UPI</strong></p>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(`upi://pay?pa=${settings.upi_qr_code}&pn=${settings.company_name || 'Merchant'}&am=${billData.total}&cu=INR`)}" alt="UPI QR" style="width: 120px; height: 120px; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
-                <p style="margin: 5px 0 0 0; font-size: 10px; color: #666;">UPI ID: ${settings.upi_qr_code}</p>
-              </div>
-            ` : ''}
-
             <div class="footer">
               <p>This is a computer generated invoice. No signature required.</p>
-              <p><strong>Terms & Conditions:</strong> ${settings.terms_and_conditions ? settings.terms_and_conditions.replace(/\n/g, '<br/>') : getTermsAndConditions(settings.business_type)}</p>
+              <div class="terms-block">
+                <p style="margin:0;"><strong>Terms & Conditions:</strong></p>
+                <p style="margin:5px 0 0 0; white-space: pre-wrap;">${settings.terms_and_conditions ? settings.terms_and_conditions : getTermsAndConditions(settings.business_type)}</p>
+              </div>
             </div>
           </div>
           <script>window.onload = function() { window.print(); window.onafterprint = function() { window.close(); }; }</script>

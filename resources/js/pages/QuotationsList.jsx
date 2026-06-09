@@ -83,9 +83,12 @@ const QuotationsList = () => {
             <title>Quotation - ${quote.quotation_number}</title>
             <style>
               body { font-family: 'Inter', sans-serif; padding: 40px; color: #1e293b; max-width: 800px; margin: 0 auto; }
-              .header { text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px; }
-              .header h1 { margin: 0 0 10px 0; color: #0f172a; }
-              .header p { margin: 4px 0; color: #64748b; }
+              .header { display: flex; flex-direction: row-reverse; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px; }
+              .shop-info { text-align: right; }
+              .shop-info h1 { margin: 0 0 10px 0; color: #0f172a; }
+              .shop-info p { margin: 4px 0; color: #64748b; }
+              .bill-info { text-align: left; }
+              .bill-info h2 { margin: 0 0 10px 0; color: #3b82f6; font-size: 1.25rem; }
               .details { display: flex; justify-content: space-between; margin-bottom: 30px; line-height: 1.6; }
               table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
               th, td { border-bottom: 1px solid #e2e8f0; padding: 12px 8px; text-align: left; }
@@ -94,17 +97,22 @@ const QuotationsList = () => {
               .totals { width: 300px; margin-left: auto; line-height: 1.8; }
               .totals .row { display: flex; justify-content: space-between; }
               .totals .grand-total { font-size: 1.3rem; font-weight: bold; border-top: 2px solid #e2e8f0; padding-top: 10px; margin-top: 10px; }
-              .footer { text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px dashed #cbd5e1; color: #64748b; }
+              .footer { text-align: left; margin-top: 50px; padding-top: 20px; border-top: 1px dashed #cbd5e1; color: #64748b; }
+              .terms-block { text-align: left; margin-top: 10px; color: #333; }
               @media print { body { padding: 0; } }
             </style>
           </head>
           <body>
             <div class="header">
-              ${settings.company_logo ? `<img src="/${settings.company_logo}" style="max-height: 60px; margin-bottom: 10px;" alt="Logo" />` : ''}
-              <h1>${settings.company_name || 'VyaparSync'}</h1>
-              <p>${settings.company_address || ''}</p>
-              <p>Ph: ${settings.company_phone || ''}</p>
-              <h2 style="margin-top: 15px; color: #3b82f6;">ESTIMATE / QUOTATION</h2>
+              <div class="shop-info">
+                ${settings.company_logo ? `<img src="/${settings.company_logo}" style="max-height: 60px; margin-bottom: 10px;" alt="Logo" />` : ''}
+                <h1>${settings.company_name || 'VyaparSync'}</h1>
+                <p>${settings.company_address || ''}</p>
+                <p>Ph: ${settings.company_phone || ''}</p>
+              </div>
+              <div class="bill-info">
+                <h2>ESTIMATE / QUOTATION</h2>
+              </div>
             </div>
             
             <div class="details">
@@ -174,10 +182,13 @@ const QuotationsList = () => {
               <div class="row grand-total" style="color: #3b82f6;"><span>Total Estimate:</span> <span>₹${quote.total}</span></div>
             </div>
 
-            <div class="footer">
-              <p>This is a computer generated quotation.</p>
-              <p><strong>Terms & Conditions:</strong> ${settings.terms_and_conditions ? settings.terms_and_conditions.replace(/\n/g, '<br/>') : getTermsAndConditions(settings.business_type)}</p>
-            </div>
+              <div class="footer">
+                <p>This is a computer generated quotation.</p>
+                <div class="terms-block">
+                  <p style="margin:0;"><strong>Terms & Conditions:</strong></p>
+                  <p style="margin:5px 0 0 0; white-space: pre-wrap;">${settings.terms_and_conditions ? settings.terms_and_conditions : getTermsAndConditions(settings.business_type)}</p>
+                </div>
+              </div>
             
             <script>
               window.onload = function() { window.print(); window.onafterprint = function(){ window.close(); }; }

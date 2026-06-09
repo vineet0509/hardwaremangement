@@ -170,9 +170,13 @@ const BillsList = () => {
             <title>Invoice - ${bill.bill_number}</title>
             <style>
               body { font-family: 'Inter', sans-serif; padding: 40px; color: #1e293b; max-width: 800px; margin: 0 auto; }
-              .header { text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px; }
-              .header h1 { margin: 0 0 10px 0; color: #0f172a; }
-              .header p { margin: 4px 0; color: #64748b; }
+              .header { display: flex; flex-direction: row-reverse; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px; }
+              .shop-info { text-align: right; }
+              .shop-info h1 { margin: 0 0 10px 0; color: #0f172a; }
+              .shop-info p { margin: 4px 0; color: #64748b; }
+              .bill-info { text-align: left; }
+              .bill-info h2 { margin: 0 0 10px 0; color: #475569; font-size: 1.25rem; }
+              .bill-info p { margin: 4px 0; color: #64748b; }
               .details { display: flex; justify-content: space-between; margin-bottom: 30px; line-height: 1.6; }
               table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
               th, td { border-bottom: 1px solid #e2e8f0; padding: 12px 8px; text-align: left; }
@@ -182,16 +186,24 @@ const BillsList = () => {
               .totals .row { display: flex; justify-content: space-between; }
               .totals .grand-total { font-size: 1.3rem; font-weight: bold; border-top: 2px solid #e2e8f0; padding-top: 10px; margin-top: 10px; }
               .footer { text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px dashed #cbd5e1; color: #64748b; }
+              .terms-block { text-align: left; margin-top: 10px; color: #333; }
               @media print { body { padding: 0; } }
             </style>
           </head>
           <body>
             <div class="header">
-              ${settings.company_logo ? `<img src="/${settings.company_logo}" style="max-height: 60px; margin-bottom: 10px;" alt="Logo" />` : ''}
-              <h1>${settings.company_name || 'VyaparSync'}</h1>
-              <p>${settings.company_address || ''}</p>
-              <p>Ph: ${settings.company_phone || ''}</p>
-              ${(bill.is_gst && settings.gst_number) ? `<p><strong>GSTIN: ${settings.gst_number}</strong></p>` : ''}
+              <div class="shop-info">
+                ${settings.company_logo ? `<img src="/${settings.company_logo}" style="max-height: 60px; margin-bottom: 10px;" alt="Logo" />` : ''}
+                <h1>${settings.company_name || 'VyaparSync'}</h1>
+                <p>${settings.company_address || ''}</p>
+                <p>Ph: ${settings.company_phone || ''}</p>
+                ${(bill.is_gst && settings.gst_number) ? `<p><strong>GSTIN: ${settings.gst_number}</strong></p>` : ''}
+              </div>
+              <div class="bill-info">
+                <h2>${bill.is_gst ? 'TAX INVOICE' : 'RETAIL INVOICE'}</h2>
+                <p><strong>Bill No:</strong> ${bill.bill_number}</p>
+                <p><strong>Date:</strong> ${new Date(bill.created_at).toLocaleString()}</p>
+              </div>
             </div>
             
             <div class="details">
@@ -234,35 +246,14 @@ const BillsList = () => {
               </tbody>
             </table></div>
 
-            <div class="totals">
-              <div class="row"><span>Subtotal:</span> <span>₹${bill.subtotal}</span></div>
-              <div class="row"><span>Discount:</span> <span>₹${bill.discount}</span></div>
-              ${parseFloat(bill.other_charges) > 0 ? `
-              <div class="row"><span>Other Charges:</span> <span>+ ₹${bill.other_charges}</span></div>
-              ` : ''}
-              ${bill.is_gst ? `
-                <div class="row"><span>CGST (9%):</span> <span>₹${(bill.tax / 2).toFixed(2)}</span></div>
-                <div class="row"><span>SGST (9%):</span> <span>₹${(bill.tax / 2).toFixed(2)}</span></div>
-              ` : ''}
-              ${parseFloat(bill.total) !== (parseFloat(bill.subtotal) - parseFloat(bill.discount) + parseFloat(bill.other_charges || 0)) ? `
-                <div class="row"><span>Round Off:</span> <span>₹${(parseFloat(bill.total) - (parseFloat(bill.subtotal) - parseFloat(bill.discount) + parseFloat(bill.other_charges || 0))).toFixed(2)}</span></div>
-              ` : ''}
-              <div class="row grand-total"><span>Grand Total:</span> <span>₹${bill.total}</span></div>
-              <div style="height: 15px;"></div>
-              <div class="row" style="color: #10b981;"><span>Amount Paid:</span> <span>₹${bill.paid_amount}</span></div>
-              <div class="row" style="color: #ef4444;"><span>Balance Due:</span> <span>₹${bill.due_amount}</span></div>
-            </div>
-            
-            ${(bill.payment_method === 'upi' && settings.upi_qr_code) ? `
-              <div style="text-align: center; margin-top: 20px;">
-                <p style="margin: 0 0 10px 0;"><strong>Scan to Pay via UPI</strong></p>
-                <img src="${settings.upi_qr_code}" alt="UPI QR" style="width: 120px; height: 120px; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
-              </div>
-            ` : ''}
+
 
             <div class="footer">
               <p>This is a computer generated invoice. No signature required.</p>
-              <p><strong>Terms & Conditions:</strong> ${settings.terms_and_conditions ? settings.terms_and_conditions.replace(/\n/g, '<br/>') : getTermsAndConditions(settings.business_type)}</p>
+              <div class="terms-block">
+                <p style="margin:0;"><strong>Terms & Conditions:</strong></p>
+                <p style="margin:5px 0 0 0; white-space: pre-wrap;">${settings.terms_and_conditions ? settings.terms_and_conditions : getTermsAndConditions(settings.business_type)}</p>
+              </div>
             </div>
             </div>
             
