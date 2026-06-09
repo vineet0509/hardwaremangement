@@ -15,8 +15,9 @@ class DamagedGoodController extends Controller
     {
         $user = auth()->user();
         $business = $user->business;
+        $settings = \App\Models\Setting::where('business_id', $business->id)->first();
         
-        if (!\App\Helpers\PlanHelper::hasFeature($business->subscription_plan, 'damaged_goods')) {
+        if (!$settings || !\App\Helpers\PlanHelper::hasFeature($settings->subscription_plan, 'damaged_goods')) {
             return response()->json(['message' => 'Your current plan does not support Damaged Goods & Wastage tracking. Please upgrade your plan.'], 403);
         }
 
@@ -28,8 +29,9 @@ class DamagedGoodController extends Controller
     {
         $user = auth()->user();
         $business = $user->business;
+        $settings = \App\Models\Setting::where('business_id', $business->id)->first();
         
-        if (!\App\Helpers\PlanHelper::hasFeature($business->subscription_plan, 'damaged_goods')) {
+        if (!$settings || !\App\Helpers\PlanHelper::hasFeature($settings->subscription_plan, 'damaged_goods')) {
             return response()->json(['message' => 'Your current plan does not support Damaged Goods & Wastage tracking. Please upgrade your plan.'], 403);
         }
 
