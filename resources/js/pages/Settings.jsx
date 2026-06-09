@@ -125,15 +125,19 @@ const Settings = () => {
       }
     });
 
-      api.post('/settings', submitData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
+      import('axios').then(({ default: axios }) => {
+        axios.post(window.API_URL ? `${window.API_URL}/settings` : '/api/settings', submitData, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        })
         .then(res => {
         Swal.fire('Success', 'Settings saved successfully!', 'success').then(() => {
            window.location.reload(); 
         });
       })
       .catch(err => Swal.fire('Error', err.response?.data?.message || 'Error saving settings', 'error'));
+      });
   };
 
 

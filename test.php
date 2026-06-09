@@ -4,19 +4,16 @@ $app = require_once __DIR__.'/bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
-use App\Models\User;
-use App\Models\Staff;
-use App\Models\Attendance;
-use App\Http\Controllers\Api\AttendanceController;
-use Illuminate\Http\Request;
+$request = Illuminate\Http\Request::create("/api/settings", "POST");
+$request->headers->set("Accept", "application/json");
+$user = App\Models\User::first();
+auth()->login($user);
+$request->merge(["company_name" => "Test"]);
 
-$u = User::factory()->create(['role' => 'staff']);
-$s = Staff::create(['user_id' => $u->id, 'business_id' => $u->business_id, 'name' => 'Test', 'role' => 'Labour', 'joining_date' => now()]);
-
-$req = Request::create('/attendance/clock-in', 'POST', ['latitude' => 12.34, 'longitude' => 56.78]);
-$req->setUserResolver(fn() => $u);
-
-$c = app(AttendanceController::class);
-$c->clockIn($req);
-
-echo json_encode(Attendance::first()->toArray());
+try {
+    app()->make(App\Http\Controllers\Api\SettingsController::class)->update($request);
+    echo "Success\n";
+} catch (\Exception $e) {
+    echo "Error: " . $e->getMessage() . "\n";
+    echo $e->getTraceAsString();
+}
