@@ -668,13 +668,13 @@ const Layout = ({ children }) => {
             }}>
               <AlertTriangle size={20} />
               <div style={{ flex: 1 }}>Action Restricted Mode: This trial/subscription has expired. Data can only be reviewed.</div>
-              <button onClick={() => navigate('/settings')} className="btn btn-primary" style={{ padding: '6px 12px', fontSize: '0.85rem' }}>Renew Plan</button>
+              {user?.role !== 'staff' && <button onClick={() => navigate('/settings')} className="btn btn-primary" style={{ padding: '6px 12px', fontSize: '0.85rem' }}>Renew Plan</button>}
             </div>
           )}
           
           {settings && !settings.is_expired && settings.trial_days_remaining !== undefined && settings.subscription_plan !== 'full_time' && (
             (settings.subscription_plan === 'monthly' || settings.subscription_plan === 'yearly') ? (
-              settings.trial_days_remaining <= 15 && (
+              settings.trial_days_remaining <= 10 && (
                 <div style={{ 
                   background: 'rgba(245, 158, 11, 0.15)', 
                   color: 'var(--warning)', 
@@ -689,7 +689,7 @@ const Layout = ({ children }) => {
                 }}>
                   <AlertTriangle size={20} />
                   <div style={{ flex: 1 }}>Subscription Renewal: Your {settings.subscription_plan} plan will expire in {settings.trial_days_remaining} days.</div>
-                  <button onClick={() => navigate('/settings')} className="btn" style={{ background: 'var(--warning)', color: '#fff', padding: '6px 12px', fontSize: '0.85rem', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>Renew Now</button>
+                  {user?.role !== 'staff' && <button onClick={() => navigate('/settings')} className="btn" style={{ background: 'var(--warning)', color: '#fff', padding: '6px 12px', fontSize: '0.85rem', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>Renew Now</button>}
                 </div>
               )
             ) : (
@@ -707,7 +707,7 @@ const Layout = ({ children }) => {
               }}>
                 <AlertTriangle size={20} />
                 <div style={{ flex: 1 }}>Demo Plan: You have {settings.trial_days_remaining} days remaining on your trial.</div>
-                <button onClick={() => navigate('/settings')} className="btn" style={{ background: 'var(--warning)', color: '#fff', padding: '6px 12px', fontSize: '0.85rem', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>Renew Now</button>
+                {user?.role !== 'staff' && <button onClick={() => navigate('/settings')} className="btn" style={{ background: 'var(--warning)', color: '#fff', padding: '6px 12px', fontSize: '0.85rem', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>Renew Now</button>}
               </div>
             )
           )}

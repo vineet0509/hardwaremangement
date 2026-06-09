@@ -23,15 +23,24 @@ const Settings = () => {
   const [selectedPlan, setSelectedPlan] = useState('starter');
 
   const planBenefits = {
+    monthly: [
+      "1 Shop",
+      "1 User",
+      "Billing, Inventory, Customers, Suppliers",
+      "Maximum 100 invoices per month",
+      "(30-Day Trial Edition)"
+    ],
     free: [
       "1 Shop",
       "1 User",
       "Billing, Inventory, Customers, Suppliers",
-      "Maximum 100 invoices per month"
+      "Maximum 100 invoices per month",
+      "(Trial / Evaluation Edition)"
     ],
     starter: [
-      "Everything in FREE",
+      "1 Shop",
       "2 Users",
+      "Billing, Inventory, Customers, Suppliers",
       "Unlimited Invoices",
       "GST Reports",
       "WhatsApp Invoice Sharing"
