@@ -125,8 +125,10 @@ const Settings = () => {
       }
     });
 
-    api.post('/settings', submitData)
-      .then(res => {
+      api.post('/settings', submitData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+        .then(res => {
         Swal.fire('Success', 'Settings saved successfully!', 'success').then(() => {
            window.location.reload(); 
         });
