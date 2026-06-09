@@ -12,6 +12,7 @@ const Products = () => {
   const itemsPerPage = 10;
   const [categories, setCategories] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
+  const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
@@ -117,6 +118,10 @@ const Products = () => {
        
     api.get('/suppliers')
        .then(res => setSuppliers(res.data))
+       .catch(console.error);
+
+    api.get('/settings')
+       .then(res => setSettings(res.data))
        .catch(console.error);
   }, [search]);
 
@@ -256,10 +261,12 @@ const Products = () => {
                       onClick={() => setStockModal({ show: true, type: 'remove', product: p })}>
                       <ArrowDownCircle size={14} color="var(--danger)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Remove Stock</span>
                     </button>
-                    <button className="btn btn-outline" style={{ padding: '4px 8px', borderColor: 'var(--warning)' }} title="Report Damage"
-                      onClick={() => setDamageModal({ show: true, product: p })}>
-                      <PackageX size={14} color="var(--warning)" /> <span className="btn-label" style={{ fontSize: '0.75rem', color: 'var(--warning)' }}>Damage</span>
-                    </button>
+                    {settings?.plan_limits?.features?.includes('damaged_goods') && (
+                      <button className="btn btn-outline" style={{ padding: '4px 8px', borderColor: 'var(--warning)' }} title="Report Damage"
+                        onClick={() => setDamageModal({ show: true, product: p })}>
+                        <PackageX size={14} color="var(--warning)" /> <span className="btn-label" style={{ fontSize: '0.75rem', color: 'var(--warning)' }}>Damage</span>
+                      </button>
+                    )}
                     <button className="btn btn-outline" style={{ padding: '4px 8px' }} title="Delete Product"
                       onClick={() => handleDeleteProduct(p.id)}>
                       <Trash2 size={14} color="var(--danger)" /> <span className="btn-label" style={{ fontSize: '0.75rem', color: 'var(--danger)' }}>Delete</span>
