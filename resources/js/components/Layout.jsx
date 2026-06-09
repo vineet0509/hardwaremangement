@@ -571,7 +571,7 @@ const Layout = ({ children }) => {
                       )}
 
                       <button
-                        onClick={() => { setShowProfileMenu(false); navigate('/settings'); }}
+                        onClick={() => { setShowProfileMenu(false); navigate('/change-password'); }}
                         className="profile-menu-item"
                         style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '11px 18px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.88rem', fontWeight: 500, transition: 'all 0.15s', textAlign: 'left' }}
                         onMouseOver={e => { e.currentTarget.style.background = 'rgba(16,185,129,0.07)'; e.currentTarget.style.color = 'var(--success)'; }}

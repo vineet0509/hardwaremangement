@@ -15,6 +15,7 @@ import Staff from './pages/Staff';
 import Attendance from './pages/Attendance';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
+import ChangePassword from './pages/ChangePassword';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import SuperAdmin from './pages/SuperAdmin';
@@ -102,6 +103,7 @@ function App() {
         <Route path="/attendance" element={<ProtectedRoute><Layout><Attendance /></Layout></ProtectedRoute>} />
         <Route path="/reports" element={<ProtectedRoute><Layout><Reports /></Layout></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Layout><Settings /></Layout></ProtectedRoute>} />
+        <Route path="/change-password" element={<ProtectedRoute><Layout><ChangePassword /></Layout></ProtectedRoute>} />
         <Route path="/child-businesses" element={<ProtectedRoute><Layout><ChildBusinesses /></Layout></ProtectedRoute>} />
         <Route path="/suppliers" element={<ProtectedRoute><Layout><Suppliers /></Layout></ProtectedRoute>} />
         <Route path="/expenses" element={<ProtectedRoute><Layout><Expenses /></Layout></ProtectedRoute>} />
