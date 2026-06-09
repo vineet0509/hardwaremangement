@@ -44,7 +44,7 @@ class DamagedGoodController extends Controller
 
         $product = Product::findOrFail($data['product_id']);
 
-        if ($product->stock < $data['quantity']) {
+        if ($product->quantity < $data['quantity']) {
             return response()->json(['message' => 'Not enough stock to report this quantity as damaged.'], 400);
         }
 
@@ -53,7 +53,7 @@ class DamagedGoodController extends Controller
         DB::beginTransaction();
         try {
             // Deduct stock
-            $product->decrement('stock', $data['quantity']);
+            $product->decrement('quantity', $data['quantity']);
 
             // Record damaged good
             $damagedGood = DamagedGood::create([
@@ -80,7 +80,7 @@ class DamagedGoodController extends Controller
             // Restore stock
             $product = $damagedGood->product;
             if ($product) {
-                $product->increment('stock', $damagedGood->quantity);
+                $product->increment('quantity', $damagedGood->quantity);
             }
 
             // Delete record
