@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import api from '../utils/api';
 import { Settings as SettingsIcon, AlertTriangle, Save, CheckCircle, Languages } from 'lucide-react';
 import Swal from 'sweetalert2';
@@ -127,7 +128,7 @@ const Settings = () => {
 
       // Use a fresh axios instance to avoid api.js Content-Type conflicts that break FormData boundaries
       // Ensure Accept: application/json is sent so validation errors are returned as JSON, not HTML redirects.
-      window.axios.post(window.API_URL ? `${window.API_URL}/settings` : '/api/settings', submitData, {
+      axios.post(window.API_URL ? `${window.API_URL}/settings` : '/api/settings', submitData, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
           'Accept': 'application/json'
