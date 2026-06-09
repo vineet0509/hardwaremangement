@@ -125,20 +125,24 @@ const Settings = () => {
       }
     });
 
-      api.post('/settings', submitData, {
-        transformRequest: [(data, headers) => {
-          delete headers.post['Content-Type'];
-          delete headers.common['Content-Type'];
-          delete headers['Content-Type'];
-          return data;
-        }]
+      // Use a fresh axios instance to avoid api.js Content-Type conflicts that break FormData boundaries
+      // Ensure Accept: application/json is sent so validation errors are returned as JSON, not HTML redirects.
+      window.axios.post(window.API_URL ? `${window.API_URL}/settings` : '/api/settings', submitData, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+          'Accept': 'application/json'
+        }
       })
       .then(res => {
         Swal.fire('Success', 'Settings saved successfully!', 'success').then(() => {
            window.location.reload(); 
         });
       })
-      .catch(err => Swal.fire('Error', err.response?.data?.message || 'Error saving settings', 'error'));
+      .catch(err => {
+        console.error("Upload error:", err.response || err);
+        const msg = err.response?.data?.message || err.response?.statusText || err.message || 'Error saving settings';
+        Swal.fire('Error', msg, 'error');
+      });
   };
 
 
