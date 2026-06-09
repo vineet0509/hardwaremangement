@@ -244,11 +244,73 @@ const BillsList = () => {
                   </tr>
                 `).join('')}
               </tbody>
-            </table></div>
+              </table></div>
 
+              <table class="summary-table" style="width: 250px; margin-left: auto; margin-top: 20px; font-size: 14px; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 5px 10px; border: none;">Subtotal:</td>
+                  <td class="text-right" style="padding: 5px 10px; border: none; text-align: right;">Rs. ${bill.subtotal}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 5px 10px; border: none;">Discount:</td>
+                  <td class="text-right" style="padding: 5px 10px; border: none; text-align: right;">- Rs. ${bill.discount}</td>
+                </tr>
+                ${parseFloat(bill.other_charges) > 0 ? (
+                  (() => {
+                    let details = bill.other_charges_details;
+                    if (typeof details === 'string') {
+                      try { details = JSON.parse(details); } catch(e) { details = []; }
+                    }
+                    if (Array.isArray(details) && details.length > 0) {
+                      return details.map(charge => `
+                        <tr>
+                          <td style="padding: 5px 10px; border: none;">${charge.name || 'Other Charge'}:</td>
+                          <td class="text-right" style="padding: 5px 10px; border: none; text-align: right;">+ Rs. ${charge.amount || 0}</td>
+                        </tr>
+                      `).join('');
+                    } else {
+                      return `
+                        <tr>
+                          <td style="padding: 5px 10px; border: none;">Other Charges:</td>
+                          <td class="text-right" style="padding: 5px 10px; border: none; text-align: right;">+ Rs. ${bill.other_charges}</td>
+                        </tr>
+                      `;
+                    }
+                  })()
+                ) : ''}
+                ${Math.round(bill.total) !== parseFloat(bill.total) ? `
+                <tr>
+                  <td style="padding: 5px 10px; border: none;">Round Off:</td>
+                  <td class="text-right" style="padding: 5px 10px; border: none; text-align: right;">Rs. ${(Math.round(bill.total) - bill.total).toFixed(2)}</td>
+                </tr>
+                ` : ''}
+                ${bill.is_gst ? `
+                  <tr>
+                    <td style="padding: 5px 10px; border: none;">CGST:</td>
+                    <td class="text-right" style="padding: 5px 10px; border: none; text-align: right;">Rs. ${(bill.tax / 2).toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 5px 10px; border: none;">SGST:</td>
+                    <td class="text-right" style="padding: 5px 10px; border: none; text-align: right;">Rs. ${(bill.tax / 2).toFixed(2)}</td>
+                  </tr>
+                ` : ''}
+                <tr class="total-row" style="font-weight: bold; font-size: 18px; border-top: 2px solid #333 !important;">
+                  <td style="padding: 10px; border: none;">Total:</td>
+                  <td class="text-right" style="padding: 10px; border: none; text-align: right;">Rs. ${bill.total}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 5px 10px; border: none; color: #666;">Paid Amount:</td>
+                  <td class="text-right" style="padding: 5px 10px; border: none; color: #666; text-align: right;">Rs. ${bill.paid_amount}</td>
+                </tr>
+                ${bill.due_amount > 0 ? `
+                  <tr style="color: red; font-weight: bold;">
+                    <td style="padding: 5px 10px; border: none;">Balance Due:</td>
+                    <td class="text-right" style="padding: 5px 10px; border: none; text-align: right;">Rs. ${bill.due_amount}</td>
+                  </tr>
+                ` : ''}
+              </table>
 
-
-            <div class="footer">
+              <div class="footer">
               <p>This is a computer generated invoice. No signature required.</p>
               <div class="terms-block">
                 <p style="margin:0;"><strong>Terms & Conditions:</strong></p>
