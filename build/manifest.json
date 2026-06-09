@@ -1,6 +1,6 @@
 {
   "node_modules/@capacitor/app/dist/esm/web.js": {
-    "file": "assets/web-CDYcQUYy.js",
+    "file": "assets/web-BcUSeSK6.js",
     "name": "web",
     "src": "node_modules/@capacitor/app/dist/esm/web.js",
     "isDynamicEntry": true,
@@ -9,7 +9,7 @@
     ]
   },
   "resources/js/app.jsx": {
-    "file": "assets/app-DlFo2kfG.js",
+    "file": "assets/app-CLRyJk0G.js",
     "name": "app",
     "src": "resources/js/app.jsx",
     "isEntry": true,

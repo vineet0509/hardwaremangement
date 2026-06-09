@@ -24,8 +24,14 @@
 <body>
     <div class="header">
         <div class="shop-info">
-            @if(isset($settings) && $settings->company_logo)
-                <img src="{{ public_path($settings->company_logo) }}" style="max-height: 60px; margin-bottom: 10px;" alt="Logo" />
+            @if(isset($settings) && $settings->company_logo && file_exists(public_path($settings->company_logo)))
+                @php
+                    $logoPath = public_path($settings->company_logo);
+                    $logoData = base64_encode(file_get_contents($logoPath));
+                    $logoMime = mime_content_type($logoPath);
+                    $logoSrc = 'data:' . $logoMime . ';base64,' . $logoData;
+                @endphp
+                <img src="{{ $logoSrc }}" style="max-height: 60px; margin-bottom: 10px;" alt="Logo" />
             @endif
             <h1 style="margin: 0; font-size: 20px;">{{ $settings->company_name ?? 'Hardware Business' }}</h1>
             <p style="margin: 5px 0;">{{ $settings->company_address ?? '' }}</p>

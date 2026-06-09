@@ -175,7 +175,8 @@ class SettingsController extends Controller
 
         if ($request->hasFile('company_logo')) {
             $file = $request->file('company_logo');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $originalName = preg_replace('/\s+/', '_', $file->getClientOriginalName());
+            $filename = time() . '_' . $originalName;
             $file->move(public_path('images/logos'), $filename);
             $data['company_logo'] = 'images/logos/' . $filename;
         }
