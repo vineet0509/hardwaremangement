@@ -56,6 +56,10 @@ Route::apiResource('products',      ProductController::class);
 Route::post('/products/{product}/add-stock',    [ProductController::class, 'addStock']);
 Route::post('/products/{product}/remove-stock', [ProductController::class, 'removeStock']);
 
+Route::get('/damaged-goods', [\App\Http\Controllers\Api\DamagedGoodController::class, 'index']);
+Route::post('/damaged-goods', [\App\Http\Controllers\Api\DamagedGoodController::class, 'store']);
+Route::delete('/damaged-goods/{damagedGood}', [\App\Http\Controllers\Api\DamagedGoodController::class, 'destroy']);
+
 // Bills & Khata
 Route::get('/customers', [BillController::class, 'customersList']);
 Route::get('/customers/search', [BillController::class, 'searchCustomer']);

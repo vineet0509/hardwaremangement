@@ -28,14 +28,14 @@ class PlanHelper
                 'users' => 5,
                 'staff' => 25,
                 'invoices_per_month' => -1,
-                'features' => ['billing', 'inventory', 'customers', 'suppliers', 'gst_reports', 'whatsapp_sharing', 'staff_management', 'attendance', 'salary', 'expense_tracking']
+                'features' => ['billing', 'inventory', 'customers', 'suppliers', 'gst_reports', 'whatsapp_sharing', 'staff_management', 'attendance', 'salary', 'expense_tracking', 'damaged_goods']
             ],
             'enterprise' => [
                 'shops' => -1, // Unlimited
                 'users' => -1, // Unlimited
                 'staff' => -1, // Unlimited
                 'invoices_per_month' => -1,
-                'features' => ['billing', 'inventory', 'customers', 'suppliers', 'gst_reports', 'whatsapp_sharing', 'staff_management', 'attendance', 'salary', 'expense_tracking', 'role_permission', 'branch_transfer', 'api_access', 'ai_features']
+                'features' => ['billing', 'inventory', 'customers', 'suppliers', 'gst_reports', 'whatsapp_sharing', 'staff_management', 'attendance', 'salary', 'expense_tracking', 'role_permission', 'branch_transfer', 'api_access', 'ai_features', 'damaged_goods']
             ],
         ];
 

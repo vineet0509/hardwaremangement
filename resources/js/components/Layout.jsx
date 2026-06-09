@@ -16,6 +16,7 @@ const Layout = ({ children }) => {
       name: 'Inventory', icon: Package, 
       subItems: [
         { name: 'Products & Stock', path: '/products' },
+        { name: 'Damaged & Wastage', path: '/damaged-goods' },
         { name: 'Suppliers', path: '/suppliers' },
       ]
     },
@@ -252,6 +253,14 @@ const Layout = ({ children }) => {
   if (settings && settings.plan_limits && settings.plan_limits.features) {
     const features = settings.plan_limits.features;
     allNavItems = allNavItems.map(item => {
+      if (item.name === 'Inventory') {
+        let subs = [...item.subItems];
+        if (!features.includes('damaged_goods')) {
+          subs = subs.filter(s => s.name !== 'Damaged & Wastage');
+        }
+        return { ...item, subItems: subs };
+      }
+      
       if (item.name === 'Management') {
         let subs = [...item.subItems];
         if (!features.includes('staff_management')) {

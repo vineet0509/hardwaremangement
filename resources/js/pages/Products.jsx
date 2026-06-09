@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
 import { downloadFile, downloadBlob } from '../utils/webview';
-import { Plus, Search, AlertTriangle, ArrowUpCircle, ArrowDownCircle, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Search, AlertTriangle, ArrowUpCircle, ArrowDownCircle, Edit2, Trash2, PackageX } from 'lucide-react';
 import Pagination from '../components/Pagination';
 
 import Swal from 'sweetalert2';
@@ -27,6 +27,30 @@ const Products = () => {
   const [stockModal, setStockModal] = useState({ show: false, type: 'add', product: null });
   const [stockQty, setStockQty] = useState('');
   const [stockPrice, setStockPrice] = useState('');
+
+  const [damageModal, setDamageModal] = useState({ show: false, product: null });
+  const [damageQty, setDamageQty] = useState('');
+  const [damageReason, setDamageReason] = useState('');
+  const [damageDate, setDamageDate] = useState(new Date().toISOString().split('T')[0]);
+
+  const handleReportDamage = (e) => {
+    e.preventDefault();
+    if (!damageQty || damageQty <= 0) return;
+    api.post('/damaged-goods', {
+      product_id: damageModal.product.id,
+      quantity: parseFloat(damageQty),
+      reason: damageReason,
+      date: damageDate
+    })
+      .then(() => {
+        setDamageModal({ show: false, product: null });
+        setDamageQty('');
+        setDamageReason('');
+        Swal.fire('Reported!', 'Damaged goods reported successfully.', 'success');
+        fetchData();
+      })
+      .catch(err => Swal.fire('Error', err.response?.data?.message || 'Failed to report damaged goods', 'error'));
+  };
 
   const handleStockUpdate = (e) => {
     e.preventDefault();
@@ -232,6 +256,10 @@ const Products = () => {
                       onClick={() => setStockModal({ show: true, type: 'remove', product: p })}>
                       <ArrowDownCircle size={14} color="var(--danger)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Remove Stock</span>
                     </button>
+                    <button className="btn btn-outline" style={{ padding: '4px 8px', borderColor: 'var(--warning)' }} title="Report Damage"
+                      onClick={() => setDamageModal({ show: true, product: p })}>
+                      <PackageX size={14} color="var(--warning)" /> <span className="btn-label" style={{ fontSize: '0.75rem', color: 'var(--warning)' }}>Damage</span>
+                    </button>
                     <button className="btn btn-outline" style={{ padding: '4px 8px' }} title="Delete Product"
                       onClick={() => handleDeleteProduct(p.id)}>
                       <Trash2 size={14} color="var(--danger)" /> <span className="btn-label" style={{ fontSize: '0.75rem', color: 'var(--danger)' }}>Delete</span>
@@ -388,6 +416,45 @@ const Products = () => {
                 <button type="button" className="btn btn-outline" onClick={() => setStockModal({ show: false, type: 'add', product: null })}>Cancel</button>
                 <button type="submit" className={`btn ${stockModal.type === 'add' ? 'btn-primary' : 'btn-danger'}`}>
                   Confirm {stockModal.type === 'add' ? 'Addition' : 'Removal'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {damageModal.show && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>Report Damaged Goods ({damageModal.product?.name})</h3>
+              <button className="close-btn" onClick={() => setDamageModal({ show: false, product: null })}>×</button>
+            </div>
+            <form onSubmit={handleReportDamage}>
+              <div className="modal-body">
+                <div className="form-group">
+                  <label className="form-label">Quantity Damaged</label>
+                  <input type="number" step="0.01" className="form-control" required min="0.01" max={damageModal.product?.quantity}
+                    value={damageQty} onChange={e => setDamageQty(e.target.value)} />
+                </div>
+                <div className="form-group" style={{ marginTop: 16 }}>
+                  <label className="form-label">Reason (Optional)</label>
+                  <input type="text" className="form-control" placeholder="e.g. Broken in transit"
+                    value={damageReason} onChange={e => setDamageReason(e.target.value)} />
+                </div>
+                <div className="form-group" style={{ marginTop: 16 }}>
+                  <label className="form-label">Date</label>
+                  <input type="date" className="form-control" required
+                    value={damageDate} onChange={e => setDamageDate(e.target.value)} />
+                </div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                  Current Stock: <strong style={{ color: 'var(--text-main)' }}>{damageModal.product?.quantity} {damageModal.product?.unit}</strong>
+                </p>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-outline" onClick={() => setDamageModal({ show: false, product: null })}>Cancel</button>
+                <button type="submit" className="btn btn-danger">
+                  Report Damage
                 </button>
               </div>
             </form>

@@ -7,6 +7,7 @@ import Layout from './components/Layout';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
+import DamagedGoods from './pages/DamagedGoods';
 import Billing from './pages/Billing';
 import BillsList from './pages/BillsList';
 import Customers from './pages/Customers';
@@ -95,6 +96,7 @@ function App() {
 
         <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
         <Route path="/products" element={<ProtectedRoute><Layout><Products /></Layout></ProtectedRoute>} />
+        <Route path="/damaged-goods" element={<ProtectedRoute><Layout><DamagedGoods /></Layout></ProtectedRoute>} />
         <Route path="/customers" element={<ProtectedRoute><Layout><Customers /></Layout></ProtectedRoute>} />
         <Route path="/billing" element={<ProtectedRoute><Layout><Billing /></Layout></ProtectedRoute>} />
         <Route path="/bills" element={<ProtectedRoute><Layout><BillsList /></Layout></ProtectedRoute>} />
