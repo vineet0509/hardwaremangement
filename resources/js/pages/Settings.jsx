@@ -126,9 +126,12 @@ const Settings = () => {
     });
 
       api.post('/settings', submitData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+        transformRequest: [(data, headers) => {
+          delete headers.post['Content-Type'];
+          delete headers.common['Content-Type'];
+          delete headers['Content-Type'];
+          return data;
+        }]
       })
       .then(res => {
         Swal.fire('Success', 'Settings saved successfully!', 'success').then(() => {
