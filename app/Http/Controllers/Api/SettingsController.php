@@ -163,11 +163,16 @@ class SettingsController extends Controller
             'company_address' => 'nullable|string',
             'terms_and_conditions' => 'nullable|string',
             'gst_number' => ['nullable', 'string', new \App\Rules\ValidGstin()],
-
+            'company_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'upi_qr_code' => 'nullable|string|max:255',
         ]);
 
         $data = $request->only(['company_name', 'business_type', 'company_phone', 'company_address', 'terms_and_conditions', 'upi_qr_code']);
+
+        if ($request->hasFile('company_logo')) {
+            $path = $request->file('company_logo')->store('public/logos');
+            $data['company_logo'] = str_replace('public/', '', $path);
+        }
 
         if ($settings) {
             $settings->update($data);

@@ -100,6 +100,7 @@ const QuotationsList = () => {
           </head>
           <body>
             <div class="header">
+              ${settings.company_logo ? `<img src="/storage/${settings.company_logo}" style="max-height: 60px; margin-bottom: 10px;" alt="Logo" />` : ''}
               <h1>${settings.company_name || 'VyaparSync'}</h1>
               <p>${settings.company_address || ''}</p>
               <p>Ph: ${settings.company_phone || ''}</p>
@@ -175,7 +176,7 @@ const QuotationsList = () => {
 
             <div class="footer">
               <p>This is a computer generated quotation.</p>
-              <p><strong>Terms & Conditions:</strong> ${getTermsAndConditions(settings.business_type)}</p>
+              <p><strong>Terms & Conditions:</strong> ${settings.terms_and_conditions ? settings.terms_and_conditions.replace(/\n/g, '<br/>') : getTermsAndConditions(settings.business_type)}</p>
             </div>
             
             <script>

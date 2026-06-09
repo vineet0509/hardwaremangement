@@ -14,12 +14,14 @@ class Setting extends Model
         'company_name',
         'company_phone',
         'company_address',
+        'company_logo',
         'subscription_plan',
         'subscription_expires_at',
         'razorpay_key',
         'razorpay_secret',
         'razorpay_webhook_secret',
-        'upi_qr_code'
+        'upi_qr_code',
+        'terms_and_conditions'
     ];
 
     protected $casts = [

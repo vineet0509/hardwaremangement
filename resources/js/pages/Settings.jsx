@@ -7,8 +7,9 @@ const Settings = () => {
   const [formData, setFormData] = useState({
     company_name: '', company_phone: '', company_address: '', gst_number: '', business_type: '',
     subscription_plan: 'full_time', subscription_expires_at: '', latest_request: null,
-    terms_and_conditions: '', upi_qr_code: '', upi_qr_code_url: ''
+    terms_and_conditions: '', upi_qr_code: '', upi_qr_code_url: '', company_logo: null
   });
+  const [logoPreview, setLogoPreview] = useState(null);
   const [userData, setUserData] = useState({
     name: '', email: '', mobile: ''
   });
@@ -72,19 +73,23 @@ const Settings = () => {
       api.get('/me')
     ])
       .then(([settingsRes, meRes]) => {
-        setFormData({
-          company_name: settingsRes.data.company_name || '',
-          company_phone: settingsRes.data.company_phone || '',
-          company_address: settingsRes.data.company_address || '',
-          gst_number: settingsRes.data.gst_number || '',
-          business_type: settingsRes.data.business_type || '',
-          subscription_plan: settingsRes.data.subscription_plan || 'full_time',
-          subscription_expires_at: settingsRes.data.subscription_expires_at ? settingsRes.data.subscription_expires_at.split('T')[0] : '',
-          latest_request: settingsRes.data.latest_request || null,
-          terms_and_conditions: settingsRes.data.terms_and_conditions || '',
-          upi_qr_code: settingsRes.data.upi_qr_code || '',
-          upi_qr_code_url: ''
-        });
+          setFormData({
+            company_name: settingsRes.data.company_name || '',
+            company_phone: settingsRes.data.company_phone || '',
+            company_address: settingsRes.data.company_address || '',
+            gst_number: settingsRes.data.gst_number || '',
+            business_type: settingsRes.data.business_type || '',
+            subscription_plan: settingsRes.data.subscription_plan || 'full_time',
+            subscription_expires_at: settingsRes.data.subscription_expires_at ? settingsRes.data.subscription_expires_at.split('T')[0] : '',
+            latest_request: settingsRes.data.latest_request || null,
+            terms_and_conditions: settingsRes.data.terms_and_conditions || '',
+            upi_qr_code: settingsRes.data.upi_qr_code || '',
+            upi_qr_code_url: '',
+            company_logo: null
+          });
+          if (settingsRes.data.company_logo) {
+            setLogoPreview(`/storage/${settingsRes.data.company_logo}`);
+          }
         if (settingsRes.data.latest_request && settingsRes.data.latest_request.status === 'pending') {
           setSelectedPlan(settingsRes.data.latest_request.plan_type);
         }
@@ -303,11 +308,30 @@ const Settings = () => {
         <div className="stat-card" style={{ flex: 1, minWidth: '300px' }}>
           <h3 style={{ borderBottom: '1px solid var(--border)', paddingBottom: 12, marginBottom: 16 }}>Business Information</h3>
           <form onSubmit={handleSave}>
-            <div className="form-group">
-              <label className="form-label">Company / Business Name</label>
-              <input type="text" className="form-control" required
-                value={formData.company_name} onChange={e => setFormData({...formData, company_name: e.target.value})} />
-            </div>
+              <div className="form-group">
+                <label className="form-label">Company / Business Name</label>
+                <input type="text" className="form-control" required
+                  value={formData.company_name} onChange={e => setFormData({...formData, company_name: e.target.value})} />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Company Logo (Optional)</label>
+                {logoPreview && (
+                  <div style={{ marginBottom: 12 }}>
+                    <img src={logoPreview} alt="Company Logo" style={{ maxHeight: 80, borderRadius: 8, border: '1px solid var(--border)' }} />
+                  </div>
+                )}
+                <input type="file" className="form-control" accept="image/*"
+                  onChange={e => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      setFormData({...formData, company_logo: file});
+                      setLogoPreview(URL.createObjectURL(file));
+                    }
+                  }} />
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: 4 }}>This logo will appear on your generated bills and quotations.</p>
+              </div>
+
             <div className="form-group">
               <label className="form-label">Type of Business</label>
               <select className="form-control" value={formData.business_type} onChange={e => setFormData({...formData, business_type: e.target.value})}>
