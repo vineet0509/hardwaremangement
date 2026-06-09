@@ -4,7 +4,7 @@ $app = require_once __DIR__.'/bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
-$file = \Illuminate\Http\UploadedFile::fake()->image("logo.png");
+$file = \Illuminate\Http\UploadedFile::fake()->createWithContent('logo.png', 'fake png data');
 $request = Illuminate\Http\Request::create("/api/settings", "POST", [
     "company_name" => "Test"
 ], [], [
