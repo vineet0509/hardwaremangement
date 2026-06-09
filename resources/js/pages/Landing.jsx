@@ -929,7 +929,7 @@ const Landing = () => {
             <div style={{ color: 'var(--primary)', fontWeight: 800, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Subscription Plans</div>
             <h2 style={{ fontSize: '2.25rem', fontWeight: 800, color: '#fff', marginBottom: 12 }}>Simple, Highly Transparent Pricing</h2>
             <p style={{ color: '#cbd5e1', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
-              Start with our full-access trial, then migrate to a commercial plan that aligns with your store's footprint.
+              Start with a 30-day evaluation trial, then upgrade to a commercial plan that aligns with your store's footprint.
             </p>
           </div>
 
@@ -940,6 +940,44 @@ const Landing = () => {
             maxWidth: '1200px',
             margin: '0 auto'
           }}>
+            {/* Plan 1: Trial */}
+            <div className="pricing-card" style={{
+              background: 'rgba(21, 28, 44, 0.65)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '20px',
+              padding: '30px 24px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)',
+              color: '#ffffff',
+              transition: 'all 0.3s'
+            }}>
+              <div>
+                <span style={{ fontSize: '0.75rem', color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>30-Day Trial</span>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Evaluation</h3>
+                
+                <div style={{ margin: '16px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                  <span style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>₹0</span>
+                  <span style={{ color: '#94a3b8' }}>/ for 30 days</span>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#10b981" /> 1 Shop & 1 User</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Billing, Inventory & Customers</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Maximum 100 invoices/mo</div>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => setShowRegisterModal(true)}
+                className="btn" 
+                style={{ width: '100%', padding: '12px', borderRadius: '10px', marginTop: 24, fontWeight: 'bold', cursor: 'pointer', background: 'rgba(255, 255, 255, 0.05)', color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.25)' }}
+              >
+                Start Trial
+              </button>
+            </div>
+
             {/* Plan 2: Starter */}
             <div className="pricing-card" style={{
               background: 'rgba(21, 28, 44, 0.65)',

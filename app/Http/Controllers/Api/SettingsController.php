@@ -177,7 +177,21 @@ class SettingsController extends Controller
             $file = $request->file('company_logo');
             $originalName = preg_replace('/\s+/', '_', $file->getClientOriginalName());
             $filename = time() . '_' . $originalName;
-            $file->move(public_path('images/logos'), $filename);
+            
+            $destinationPath = public_path('images/logos');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+
+            // Resize and compress the image to ensure it stays well under 300KB
+            // We use max dimensions of 400x400 and 80% quality.
+            $img = \Image::make($file->getRealPath());
+            $img->resize(400, 400, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+            $img->save($destinationPath . '/' . $filename, 80);
+
             $data['company_logo'] = 'images/logos/' . $filename;
         }
 
