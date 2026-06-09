@@ -110,15 +110,25 @@ class StaffController extends Controller
             'emergency_contact'  => 'nullable|string|max:50',
             'commission_percent' => 'nullable|numeric|min:0|max:100',
             'permissions'    => 'nullable|array',
+            'password'       => 'nullable|string|min:6',
         ]);
 
-        $staffData = collect($data)->except(['permissions'])->toArray();
+        $staffData = collect($data)->except(['permissions', 'password'])->toArray();
         $staff->update($staffData);
 
-        if ($staff->user_id && isset($data['permissions'])) {
+        if ($staff->user_id) {
             $user = \App\Models\User::find($staff->user_id);
             if ($user) {
-                $user->update(['permissions' => $data['permissions']]);
+                $userUpdates = [];
+                if (isset($data['permissions'])) {
+                    $userUpdates['permissions'] = $data['permissions'];
+                }
+                if (!empty($data['password'])) {
+                    $userUpdates['password'] = \Illuminate\Support\Facades\Hash::make($data['password']);
+                }
+                if (!empty($userUpdates)) {
+                    $user->update($userUpdates);
+                }
             }
         }
 
