@@ -239,10 +239,54 @@ class AuthController extends Controller
 
     public function sendResetLinkEmail(Request $request)
     {
-        $request->validate(['email' => 'required|email']);
+        $request->validate(['login' => 'required|string']);
         
+        $user = \App\Models\User::withoutGlobalScopes()
+            ->where('email', $request->login)
+            ->orWhere('mobile', $request->login)
+            ->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        if ($user->role === 'staff') {
+            $admin = \App\Models\User::withoutGlobalScopes()
+                ->where('business_id', $user->business_id)
+                ->where('role', 'admin')
+                ->first();
+
+            if (!$admin) {
+                return response()->json(['message' => 'Could not find Admin for this staff account.'], 404);
+            }
+
+            $token = \Illuminate\Support\Facades\Password::broker()->createToken($user);
+            
+            try {
+                \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($admin, $user, $token) {
+                    $resetUrl = url(config('app.url') . "/reset-password?token={$token}&email=" . urlencode($user->email));
+                    $message->to($admin->email)
+                            ->subject("Password Reset Request for Staff: {$user->name}")
+                            ->html("
+                                <div style='font-family: sans-serif; padding: 20px; line-height: 1.6; color: #333;'>
+                                    <h2 style='color: #4f46e5; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;'>Password Reset Request</h2>
+                                    <p>Hello {$admin->name},</p>
+                                    <p>We received a password reset request for your staff member: <strong>{$user->name}</strong> (Mobile: {$user->mobile}).</p>
+                                    <p>Click the link below to create a new password for them:</p>
+                                    <p><a href='{$resetUrl}' style='display: inline-block; padding: 10px 20px; background: #4f46e5; color: white; text-decoration: none; border-radius: 6px; margin: 10px 0;'>Reset Password for {$user->name}</a></p>
+                                    <p style='font-size: 0.85rem; color: #6b7280; margin-top: 20px;'>If you did not request a password reset, no further action is required.</p>
+                                </div>
+                            ");
+                });
+                return response()->json(['message' => 'Password reset link sent to your Admin\'s email.']);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error("Failed to send staff reset link: " . $e->getMessage());
+                return response()->json(['message' => 'Failed to send email to Admin.'], 500);
+            }
+        }
+
         $status = \Illuminate\Support\Facades\Password::broker()->sendResetLink(
-            $request->only('email')
+            ['email' => $user->email]
         );
 
         return $status == \Illuminate\Support\Facades\Password::RESET_LINK_SENT

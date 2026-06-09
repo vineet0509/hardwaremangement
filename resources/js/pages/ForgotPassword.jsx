@@ -5,7 +5,7 @@ import api from '../utils/api';
 import { Package, Mail, ArrowLeft } from 'lucide-react';
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState('');
+  const [login, setLogin] = useState('');
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -13,8 +13,8 @@ const ForgotPassword = () => {
   const handleForgot = (e) => {
     e.preventDefault();
 
-    if (!email || email.trim().length < 5) {
-      return setError("Invalid email address.");
+    if (!login || login.trim().length < 5) {
+      return setError("Invalid input.");
     }
 
     setLoading(true);
@@ -22,12 +22,12 @@ const ForgotPassword = () => {
     setMessage(null);
     
     axios.get(`${window.location.origin}/sanctum/csrf-cookie`).then(() => {
-        api.post('/forgot-password', { email })
+        api.post('/forgot-password', { login })
           .then(res => {
-             setMessage(res.data.message || 'Password reset link sent to your email.');
+             setMessage(res.data.message || 'Password reset link sent.');
           })
           .catch(err => {
-             setError(err.response?.data?.message || 'Failed to send reset link. Please check your email.');
+             setError(err.response?.data?.message || 'Failed to send reset link. Please check your details.');
           })
           .finally(() => setLoading(false));
     });
@@ -45,7 +45,7 @@ const ForgotPassword = () => {
              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: 4 }}>
                 Forgot Password?
              </h2>
-             <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Enter your email to receive a reset link</p>
+             <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Enter your email or mobile to receive a reset link</p>
           </div>
 
           {message && <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--success)', padding: '12px 16px', borderRadius: 8, fontSize: '0.85rem', marginBottom: 24, textAlign: 'center' }}>{message}</div>}
@@ -53,9 +53,9 @@ const ForgotPassword = () => {
 
           <form onSubmit={handleForgot}>
              <div className="form-group" style={{ marginBottom: 24 }}>
-               <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Mail size={16} /> Registered Email</label>
-               <input type="email" required className="form-control"
-                  value={email} onChange={e => setEmail(e.target.value)} />
+               <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Mail size={16} /> Email or Mobile Number</label>
+               <input type="text" required className="form-control"
+                  value={login} onChange={e => setLogin(e.target.value)} />
              </div>
 
              <button type="submit" disabled={loading} className="btn btn-primary" style={{ width: '100%', padding: '14px', fontSize: '1rem', fontWeight: 600 }}>
