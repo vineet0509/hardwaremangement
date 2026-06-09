@@ -216,6 +216,7 @@ const Staff = () => {
               <th style={{ padding: '16px', fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Role & Phone</th>
               <th style={{ padding: '16px', fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Salary Info</th>
               <th style={{ padding: '16px', fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Status</th>
+              <th style={{ padding: '16px', fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -227,7 +228,22 @@ const Staff = () => {
               <tr key={s.id} style={{ borderBottom: '1px solid var(--border)' }}>
                 <td data-label="Staff Name" style={{ padding: '16px' }}>
                   <div style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '1.05rem' }}>{s.name}</div>
-                  <div className="action-btns" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12 }}>
+                </td>
+                <td data-label="Role & Phone" style={{ padding: '16px' }}>
+                  <div style={{ color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 600 }}>{s.role}</div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{s.phone}</div>
+                </td>
+                <td data-label="Salary Info" style={{ padding: '16px' }}>
+                  <div style={{ fontSize: '0.95rem', fontWeight: 600 }}>₹{s.monthly_salary} <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 'normal' }}>/mo</span></div>
+                  <div style={{ color: s.pending_advance > 0 ? 'var(--danger)' : 'var(--success)', fontSize: '0.8rem', fontWeight: 700 }}>Advance: ₹{s.pending_advance || 0}</div>
+                </td>
+                <td data-label="Status" style={{ padding: '16px' }}>
+                  <span className={`badge ${s.status === 'active' ? 'badge-success' : 'badge-danger'}`}>
+                    {s.status}
+                  </span>
+                </td>
+                <td data-label="Actions" style={{ padding: '16px' }}>
+                  <div className="action-btns" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                     <button className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem' }} onClick={() => handleEditStaff(s)} title="Edit Staff">
                       <Edit size={14} color="var(--primary)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Edit</span>
                     </button>
@@ -244,25 +260,12 @@ const Staff = () => {
                       <TrendingUp size={14} color="var(--primary)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Performance</span>
                     </button>
                     <button className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem' }} onClick={() => fetchAttendance(s)} title="Attendance">
-                      <Clock size={14} color="var(--info)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Attendance</span>
+                      <Clock size={14} color="#3b82f6" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Attendance</span>
                     </button>
                     <button className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem', borderColor: s.status === 'active' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(16, 185, 129, 0.3)', color: s.status === 'active' ? 'var(--danger)' : 'var(--success)' }} onClick={() => handleToggleStatus(s)} title={s.status === 'active' ? 'Deactivate' : 'Activate'}>
                       <Power size={14} /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>{s.status === 'active' ? 'Deactivate' : 'Activate'}</span>
                     </button>
                   </div>
-                </td>
-                <td data-label="Role & Phone" style={{ padding: '16px' }}>
-                  <div style={{ color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 600 }}>{s.role}</div>
-                  <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{s.phone}</div>
-                </td>
-                <td data-label="Salary Info" style={{ padding: '16px' }}>
-                  <div style={{ fontSize: '0.95rem', fontWeight: 600 }}>₹{s.monthly_salary} <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 'normal' }}>/mo</span></div>
-                  <div style={{ color: s.pending_advance > 0 ? 'var(--danger)' : 'var(--success)', fontSize: '0.8rem', fontWeight: 700 }}>Advance: ₹{s.pending_advance || 0}</div>
-                </td>
-                <td data-label="Status" style={{ padding: '16px' }}>
-                  <span className={`badge ${s.status === 'active' ? 'badge-success' : 'badge-danger'}`}>
-                    {s.status}
-                  </span>
                 </td>
               </tr>
             ))}
