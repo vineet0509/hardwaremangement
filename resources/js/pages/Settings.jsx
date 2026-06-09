@@ -88,7 +88,7 @@ const Settings = () => {
             company_logo: null
           });
           if (settingsRes.data.company_logo) {
-            setLogoPreview(`/storage/${settingsRes.data.company_logo}`);
+            setLogoPreview(`/${settingsRes.data.company_logo}`);
           }
         if (settingsRes.data.latest_request && settingsRes.data.latest_request.status === 'pending') {
           setSelectedPlan(settingsRes.data.latest_request.plan_type);

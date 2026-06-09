@@ -100,7 +100,7 @@ const QuotationsList = () => {
           </head>
           <body>
             <div class="header">
-              ${settings.company_logo ? `<img src="/storage/${settings.company_logo}" style="max-height: 60px; margin-bottom: 10px;" alt="Logo" />` : ''}
+              ${settings.company_logo ? `<img src="/${settings.company_logo}" style="max-height: 60px; margin-bottom: 10px;" alt="Logo" />` : ''}
               <h1>${settings.company_name || 'VyaparSync'}</h1>
               <p>${settings.company_address || ''}</p>
               <p>Ph: ${settings.company_phone || ''}</p>

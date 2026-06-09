@@ -25,7 +25,7 @@
     <div class="header">
         <div class="shop-info">
             @if(isset($settings) && $settings->company_logo)
-                <img src="{{ public_path('storage/' . $settings->company_logo) }}" style="max-height: 60px; margin-bottom: 10px;" alt="Logo" />
+                <img src="{{ public_path($settings->company_logo) }}" style="max-height: 60px; margin-bottom: 10px;" alt="Logo" />
             @endif
             <h1 style="margin: 0; font-size: 20px;">{{ $settings->company_name ?? 'Hardware Business' }}</h1>
             <p style="margin: 5px 0;">{{ $settings->company_address ?? '' }}</p>

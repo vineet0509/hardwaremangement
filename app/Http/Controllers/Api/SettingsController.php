@@ -174,8 +174,10 @@ class SettingsController extends Controller
         $data = $request->only(['company_name', 'business_type', 'company_phone', 'company_address', 'terms_and_conditions', 'upi_qr_code']);
 
         if ($request->hasFile('company_logo')) {
-            $path = $request->file('company_logo')->store('public/logos');
-            $data['company_logo'] = str_replace('public/', '', $path);
+            $file = $request->file('company_logo');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images/logos'), $filename);
+            $data['company_logo'] = 'images/logos/' . $filename;
         }
 
         if ($settings) {
