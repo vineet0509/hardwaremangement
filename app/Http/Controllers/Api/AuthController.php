@@ -94,7 +94,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid login credentials.'], 401);
         }
 
-        if (!$user->hasVerifiedEmail()) {
+        if (!$user->hasVerifiedEmail() && $user->role !== 'staff') {
             return response()->json(['message' => 'Pending Confirmations. Please verify your email address to continue.', 'unverified_email' => $user->email], 403);
         }
 
