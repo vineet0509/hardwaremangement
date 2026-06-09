@@ -498,6 +498,40 @@ const Billing = () => {
         </div>
       </div>
 
+      {/* PRODUCT SEARCH & QUICK ADD SECTION */}
+      <div style={{ marginBottom: '16px', position: 'relative', zIndex: 1000 }}>
+        <input 
+          type="text" 
+          placeholder="🔍 Search products by name or SKU..." 
+          value={search} 
+          onChange={e => setSearch(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === 'Enter' && search.trim() !== '') {
+              const exactMatch = products.find(p => p.sku === search || p.name.toLowerCase() === search.toLowerCase());
+              if (exactMatch) { addToCart(exactMatch); setSearch(''); } 
+              else if (products.length > 0) { addToCart(products[0]); setSearch(''); }
+            }
+          }}
+          style={{ width: '100%', padding: '12px 16px', border: '2px solid #3b82f6', borderRadius: '8px', fontSize: '1rem', outline: 'none', background: '#ffffff', color: '#0f172a', fontWeight: 600, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }} 
+        />
+        {search && products.length > 0 && (
+          <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', border: '1px solid #cbd5e1', borderRadius: '8px', maxHeight: '300px', overflowY: 'auto', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)', marginTop: '8px' }}>
+            {products.map(p => (
+              <div key={p.id} onClick={() => { addToCart(p); setSearch(''); }} style={{ padding: '14px 16px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '1.05rem', marginBottom: '4px' }}>{p.name}</div>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.8rem', color: '#64748b', background: '#f1f5f9', padding: '2px 8px', borderRadius: '12px', fontWeight: 600 }}>Stock: {p.quantity} {p.unit}</span>
+                    {p.sku && <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>SKU: {p.sku}</span>}
+                  </div>
+                </div>
+                <div style={{ fontWeight: 800, color: '#10b981', fontSize: '1.1rem', textAlign: 'right' }}>₹{p.selling_price}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* GRID SECTION */}
       <div className="tally-table-container">
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
@@ -514,43 +548,6 @@ const Billing = () => {
             </tr>
           </thead>
           <tbody>
-            {/* Auto-complete Entry Row */}
-            <tr className="tally-entry-row" style={{ background: '#f8fafc' }}>
-              <td className="tally-cell-sno" style={{ padding: '12px', textAlign: 'center', color: '#94a3b8', fontWeight: 600 }}>*</td>
-              <td className="tally-cell-search" style={{ padding: '12px', position: 'relative' }}>
-                <input 
-                  type="text" 
-                  placeholder="🔍 Search products by name or SKU..." 
-                  value={search} 
-                  onChange={e => setSearch(e.target.value)}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter' && search.trim() !== '') {
-                      const exactMatch = products.find(p => p.sku === search || p.name.toLowerCase() === search.toLowerCase());
-                      if (exactMatch) { addToCart(exactMatch); setSearch(''); } 
-                      else if (products.length > 0) { addToCart(products[0]); setSearch(''); }
-                    }
-                  }}
-                  style={{ width: '100%', padding: '12px 16px', border: '2px solid #3b82f6', borderRadius: '8px', fontSize: '1rem', outline: 'none', background: '#ffffff', color: '#0f172a', fontWeight: 600, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }} 
-                />
-                {search && products.length > 0 && (
-                  <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 1000, background: '#fff', border: '1px solid #cbd5e1', borderRadius: '8px', maxHeight: '300px', overflowY: 'auto', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)', marginTop: '8px' }}>
-                    {products.map(p => (
-                      <div key={p.id} onClick={() => { addToCart(p); setSearch(''); }} style={{ padding: '14px 16px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '1.05rem', marginBottom: '4px' }}>{p.name}</div>
-                          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                            <span style={{ fontSize: '0.8rem', color: '#64748b', background: '#f1f5f9', padding: '2px 8px', borderRadius: '12px', fontWeight: 600 }}>Stock: {p.quantity} {p.unit}</span>
-                            {p.sku && <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>SKU: {p.sku}</span>}
-                          </div>
-                        </div>
-                        <div style={{ fontWeight: 800, color: '#10b981', fontSize: '1.1rem', textAlign: 'right' }}>₹{p.selling_price}</div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </td>
-              <td className="tally-cell-filler" colSpan={isGstBill ? 6 : 4}></td>
-            </tr>
 
             {cart.map((item, index) => {
               const itemTotal = item.price * item.quantity;

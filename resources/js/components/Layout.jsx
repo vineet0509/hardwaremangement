@@ -38,6 +38,7 @@ const Layout = ({ children }) => {
         { name: 'Branches', path: '/child-businesses' },
       ]
     },
+    { name: 'Settings', path: '/settings', icon: SettingsIcon },
     {
       name: 'Help & Info', icon: Info,
       subItems: [

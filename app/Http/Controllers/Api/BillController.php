@@ -655,4 +655,112 @@ class BillController extends Controller
         $pdf = Pdf::setOptions(['isRemoteEnabled' => true])->loadView('pdf.bill', compact('bill', 'settings', 'business'));
         return $pdf->download("bill_{$bill->bill_number}.pdf");
     }
+
+    public function returnItems(Request $request, Bill $bill): JsonResponse
+    {
+        $data = $request->validate([
+            'items' => 'required|array|min:1',
+            'items.*.id' => 'required|exists:bill_items,id',
+            'items.*.return_qty' => 'required|integer|min:1',
+        ]);
+
+        $bill->load('items');
+        
+        $totalDeduction = 0;
+
+        try {
+            DB::transaction(function () use ($data, $bill, &$totalDeduction) {
+                foreach ($data['items'] as $returnItem) {
+                    $billItem = $bill->items->firstWhere('id', $returnItem['id']);
+                    
+                    if (!$billItem) continue;
+
+                    $maxReturnable = $billItem->quantity - $billItem->returned_quantity;
+                    if ($returnItem['return_qty'] > $maxReturnable) {
+                        throw new \Exception("Cannot return more than originally purchased for item: {$billItem->product_name}");
+                    }
+
+                    // Update bill item returned quantity
+                    $billItem->increment('returned_quantity', $returnItem['return_qty']);
+
+                    // Calculate value deducted from bill
+                    $unitDiscount = $billItem->quantity > 0 ? ($billItem->discount / $billItem->quantity) : 0;
+                    $deduction = ($billItem->price * $returnItem['return_qty']) - ($unitDiscount * $returnItem['return_qty']);
+                    
+                    $totalDeduction += $deduction;
+
+                    // Restore stock
+                    $product = \App\Models\Product::find($billItem->product_id);
+                    if ($product) {
+                        $product->increment('quantity', $returnItem['return_qty']);
+                        \App\Models\StockTransaction::create([
+                            'product_id' => $product->id,
+                            'type'       => 'return',
+                            'quantity'   => $returnItem['return_qty'],
+                            'price'      => $billItem->price,
+                            'reference'  => "Return from Bill #{$bill->bill_number}",
+                        ]);
+                    }
+                }
+
+                $taxDeduction = 0;
+                if ($bill->subtotal > 0 && $bill->tax > 0) {
+                    $taxRatio = $bill->tax / $bill->subtotal;
+                    $taxDeduction = $totalDeduction * $taxRatio;
+                }
+
+                $billDiscountDeduction = 0;
+                if ($bill->subtotal > 0 && $bill->discount > 0) {
+                    $discountRatio = $bill->discount / $bill->subtotal;
+                    $billDiscountDeduction = $totalDeduction * $discountRatio;
+                }
+                
+                $finalDeduction = $totalDeduction - $billDiscountDeduction + $taxDeduction;
+
+                // Create a new return bill
+                $returnBill = Bill::create([
+                    'bill_number'    => Bill::generateBillNumber(),
+                    'customer_name'  => $bill->customer_name,
+                    'customer_phone' => $bill->customer_phone,
+                    'customer_address'=> $bill->customer_address,
+                    'subtotal'       => $totalDeduction,
+                    'discount'       => $billDiscountDeduction,
+                    'tax'            => $taxDeduction,
+                    'total'          => $finalDeduction,
+                    'paid_amount'    => $finalDeduction, // assume fully refunded
+                    'due_amount'     => 0,
+                    'payment_method' => 'cash', // Default refund method
+                    'status'         => 'paid',
+                    'notes'          => 'Return/Refund against Bill #' . $bill->bill_number,
+                    'is_gst'         => $bill->is_gst,
+                    'user_id'        => auth()->id(),
+                    'type'           => 'return',
+                    'parent_bill_id' => $bill->id,
+                ]);
+
+                // Create items for the return bill
+                foreach ($data['items'] as $returnItem) {
+                    $billItem = $bill->items->firstWhere('id', $returnItem['id']);
+                    if (!$billItem) continue;
+
+                    \App\Models\BillItem::create([
+                        'bill_id'      => $returnBill->id,
+                        'product_id'   => $billItem->product_id,
+                        'product_name' => $billItem->product_name,
+                        'description'  => $billItem->description,
+                        'unit'         => $billItem->unit,
+                        'price'        => $billItem->price,
+                        'quantity'     => $returnItem['return_qty'],
+                        'discount'     => ($billItem->quantity > 0 ? ($billItem->discount / $billItem->quantity) : 0) * $returnItem['return_qty'],
+                        'total'        => ($billItem->price * $returnItem['return_qty']) - (($billItem->quantity > 0 ? ($billItem->discount / $billItem->quantity) : 0) * $returnItem['return_qty']),
+                        'business_id'  => $bill->business_id,
+                    ]);
+                }
+            });
+
+            return response()->json(['message' => 'Items returned successfully. A Return Bill has been generated and stock has been restored.', 'bill' => $bill->fresh('items')]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
+    }
 }

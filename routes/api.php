@@ -65,6 +65,8 @@ Route::get('/udhar', [BillController::class, 'udharList']);
 Route::get('/advances', [BillController::class, 'advancesList']);
 Route::post('/advances', [BillController::class, 'storeAdvance']);
 Route::post('/bills/{bill}/repay', [BillController::class, 'repay']);
+Route::post('/bills/{bill}/return', [BillController::class, 'returnItems']);
+Route::post('/bills/{bill}/whatsapp', [BillController::class, 'sendWhatsApp']);
 Route::get('/bills/{bill}/pdf', [BillController::class, 'downloadPDF']);
 Route::get('/bills/export', [BillController::class, 'exportCSV']);
 Route::post('/bills/send-whatsapp', [BillController::class, 'sendWhatsApp']);

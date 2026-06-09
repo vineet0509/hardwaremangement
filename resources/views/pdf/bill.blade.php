@@ -136,10 +136,10 @@
     </div>
     <div class="clear"></div>
 
-    @if($bill->payment_method === 'upi' && isset($settings) && $settings->upi_qr_code)
+    @if(($bill->payment_method === 'upi' || $bill->due_amount > 0) && isset($settings) && $settings->upi_qr_code)
         <div style="text-align: center; margin-top: 20px;">
-            <p style="margin: 0 0 10px 0;"><strong>Scan to Pay ₹{{ number_format($bill->total, 2) }} via UPI</strong></p>
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={{ urlencode('upi://pay?pa=' . $settings->upi_qr_code . '&pn=' . ($settings->company_name ?? 'Merchant') . '&am=' . $bill->total . '&cu=INR') }}" alt="UPI QR" style="width: 120px; height: 120px; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
+            <p style="margin: 0 0 10px 0;"><strong>Scan to Pay ₹{{ number_format($bill->due_amount > 0 ? $bill->due_amount : $bill->total, 2) }} via UPI</strong></p>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={{ urlencode('upi://pay?pa=' . $settings->upi_qr_code . '&pn=' . ($settings->company_name ?? 'Merchant') . '&am=' . ($bill->due_amount > 0 ? $bill->due_amount : $bill->total) . '&cu=INR') }}" alt="UPI QR" style="width: 120px; height: 120px; border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
             <p style="margin: 5px 0 0 0; font-size: 10px; color: #666;">UPI ID: {{ $settings->upi_qr_code }}</p>
         </div>
     @endif
