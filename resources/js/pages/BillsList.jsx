@@ -357,8 +357,10 @@ const BillsList = () => {
       const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
       setDateFrom(firstDay.toISOString().split('T')[0]);
       setDateTo(lastDay.toISOString().split('T')[0]);
-    }
-  };
+      }
+    };
+
+  const canEditOrDelete = user && (user.role === 'admin' || user?.permissions?.can_edit_bills);
 
   return (
     <div>
@@ -525,9 +527,11 @@ const BillsList = () => {
                         </button>
                     )}
 
-                    <button className="btn btn-outline" onClick={() => navigate('/billing', { state: { editBillId: b.id } })} title="Edit Bill">
-                      <Edit2 size={16} color="var(--primary)" /><span className="btn-label">Edit</span>
-                    </button>
+                      {canEditOrDelete && (
+                        <button className="btn btn-outline" onClick={() => navigate('/billing', { state: { editBillId: b.id } })} title="Edit Bill">
+                          <Edit2 size={16} color="var(--primary)" /><span className="btn-label">Edit</span>
+                        </button>
+                      )}
                     <button className="btn btn-outline" onClick={() => printBill(b.id)} title="View/Print Invoice">
                       <Printer size={16} color="var(--primary)" /><span className="btn-label">Print</span>
                     </button>
@@ -545,11 +549,11 @@ const BillsList = () => {
                         {whatsappLoading === b.id ? '...' : <><MessageSquare size={16} /><span className="btn-label">WhatsApp</span></>}
                       </button>
                     )}
-                    {user?.role !== 'staff' && (
-                      <button className="btn btn-outline" onClick={() => deleteBill(b.id)} title="Delete Bill & Restore Stock">
-                        <Trash2 size={16} color="var(--danger)" /><span className="btn-label">Delete</span>
-                      </button>
-                    )}
+                      {canEditOrDelete && (
+                        <button className="btn btn-outline" onClick={() => deleteBill(b.id)} title="Delete Bill & Restore Stock">
+                          <Trash2 size={16} color="var(--danger)" /><span className="btn-label">Delete</span>
+                        </button>
+                      )}
                   </div>
                 </td>
                 <td>{new Date(b.created_at).toLocaleString()}</td>
