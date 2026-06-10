@@ -163,7 +163,7 @@ class StaffController extends Controller
                             'name'        => $staff->name,
                             'email'       => $staff->phone . '@staff.vynkra.local',
                             'mobile'      => $staff->phone,
-                            'role'        => $staff->role ?? 'staff',
+                            'role'        => 'staff',
                             'business_id' => $staff->business_id,
                             'password'    => \Illuminate\Support\Facades\Hash::make($staff->phone),
                         ]);

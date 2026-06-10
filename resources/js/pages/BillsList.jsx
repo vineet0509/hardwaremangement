@@ -360,7 +360,7 @@ const BillsList = () => {
       }
     };
 
-  const canEditOrDelete = user && user.role !== 'staff';
+  const canEditOrDelete = user && user.role === 'admin';
 
   return (
     <div>
