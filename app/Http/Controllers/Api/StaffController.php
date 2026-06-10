@@ -29,7 +29,20 @@ class StaffController extends Controller
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
-        return response()->json($query->orderBy('name')->get());
+        $staffMembers = $query->orderBy('name')->get();
+
+        $userIds = $staffMembers->pluck('user_id')->filter()->toArray();
+        $users = \App\Models\User::withTrashed()->whereIn('id', $userIds)->get()->keyBy('id');
+
+        $staffMembers->each(function ($staff) use ($users) {
+            if ($staff->user_id && isset($users[$staff->user_id])) {
+                $staff->permissions = $users[$staff->user_id]->permissions ?? [];
+            } else {
+                $staff->permissions = [];
+            }
+        });
+
+        return response()->json($staffMembers);
     }
 
     public function store(Request $request): JsonResponse
