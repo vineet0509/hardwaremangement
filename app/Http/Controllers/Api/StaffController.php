@@ -146,7 +146,7 @@ class StaffController extends Controller
                 }
             } elseif ($data['status'] === 'active' && $staff->status === 'inactive') {
                 if (!$staff->user_id && $staff->phone) {
-                    $existingUser = \App\Models\User::where('mobile', $staff->phone)->first();
+                    $existingUser = \App\Models\User::withTrashed()->where('mobile', $staff->phone)->first();
                     if ($existingUser && $existingUser->business_id !== $staff->business_id) {
                         return response()->json(['message' => 'Staff already working with other business'], 422);
                     }
@@ -169,6 +169,9 @@ class StaffController extends Controller
                         ]);
                         $staffData['user_id'] = $user->id;
                     } else {
+                        if ($existingUser->trashed()) {
+                            $existingUser->restore();
+                        }
                         $staffData['user_id'] = $existingUser->id;
                     }
                 }
