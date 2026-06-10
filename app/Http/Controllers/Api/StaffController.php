@@ -51,9 +51,22 @@ class StaffController extends Controller
             }
         }
 
+        $phoneRules = [
+            'required_if:enable_login,true',
+            'nullable',
+            'string',
+            'max:20',
+            \Illuminate\Validation\Rule::unique('staff', 'phone')
+                ->where('business_id', $request->user()->business_id)
+                ->whereNull('deleted_at')
+        ];
+        if ($request->enable_login) {
+            $phoneRules[] = 'unique:users,mobile';
+        }
+
         $data = $request->validate([
             'name'           => 'required|string|max:255',
-            'phone'          => 'required_if:enable_login,true|nullable|string|max:20' . ($request->enable_login ? '|unique:users,mobile' : ''),
+            'phone'          => $phoneRules,
             'role'           => 'required|string|max:100',
             'address'        => 'nullable|string',
             'aadhar_number'  => 'nullable|string|max:12',
@@ -98,9 +111,19 @@ class StaffController extends Controller
 
     public function update(Request $request, Staff $staff): JsonResponse
     {
+        $phoneRules = [
+            'nullable',
+            'string',
+            'max:20',
+            \Illuminate\Validation\Rule::unique('staff', 'phone')
+                ->where('business_id', $staff->business_id)
+                ->whereNull('deleted_at')
+                ->ignore($staff->id)
+        ];
+
         $data = $request->validate([
             'name'           => 'sometimes|string|max:255',
-            'phone'          => 'nullable|string|max:20',
+            'phone'          => $phoneRules,
             'role'           => 'sometimes|string|max:100',
             'address'        => 'nullable|string',
             'aadhar_number'  => 'nullable|string|max:12',
@@ -114,6 +137,44 @@ class StaffController extends Controller
         ]);
 
         $staffData = collect($data)->except(['permissions', 'password'])->toArray();
+
+        if (isset($data['status'])) {
+            if ($data['status'] === 'inactive' && $staff->status === 'active') {
+                if ($staff->user_id) {
+                    \App\Models\User::where('id', $staff->user_id)->delete();
+                    $staffData['user_id'] = null;
+                }
+            } elseif ($data['status'] === 'active' && $staff->status === 'inactive') {
+                if (!$staff->user_id && $staff->phone) {
+                    $existingUser = \App\Models\User::where('mobile', $staff->phone)->first();
+                    if ($existingUser && $existingUser->business_id !== $staff->business_id) {
+                        return response()->json(['message' => 'Staff already working with other business'], 422);
+                    }
+                    
+                    if (!$existingUser) {
+                        // Check user limits
+                        $settings = \App\Models\Setting::first();
+                        $currentUsersCount = \App\Models\User::where('business_id', $staff->business_id)->count();
+                        if ($settings && !\App\Helpers\PlanHelper::checkLimit($settings->subscription_plan, 'users', $currentUsersCount)) {
+                            return response()->json(['message' => 'User limit reached for your current plan.'], 403);
+                        }
+
+                        $user = \App\Models\User::create([
+                            'name'        => $staff->name,
+                            'email'       => $staff->phone . '@staff.vynkra.local',
+                            'mobile'      => $staff->phone,
+                            'role'        => $staff->role ?? 'staff',
+                            'business_id' => $staff->business_id,
+                            'password'    => \Illuminate\Support\Facades\Hash::make($staff->phone),
+                        ]);
+                        $staffData['user_id'] = $user->id;
+                    } else {
+                        $staffData['user_id'] = $existingUser->id;
+                    }
+                }
+            }
+        }
+
         $staff->update($staffData);
 
         if ($staff->user_id) {
