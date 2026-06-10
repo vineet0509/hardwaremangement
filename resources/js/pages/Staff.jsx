@@ -244,34 +244,24 @@ const Staff = () => {
                 </td>
                 <td data-label="Actions" style={{ padding: '16px' }}>
                   <div className="action-btns" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                    {s.status === 'active' && (
-                      <>
-                        <button className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem' }} onClick={() => handleEditStaff(s)} title="Edit Staff">
-                          <Edit size={14} color="var(--primary)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Edit</span>
-                        </button>
-                        <button className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem' }} onClick={() => { setSelectedStaff(s); setShowAdvanceModal(true); }} title="Give Advance">
-                          <Banknote size={14} color="var(--warning)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Advance</span>
-                        </button>
-                        <button className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem' }} onClick={() => paySalary(s)} title="Process Salary">
-                          <CheckCircle size={14} color="var(--success)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Salary</span>
-                        </button>
-                        <button className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem' }} onClick={() => fetchSalaryHistory(s)} title="Salary History">
-                          <Calendar size={14} color="var(--text-main)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>History</span>
-                        </button>
-                        <button className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem' }} onClick={() => fetchPerformance(s)} title="Performance">
-                          <TrendingUp size={14} color="var(--primary)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Performance</span>
-                        </button>
-                        <button className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem' }} onClick={() => fetchAttendance(s)} title="Attendance">
-                          <Clock size={14} color="#3b82f6" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Attendance</span>
-                        </button>
-                      </>
-                    )}
-                    
-                    {s.status === 'inactive' && (
-                      <span style={{ fontSize: '0.8rem', color: 'var(--danger)', padding: '4px 8px', display: 'flex', alignItems: 'center' }}>
-                        Inactive
-                      </span>
-                    )}
+                    <button disabled={s.status !== 'active'} className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem', opacity: s.status !== 'active' ? 0.5 : 1, cursor: s.status !== 'active' ? 'not-allowed' : 'pointer' }} onClick={() => handleEditStaff(s)} title="Edit Staff">
+                      <Edit size={14} color="var(--primary)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Edit</span>
+                    </button>
+                    <button disabled={s.status !== 'active'} className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem', opacity: s.status !== 'active' ? 0.5 : 1, cursor: s.status !== 'active' ? 'not-allowed' : 'pointer' }} onClick={() => { setSelectedStaff(s); setShowAdvanceModal(true); }} title="Give Advance">
+                      <Banknote size={14} color="var(--warning)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Advance</span>
+                    </button>
+                    <button disabled={s.status !== 'active'} className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem', opacity: s.status !== 'active' ? 0.5 : 1, cursor: s.status !== 'active' ? 'not-allowed' : 'pointer' }} onClick={() => paySalary(s)} title="Process Salary">
+                      <CheckCircle size={14} color="var(--success)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Salary</span>
+                    </button>
+                    <button disabled={s.status !== 'active'} className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem', opacity: s.status !== 'active' ? 0.5 : 1, cursor: s.status !== 'active' ? 'not-allowed' : 'pointer' }} onClick={() => fetchSalaryHistory(s)} title="Salary History">
+                      <Calendar size={14} color="var(--text-main)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>History</span>
+                    </button>
+                    <button disabled={s.status !== 'active'} className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem', opacity: s.status !== 'active' ? 0.5 : 1, cursor: s.status !== 'active' ? 'not-allowed' : 'pointer' }} onClick={() => fetchPerformance(s)} title="Performance">
+                      <TrendingUp size={14} color="var(--primary)" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Performance</span>
+                    </button>
+                    <button disabled={s.status !== 'active'} className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem', opacity: s.status !== 'active' ? 0.5 : 1, cursor: s.status !== 'active' ? 'not-allowed' : 'pointer' }} onClick={() => fetchAttendance(s)} title="Attendance">
+                      <Clock size={14} color="#3b82f6" /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>Attendance</span>
+                    </button>
 
                     <button className="btn btn-outline" style={{ padding: '4px 8px', fontSize: '0.75rem', borderColor: s.status === 'active' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(16, 185, 129, 0.3)', color: s.status === 'active' ? 'var(--danger)' : 'var(--success)' }} onClick={() => handleToggleStatus(s)} title={s.status === 'active' ? 'Deactivate' : 'Activate'}>
                       <Power size={14} /> <span className="btn-label" style={{ fontSize: '0.75rem' }}>{s.status === 'active' ? 'Deactivate' : 'Activate'}</span>
