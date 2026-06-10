@@ -244,8 +244,8 @@ class StaffController extends Controller
             ->where('created_at', '>=', $startOfMonth)
             ->get();
 
-        $revenueToday = $billsToday->sum('net_amount');
-        $revenueMonth = $billsMonth->sum('net_amount');
+        $revenueToday = $billsToday->sum('total');
+        $revenueMonth = $billsMonth->sum('total');
         
         $commissionPercent = $staff->commission_percent ?? 0;
         $commissionEarned = ($revenueMonth * $commissionPercent) / 100;
