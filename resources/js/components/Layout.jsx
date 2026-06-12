@@ -506,7 +506,7 @@ const Layout = ({ children }) => {
                   onMouseOut={e => e.currentTarget.style.background = showProfileMenu ? 'var(--surface-hover)' : 'transparent'}
                 >
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontWeight: 700, fontSize: '0.88rem', lineHeight: 1.2, color: 'var(--text-main)' }}>{user?.name || 'Admin'}</div>
+                    <div style={{ fontWeight: 700, fontSize: '0.88rem', lineHeight: 1.2, color: '#ffffff' }}>{user?.name || 'Admin'}</div>
                     <div style={{ fontSize: '0.7rem', color: '#cbd5e1', fontWeight: 500 }}>{user?.is_super_admin ? 'Super Admin' : (user?.role === 'staff' ? 'Cashier / Staff' : 'Business Manager')}</div>
                   </div>
                   <div style={{ width: 38, height: 38, borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary), #059669)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1rem', boxShadow: '0 2px 8px rgba(0,168,255,0.4)', flexShrink: 0 }}>
