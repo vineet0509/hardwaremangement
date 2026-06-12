@@ -185,7 +185,7 @@ class SettingsController extends Controller
 
             // Resize and compress the image to ensure it stays well under 300KB
             // We use max dimensions of 400x400 and 80% quality.
-            $img = \Image::make($file->getRealPath());
+            $img = \Intervention\Image\Facades\Image::make($file->getRealPath());
             $img->resize(400, 400, function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();
