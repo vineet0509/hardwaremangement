@@ -3,24 +3,24 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import api from '../utils/api';
 import Swal from 'sweetalert2';
-import { 
-  Package, 
-  ShoppingCart, 
-  Users, 
-  FileText, 
-  Receipt, 
-  ShieldCheck, 
-  TrendingUp, 
-  Clock, 
-  ArrowRight, 
-  Layers, 
-  Languages, 
-  Phone, 
-  Mail, 
-  MapPin, 
-  CheckCircle2, 
-  Lock, 
-  Zap, 
+import {
+  Package,
+  ShoppingCart,
+  Users,
+  FileText,
+  Receipt,
+  ShieldCheck,
+  TrendingUp,
+  Clock,
+  ArrowRight,
+  Layers,
+  Languages,
+  Phone,
+  Mail,
+  MapPin,
+  CheckCircle2,
+  Lock,
+  Zap,
   Sparkles,
   Play,
   ArrowUpRight,
@@ -169,19 +169,19 @@ const Landing = () => {
         setContactForm({ name: '', email: '', message: '' });
       })
       .catch(err => {
-        setContactStatus({ 
-          success: false, 
-          message: err.response?.data?.message || 'Failed to send enquiry. Please contact support directly.' 
+        setContactStatus({
+          success: false,
+          message: err.response?.data?.message || 'Failed to send enquiry. Please contact support directly.'
         });
       })
       .finally(() => setContactLoading(false));
   };
 
   return (
-    <div style={{ 
-      background: 'var(--bg-color)', 
-      color: 'var(--text-main)', 
-      minHeight: '100vh', 
+    <div style={{
+      background: 'var(--bg-color)',
+      color: 'var(--text-main)',
+      minHeight: '100vh',
       overflowX: 'hidden',
       transition: 'background 0.3s, color 0.3s'
     }}>
@@ -206,15 +206,15 @@ const Landing = () => {
           alignItems: 'center'
         }}>
           {/* Logo & Brand Name */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }} onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <img src="/logo.jpg" alt="Logo" style={{ height: '36px', width: '36px', objectFit: 'contain', borderRadius: '50%' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'flex'; }} />
-            <div style={{ 
+            <div style={{
               display: 'none',
-              background: 'linear-gradient(135deg, var(--primary), #b8962d)', 
-              color: 'white', 
-              padding: '8px', 
-              borderRadius: '12px', 
-              alignItems: 'center', 
+              background: 'linear-gradient(135deg, var(--primary), #b8962d)',
+              color: 'white',
+              padding: '8px',
+              borderRadius: '12px',
+              alignItems: 'center',
               justifyContent: 'center',
               boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)'
             }}>
@@ -251,17 +251,17 @@ const Landing = () => {
               </Link>
             ) : (
               <>
-                <button 
+                <button
                   onClick={() => { setShowLoginModal(true); setShowRegisterModal(false); }}
-                  style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', padding: '10px 16px', borderRadius: '8px', transition: 'background 0.2s' }} 
-                  onMouseOver={(e) => e.target.style.background = 'rgba(255,255,255,0.05)'} 
+                  style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', fontWeight: 600, fontSize: '0.95rem', padding: '10px 16px', borderRadius: '8px', transition: 'background 0.2s' }}
+                  onMouseOver={(e) => e.target.style.background = 'rgba(255,255,255,0.05)'}
                   onMouseOut={(e) => e.target.style.background = 'transparent'}
                 >
                   Sign In
                 </button>
-                <button 
+                <button
                   onClick={() => { setShowRegisterModal(true); setShowLoginModal(false); }}
-                  className="btn btn-primary" 
+                  className="btn btn-primary"
                   style={{ padding: '10px 20px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: 8 }}
                 >
                   Start Trial <Sparkles size={16} />
@@ -271,13 +271,13 @@ const Landing = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <button 
+          <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            style={{ 
-              display: 'none', 
-              background: 'none', 
-              border: 'none', 
-              color: '#fff', 
+            style={{
+              display: 'none',
+              background: 'none',
+              border: 'none',
+              color: '#fff',
               cursor: 'pointer',
               padding: 4
             }}
@@ -306,24 +306,24 @@ const Landing = () => {
             <span onClick={() => scrollToSection('pricing')} style={{ color: '#94a3b8', fontWeight: 600, fontSize: '1.1rem' }}>Pricing</span>
             <span onClick={() => scrollToSection('about')} style={{ color: '#94a3b8', fontWeight: 600, fontSize: '1.1rem' }}>About Us</span>
             <span onClick={() => scrollToSection('contact')} style={{ color: '#94a3b8', fontWeight: 600, fontSize: '1.1rem' }}>Contact</span>
-            
+
             <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)', margin: '4px 0' }}></div>
-            
+
             {token ? (
               <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="btn btn-primary" style={{ padding: '14px', borderRadius: '12px', textDecoration: 'none', textAlign: 'center' }}>
                 Go to Dashboard
               </Link>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <button 
+                <button
                   onClick={() => { setMobileMenuOpen(false); setShowLoginModal(true); }}
                   style={{ color: '#fff', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '12px', fontWeight: 600, cursor: 'pointer' }}
                 >
                   Sign In
                 </button>
-                <button 
+                <button
                   onClick={() => { setMobileMenuOpen(false); setShowRegisterModal(true); }}
-                  className="btn btn-primary" 
+                  className="btn btn-primary"
                   style={{ padding: '14px', borderRadius: '12px', width: '100%' }}
                 >
                   Start 30-Day Trial
@@ -341,19 +341,19 @@ const Landing = () => {
         position: 'relative'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
-          
+
           {/* Animated Badge */}
-          <div style={{ 
-            display: 'inline-flex', 
-            alignItems: 'center', 
-            gap: 8, 
-            background: 'rgba(212, 175, 55, 0.12)', 
-            border: '1px solid rgba(212, 175, 55, 0.3)', 
-            color: '#818cf8', 
-            padding: '8px 16px', 
-            borderRadius: '50px', 
-            fontSize: '0.85rem', 
-            fontWeight: 700, 
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            background: 'rgba(212, 175, 55, 0.12)',
+            border: '1px solid rgba(212, 175, 55, 0.3)',
+            color: '#818cf8',
+            padding: '8px 16px',
+            borderRadius: '50px',
+            fontSize: '0.85rem',
+            fontWeight: 700,
             marginBottom: 32,
             boxShadow: '0 4px 15px rgba(0,0,0,0.05)'
           }}>
@@ -361,12 +361,12 @@ const Landing = () => {
           </div>
 
           {/* Main Title */}
-          <h1 style={{ 
-            fontSize: 'calc(2.2rem + 1.8vw)', 
-            fontWeight: 900, 
-            lineHeight: 1.1, 
-            letterSpacing: '-0.03em', 
-            maxWidth: '900px', 
+          <h1 style={{
+            fontSize: 'calc(2.2rem + 1.8vw)',
+            fontWeight: 900,
+            lineHeight: 1.1,
+            letterSpacing: '-0.03em',
+            maxWidth: '900px',
             margin: '0 auto 24px',
             color: '#fff'
           }}>
@@ -385,12 +385,12 @@ const Landing = () => {
           </p>
 
           {/* Call to Action Buttons */}
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            gap: 16, 
-            flexWrap: 'wrap', 
-            marginBottom: 64 
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: 16,
+            flexWrap: 'wrap',
+            marginBottom: 64
           }}>
             {token ? (
               <Link to="/dashboard" className="btn btn-primary" style={{ padding: '16px 36px', borderRadius: '12px', fontSize: '1.05rem', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -398,24 +398,24 @@ const Landing = () => {
               </Link>
             ) : (
               <>
-                <button 
+                <button
                   onClick={() => setShowRegisterModal(true)}
-                  className="btn btn-primary" 
+                  className="btn btn-primary"
                   style={{ padding: '16px 36px', borderRadius: '12px', fontSize: '1.05rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 10 }}
                 >
                   Start 30-Day Trial <ArrowRight size={20} />
                 </button>
-                <button 
+                <button
                   onClick={() => setShowLoginModal(true)}
-                  className="btn" 
-                  style={{ 
-                    padding: '16px 36px', 
-                    borderRadius: '12px', 
-                    fontSize: '1.05rem', 
-                    fontWeight: 700, 
-                    background: 'rgba(255, 255, 255, 0.05)', 
-                    color: '#ffffff', 
-                    border: '1px solid rgba(255, 255, 255, 0.25)', 
+                  className="btn"
+                  style={{
+                    padding: '16px 36px',
+                    borderRadius: '12px',
+                    fontSize: '1.05rem',
+                    fontWeight: 700,
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    color: '#ffffff',
+                    border: '1px solid rgba(255, 255, 255, 0.25)',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease-in-out'
                   }}
@@ -457,7 +457,7 @@ const Landing = () => {
               padding: '24px',
               textAlign: 'left'
             }}>
-              
+
               {/* Mock Dashboard Headers */}
               <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, marginBottom: 32 }}>
                 <div>
@@ -472,9 +472,9 @@ const Landing = () => {
               </div>
 
               {/* Mock Stats Cards */}
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
                 gap: 20,
                 marginBottom: 32
               }}>
@@ -504,11 +504,11 @@ const Landing = () => {
 
               {/* Bottom Mock Split: POS Billing Preview & Stock Alerts */}
               <div className="responsive-mock-grid">
-                
+
                 {/* Simulated billing cart */}
                 <div style={{ background: '#151c2c', borderRadius: '12px', padding: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
                   <h4 style={{ margin: '0 0 16px', fontSize: '0.95rem', fontWeight: 700, color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Point of Sale Terminal</h4>
-                  
+
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed rgba(255,255,255,0.1)', paddingBottom: 8, fontSize: '0.85rem' }}>
                       <div>
@@ -552,7 +552,7 @@ const Landing = () => {
                 {/* Simulated Stock Alerts */}
                 <div style={{ background: '#151c2c', borderRadius: '12px', padding: '20px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', gap: 16 }}>
                   <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: '#ef4444', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Inventory Warnings</h4>
-                  
+
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyBetween: 'space-between', gap: 12, background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '10px', borderRadius: '8px' }}>
                       <div style={{ flex: 1 }}>
@@ -569,7 +569,7 @@ const Landing = () => {
                       <span style={{ background: '#d97706', color: '#fff', fontSize: '0.7rem', fontWeight: 'bold', padding: '4px 8px', borderRadius: '4px' }}>Low</span>
                     </div>
                   </div>
-                  
+
                   <div style={{ marginTop: 'auto', background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '8px', textAlign: 'center', fontSize: '0.8rem', color: '#9ca3af' }}>
                     💡 Dashboard alerts update instantly as staff run POS bills.
                   </div>
@@ -624,7 +624,7 @@ const Landing = () => {
         position: 'relative'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          
+
           <div style={{ textAlign: 'center', marginBottom: 64 }}>
             <h2 style={{ fontSize: '2.25rem', fontWeight: 800, marginBottom: 12 }}>Packed with Professional Grade Features</h2>
             <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '650px', margin: '0 auto' }}>
@@ -774,19 +774,19 @@ const Landing = () => {
         borderTop: '1px solid rgba(255,255,255,0.06)'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          
+
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <div style={{ 
-              display: 'inline-flex', 
-              alignItems: 'center', 
-              gap: 8, 
-              background: 'rgba(16, 185, 129, 0.1)', 
-              border: '1px solid rgba(16, 185, 129, 0.25)', 
-              color: '#34d399', 
-              padding: '6px 14px', 
-              borderRadius: '50px', 
-              fontSize: '0.8rem', 
-              fontWeight: 700, 
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              background: 'rgba(16, 185, 129, 0.1)',
+              border: '1px solid rgba(16, 185, 129, 0.25)',
+              color: '#34d399',
+              padding: '6px 14px',
+              borderRadius: '50px',
+              fontSize: '0.8rem',
+              fontWeight: 700,
               marginBottom: 16
             }}>
               <Sparkles size={14} /> LIVE APEX STORE SCREENSHOTS
@@ -847,7 +847,7 @@ const Landing = () => {
 
           {/* Interactive Tab Showcase Content */}
           <div className="responsive-showcase-grid">
-            
+
             {/* Left Column: Descriptive Text */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               {activeTab === 'billing' && (
@@ -924,7 +924,7 @@ const Landing = () => {
         borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          
+
           <div style={{ textAlign: 'center', marginBottom: 64 }}>
             <div style={{ color: 'var(--primary)', fontWeight: 800, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Subscription Plans</div>
             <h2 style={{ fontSize: '2.25rem', fontWeight: 800, color: '#fff', marginBottom: 12 }}>Simple, Highly Transparent Pricing</h2>
@@ -956,7 +956,7 @@ const Landing = () => {
               <div>
                 <span style={{ fontSize: '0.75rem', color: '#d4af37', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>30-Day Trial</span>
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Evaluation</h3>
-                
+
                 <div style={{ margin: '16px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
                   <span style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>₹0</span>
                   <span style={{ color: '#94a3b8' }}>/ for 30 days</span>
@@ -969,9 +969,9 @@ const Landing = () => {
                 </div>
               </div>
 
-              <button 
+              <button
                 onClick={() => setShowRegisterModal(true)}
-                className="btn" 
+                className="btn"
                 style={{ width: '100%', padding: '12px', borderRadius: '10px', marginTop: 24, fontWeight: 'bold', cursor: 'pointer', background: 'rgba(255, 255, 255, 0.05)', color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.25)' }}
               >
                 Start Trial
@@ -994,7 +994,7 @@ const Landing = () => {
               <div>
                 <span style={{ fontSize: '0.75rem', color: '#3b82f6', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Starter</span>
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Small Business</h3>
-                
+
                 <div style={{ margin: '16px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
                   <span style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>₹999</span>
                   <span style={{ color: '#94a3b8' }}>/ year</span>
@@ -1007,9 +1007,9 @@ const Landing = () => {
                 </div>
               </div>
 
-              <button 
+              <button
                 onClick={() => setShowRegisterModal(true)}
-                className="btn" 
+                className="btn"
                 style={{ width: '100%', padding: '12px', borderRadius: '10px', marginTop: 24, fontWeight: 'bold', cursor: 'pointer', background: 'rgba(255, 255, 255, 0.05)', color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.25)' }}
               >
                 Get Starter
@@ -1034,7 +1034,7 @@ const Landing = () => {
               <div>
                 <span style={{ fontSize: '0.75rem', color: 'var(--primary)', background: 'rgba(212, 175, 55, 0.1)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Business</span>
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Growing Team</h3>
-                
+
                 <div style={{ margin: '16px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
                   <span style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>₹2,499</span>
                   <span style={{ color: '#94a3b8' }}>/ year</span>
@@ -1047,9 +1047,9 @@ const Landing = () => {
                 </div>
               </div>
 
-              <button 
+              <button
                 onClick={() => setShowRegisterModal(true)}
-                className="btn btn-primary" 
+                className="btn btn-primary"
                 style={{ width: '100%', padding: '12px', borderRadius: '10px', marginTop: 24, fontWeight: 'bold', cursor: 'pointer' }}
               >
                 Get Business
@@ -1072,7 +1072,7 @@ const Landing = () => {
               <div>
                 <span style={{ fontSize: '0.75rem', color: '#f59e0b', background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Enterprise</span>
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Max Control</h3>
-                
+
                 <div style={{ margin: '16px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
                   <span style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>₹4,999</span>
                   <span style={{ color: '#94a3b8' }}>/ year</span>
@@ -1085,9 +1085,9 @@ const Landing = () => {
                 </div>
               </div>
 
-              <button 
+              <button
                 onClick={() => setShowRegisterModal(true)}
-                className="btn" 
+                className="btn"
                 style={{ width: '100%', padding: '12px', borderRadius: '10px', marginTop: 24, fontWeight: 'bold', cursor: 'pointer', background: 'rgba(255, 255, 255, 0.05)', color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.25)' }}
               >
                 Get Enterprise
@@ -1127,14 +1127,14 @@ const Landing = () => {
         borderTop: '1px solid rgba(255,255,255,0.08)'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          
+
           <div style={{ textAlign: 'center', marginBottom: 50 }}>
             <h2 style={{ fontSize: '2.25rem', color: 'var(--text-main)', marginBottom: 12 }}>Need Help or Custom Integration?</h2>
             <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>The Vynkra Technologies customer success squad is standing by to help your business transition seamlessly.</p>
           </div>
 
           <div style={{ display: 'flex', gap: 40, flexWrap: 'wrap', marginTop: 40 }}>
-            
+
             <div style={{ flex: 1, minWidth: 280 }}>
               <h3 style={{ marginBottom: 24, fontSize: '1.5rem', fontWeight: 700 }}>Direct Help Channels</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 20, color: 'var(--text-muted)' }}>
@@ -1172,44 +1172,44 @@ const Landing = () => {
               <form onSubmit={handleContactSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 600, marginBottom: 8 }}>Your Name</label>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="Enter your full name" 
-                    required 
-                    value={contactForm.name} 
-                    onChange={e => setContactForm({...contactForm, name: e.target.value})} 
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter your full name"
+                    required
+                    value={contactForm.name}
+                    onChange={e => setContactForm({ ...contactForm, name: e.target.value })}
                   />
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 600, marginBottom: 8 }}>Email Address</label>
-                  <input 
-                    type="email" 
-                    className="form-control" 
-                    placeholder="Enter your email address" 
-                    required 
-                    value={contactForm.email} 
-                    onChange={e => setContactForm({...contactForm, email: e.target.value})} 
+                  <input
+                    type="email"
+                    className="form-control"
+                    placeholder="Enter your email address"
+                    required
+                    value={contactForm.email}
+                    onChange={e => setContactForm({ ...contactForm, email: e.target.value })}
                   />
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 600, marginBottom: 8 }}>Message / Enquiry</label>
-                  <textarea 
-                    className="form-control" 
-                    placeholder="Describe your query or store migration support needs..." 
-                    style={{ height: 100, resize: 'none' }} 
-                    required 
-                    value={contactForm.message} 
-                    onChange={e => setContactForm({...contactForm, message: e.target.value})} 
+                  <textarea
+                    className="form-control"
+                    placeholder="Describe your query or store migration support needs..."
+                    style={{ height: 100, resize: 'none' }}
+                    required
+                    value={contactForm.message}
+                    onChange={e => setContactForm({ ...contactForm, message: e.target.value })}
                   />
                 </div>
-                
+
                 {contactStatus && (
-                  <div style={{ 
-                    padding: '12px 16px', 
-                    borderRadius: '8px', 
-                    fontSize: '0.9rem', 
-                    textAlign: 'center', 
+                  <div style={{
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    fontSize: '0.9rem',
+                    textAlign: 'center',
                     background: contactStatus.success ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
                     color: contactStatus.success ? '#d4af37' : '#fca5a5',
                     border: `1px solid ${contactStatus.success ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`,
@@ -1237,7 +1237,7 @@ const Landing = () => {
         color: 'var(--text-muted)'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          
+
           {/* Main Footer Links Columns */}
           <div style={{
             display: 'grid',
@@ -1251,7 +1251,7 @@ const Landing = () => {
                 <div style={{ background: 'linear-gradient(135deg, var(--primary), #b8962d)', color: 'white', padding: '6px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Package size={18} strokeWidth={2.5} />
                 </div>
-                <span style={{ fontSize: '1.1rem', fontWeight: 900, color: '#fff' }}><span style={{color: '#ffffff'}}>Vyapar</span><span style={{color: 'var(--primary)'}}>Sync</span></span>
+                <span style={{ fontSize: '1.1rem', fontWeight: 900, color: '#fff' }}><span style={{ color: '#ffffff' }}>Vyapar</span><span style={{ color: 'var(--primary)' }}>Sync</span></span>
               </div>
               <p style={{ fontSize: '0.85rem', lineHeight: 1.6 }}>
                 Advanced Multi-Tenant SaaS solution tailored for retail businesses, wholesalers, and retail building materials counters.
@@ -1340,7 +1340,7 @@ const Landing = () => {
             color: 'var(--text-main)'
           }}>
             {/* Close Button */}
-            <button 
+            <button
               onClick={() => setShowLoginModal(false)}
               style={{
                 position: 'absolute',
@@ -1365,7 +1365,7 @@ const Landing = () => {
               <div style={{ background: 'linear-gradient(135deg, var(--primary), #b8962d)', width: 54, height: 54, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', color: 'white', boxShadow: '0 8px 16px rgba(212, 175, 55,0.2)' }}>
                 <Package size={28} strokeWidth={2.5} />
               </div>
-              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)', margin: '0 0 4px' }}><span style={{color: '#ffffff'}}>Vyapar</span><span style={{color: 'var(--primary)'}}>Sync</span></h3>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)', margin: '0 0 4px' }}><span style={{ color: '#2c3642ff' }}>Vyapar</span><span style={{ color: 'var(--primary)' }}>Sync</span></h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>Management Dashboard Login</p>
             </div>
 
@@ -1380,14 +1380,14 @@ const Landing = () => {
             <form onSubmit={handleLoginSubmit}>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: 8, color: 'var(--text-muted)' }}>Email or Mobile Number</label>
-                <input 
-                  type="text" 
-                  required 
-                  className="form-control" 
+                <input
+                  type="text"
+                  required
+                  className="form-control"
                   style={{ background: 'rgba(255,255,255,0.02)' }}
                   placeholder="Enter email or registered mobile"
-                  value={loginData.login} 
-                  onChange={e => setLoginData({...loginData, login: e.target.value})} 
+                  value={loginData.login}
+                  onChange={e => setLoginData({ ...loginData, login: e.target.value })}
                 />
               </div>
 
@@ -1396,14 +1396,14 @@ const Landing = () => {
                   <label style={{ fontSize: '0.825rem', fontWeight: 600, color: 'var(--text-muted)', margin: 0 }}>Password</label>
                   <a href="#" onClick={(e) => { e.preventDefault(); Swal.fire("To reset password, please get in touch with Vynkra Technologies support team."); }} style={{ fontSize: '0.75rem', color: 'var(--primary)', textDecoration: 'none' }}>Forgot?</a>
                 </div>
-                <input 
-                  type="password" 
-                  required 
-                  className="form-control" 
+                <input
+                  type="password"
+                  required
+                  className="form-control"
                   style={{ background: 'rgba(255,255,255,0.02)' }}
                   placeholder="••••••••"
-                  value={loginData.password} 
-                  onChange={e => setLoginData({...loginData, password: e.target.value})} 
+                  value={loginData.password}
+                  onChange={e => setLoginData({ ...loginData, password: e.target.value })}
                 />
               </div>
 
@@ -1413,7 +1413,7 @@ const Landing = () => {
 
               <div style={{ textAlign: 'center', marginTop: 24, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                 Need a new SaaS setup?{' '}
-                <button 
+                <button
                   type="button"
                   onClick={() => { setShowLoginModal(false); setShowRegisterModal(true); }}
                   style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 700, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
@@ -1454,7 +1454,7 @@ const Landing = () => {
             color: 'var(--text-main)'
           }}>
             {/* Close Button */}
-            <button 
+            <button
               onClick={() => setShowRegisterModal(false)}
               style={{
                 position: 'absolute',
@@ -1482,7 +1482,7 @@ const Landing = () => {
               </div>
               <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)', margin: '0 0 4px' }}>Register Store</h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>Start managing your business today.</p>
-              
+
               <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(16, 185, 129, 0.1)', color: '#d4af37', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold', marginTop: '10px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
                 <BadgeCheck size={14} /> 30-Day Trial Period Included
               </div>
@@ -1503,20 +1503,20 @@ const Landing = () => {
                   <Store size={12} /> Store Information
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="Official Business Name (Ex: Apex Store)" 
-                    required 
-                    value={registerData.shop_name} 
-                    onChange={e => setRegisterData({...registerData, shop_name: e.target.value})} 
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Official Business Name (Ex: Apex Store)"
+                    required
+                    value={registerData.shop_name}
+                    onChange={e => setRegisterData({ ...registerData, shop_name: e.target.value })}
                   />
-                  <select 
-                    name="business_type" 
-                    className="form-control" 
-                    required 
-                    value={registerData.business_type} 
-                    onChange={e => setRegisterData({...registerData, business_type: e.target.value})}
+                  <select
+                    name="business_type"
+                    className="form-control"
+                    required
+                    value={registerData.business_type}
+                    onChange={e => setRegisterData({ ...registerData, business_type: e.target.value })}
                   >
                     <option value="" disabled>Select Type of Business</option>
                     <option value="Hardware / Building Materials">Hardware / Building Materials</option>
@@ -1525,12 +1525,12 @@ const Landing = () => {
                     <option value="Clothing / Garments">Clothing / Garments</option>
                     <option value="Services / General">Services / General</option>
                   </select>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="GST Number (Optional)" 
-                    value={registerData.gst_number} 
-                    onChange={e => setRegisterData({...registerData, gst_number: e.target.value.toUpperCase().replace(/\s/g, '')})} 
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="GST Number (Optional)"
+                    value={registerData.gst_number}
+                    onChange={e => setRegisterData({ ...registerData, gst_number: e.target.value.toUpperCase().replace(/\s/g, '') })}
                   />
                 </div>
               </div>
@@ -1541,30 +1541,30 @@ const Landing = () => {
                   <User size={12} /> Owner Details
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="Your Full Name" 
-                    required 
-                    value={registerData.name} 
-                    onChange={e => setRegisterData({...registerData, name: e.target.value})} 
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Your Full Name"
+                    required
+                    value={registerData.name}
+                    onChange={e => setRegisterData({ ...registerData, name: e.target.value })}
                   />
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                    <input 
-                      type="email" 
-                      className="form-control" 
-                      placeholder="Email Address" 
-                      required 
-                      value={registerData.email} 
-                      onChange={e => setRegisterData({...registerData, email: e.target.value})} 
+                    <input
+                      type="email"
+                      className="form-control"
+                      placeholder="Email Address"
+                      required
+                      value={registerData.email}
+                      onChange={e => setRegisterData({ ...registerData, email: e.target.value })}
                     />
-                    <input 
-                      type="text" 
-                      className="form-control" 
-                      placeholder="Mobile Number" 
-                      required 
-                      value={registerData.mobile} 
-                      onChange={e => setRegisterData({...registerData, mobile: e.target.value})} 
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Mobile Number"
+                      required
+                      value={registerData.mobile}
+                      onChange={e => setRegisterData({ ...registerData, mobile: e.target.value })}
                     />
                   </div>
                 </div>
@@ -1576,23 +1576,23 @@ const Landing = () => {
                   <ShieldCheck size={12} /> Account Security
                 </h4>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                  <input 
-                    type="password" 
-                    className="form-control" 
-                    placeholder="Password" 
-                    required 
-                    minLength={8} 
-                    value={registerData.password} 
-                    onChange={e => setRegisterData({...registerData, password: e.target.value})} 
+                  <input
+                    type="password"
+                    className="form-control"
+                    placeholder="Password"
+                    required
+                    minLength={8}
+                    value={registerData.password}
+                    onChange={e => setRegisterData({ ...registerData, password: e.target.value })}
                   />
-                  <input 
-                    type="password" 
-                    className="form-control" 
-                    placeholder="Confirm Password" 
-                    required 
-                    minLength={8} 
-                    value={registerData.password_confirmation} 
-                    onChange={e => setRegisterData({...registerData, password_confirmation: e.target.value})} 
+                  <input
+                    type="password"
+                    className="form-control"
+                    placeholder="Confirm Password"
+                    required
+                    minLength={8}
+                    value={registerData.password_confirmation}
+                    onChange={e => setRegisterData({ ...registerData, password_confirmation: e.target.value })}
                   />
                 </div>
               </div>
@@ -1603,7 +1603,7 @@ const Landing = () => {
 
               <div style={{ textAlign: 'center', marginTop: 24, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                 Already have an account?{' '}
-                <button 
+                <button
                   type="button"
                   onClick={() => { setShowRegisterModal(false); setShowLoginModal(true); }}
                   style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 700, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
