@@ -117,7 +117,7 @@ const Attendance = ({ user }) => {
                   ) : (
                     <div style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '1rem' }}>Attendance Record</div>
                   )}
-                  <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--primary)', background: 'rgba(79, 70, 229, 0.1)', padding: '4px 10px', borderRadius: '6px' }}>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--primary)', background: 'rgba(212, 175, 55, 0.1)', padding: '4px 10px', borderRadius: '6px' }}>
                     {new Date(record.date).toLocaleDateString()}
                   </div>
                 </div>

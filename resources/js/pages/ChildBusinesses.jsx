@@ -130,7 +130,7 @@ const ChildBusinesses = () => {
                     borderRadius: 12,
                     marginBottom: 24
                 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, color: '#10b981', fontWeight: 700, fontSize: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, color: '#d4af37', fontWeight: 700, fontSize: '1rem' }}>
                         <Key size={18} /> Branch Created — Login Credentials
                     </div>
                     <p style={{ margin: '0 0 8px 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
@@ -298,7 +298,7 @@ const ChildBusinesses = () => {
                                                         borderRadius: 8,
                                                         border: 'none',
                                                         background: shop.is_active ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
-                                                        color: shop.is_active ? '#ef4444' : '#10b981',
+                                                        color: shop.is_active ? '#ef4444' : '#d4af37',
                                                         cursor: 'pointer',
                                                         fontWeight: 600,
                                                         display: 'inline-flex',
@@ -341,7 +341,7 @@ const ChildBusinesses = () => {
                                                 fontSize: '0.75rem',
                                                 fontWeight: 600,
                                                 background: shop.is_active ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                                                color: shop.is_active ? '#10b981' : '#ef4444'
+                                                color: shop.is_active ? '#d4af37' : '#ef4444'
                                             }}>
                                                 {shop.is_active ? 'Active' : 'Disabled'}
                                             </span>

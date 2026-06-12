@@ -433,7 +433,7 @@ const QuotationCreate = () => {
                     {p.sku && <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>SKU: {p.sku}</span>}
                   </div>
                 </div>
-                <div style={{ fontWeight: 800, color: '#10b981', fontSize: '1.1rem', textAlign: 'right' }}>₹{p.selling_price}</div>
+                <div style={{ fontWeight: 800, color: '#d4af37', fontSize: '1.1rem', textAlign: 'right' }}>₹{p.selling_price}</div>
               </div>
             ))}
           </div>
@@ -531,8 +531,8 @@ const QuotationCreate = () => {
             <div style={{ marginBottom: '12px', display: 'flex', flexDirection: 'column', gap: '8px', paddingLeft: '16px' }}>
               {otherChargesDetails.map((charge, index) => (
                 <div key={index} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <input type="text" placeholder="Charge Name" value={charge.name} onChange={e => updateOtherCharge(index, 'name', e.target.value)} style={{ flex: 1, border: 'none', borderBottom: '1px dashed #cbd5e1', outline: 'none', fontSize: '0.85rem' }} />
-                  <input type="number" placeholder="0" value={charge.amount} onChange={e => updateOtherCharge(index, 'amount', e.target.value)} style={{ width: '80px', textAlign: 'right', border: 'none', borderBottom: '1px dashed #cbd5e1', outline: 'none', fontSize: '0.85rem' }} />
+                  <input type="text" placeholder="Charge Name" value={charge.name} onChange={e => updateOtherCharge(index, 'name', e.target.value)} style={{ flex: 1, minWidth: 0, border: 'none', borderBottom: '1px dashed #cbd5e1', outline: 'none', fontSize: '0.85rem' }} />
+                  <input type="number" placeholder="0" value={charge.amount} onChange={e => updateOtherCharge(index, 'amount', e.target.value)} style={{ width: '60px', flexShrink: 0, textAlign: 'right', border: 'none', borderBottom: '1px dashed #cbd5e1', outline: 'none', fontSize: '0.85rem' }} />
                   <Trash2 size={14} color="#ef4444" style={{ cursor: 'pointer' }} onClick={() => removeOtherCharge(index)} />
                 </div>
               ))}
@@ -555,7 +555,7 @@ const QuotationCreate = () => {
           <div style={{ borderTop: '2px solid #0f172a', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <span style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a' }}>Total Estimate</span>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#10b981' }}>₹{total.toFixed(2)}</div>
+              <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#d4af37' }}>₹{total.toFixed(2)}</div>
               {total !== rawTotal && <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748b' }}>(Round Off: {(total - rawTotal).toFixed(2)})</div>}
             </div>
           </div>
@@ -570,7 +570,7 @@ const QuotationCreate = () => {
         <button onClick={handlePreview} style={{ padding: '14px 24px', background: '#e0e7ff', color: '#4f46e5', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
           <FileText size={18} /> Preview
         </button>
-        <button onClick={handleCheckout} style={{ padding: '14px 32px', background: '#10b981', color: '#ffffff', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.2)' }}>
+        <button onClick={handleCheckout} style={{ padding: '14px 32px', background: '#d4af37', color: '#ffffff', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.2)' }}>
           <Save size={18} /> {editQuotationId ? 'Update Quotation' : 'Save & Send Quotation'}
         </button>
       </div>

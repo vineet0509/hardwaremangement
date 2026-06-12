@@ -219,8 +219,9 @@ const Layout = ({ children }) => {
   if (authLoading) {
     return (
       <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-color)', gap: 20 }}>
-         <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 60, height: 60, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
-            <Package size={32} className="animate-spin-slow" />
+         <div style={{ position: 'relative', width: 100, height: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="spinner" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, border: '4px solid rgba(212,175,55,0.1)', borderTop: '4px solid var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+            <img src="/logo.jpg" alt="VyaparSync Logo" style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover' }} />
          </div>
          <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 500 }}>Restoring secure session...</div>
       </div>
@@ -301,7 +302,7 @@ const Layout = ({ children }) => {
       <aside className={`sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <img src="/logo.png" alt="Logo" style={{ height: '40px', width: '40px', objectFit: 'contain', borderRadius: '50%' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'flex'; }} />
+            <img src="/logo.jpg" alt="Logo" style={{ height: '40px', width: '40px', objectFit: 'contain', borderRadius: '50%' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'flex'; }} />
             <div style={{ display: 'none', background: 'linear-gradient(135deg, var(--primary), #059669)', color: 'white', padding: '10px', borderRadius: '12px', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(0,0,0,0.2)' }}>
                <Package size={26} strokeWidth={2.5} />
             </div>
@@ -418,16 +419,16 @@ const Layout = ({ children }) => {
 
       {/* Main Content Area */}
       <main className="main-content">
-        <header className="topbar d-flex justify-content-between align-items-center">
+        <header className="topbar d-flex justify-content-between align-items-center" style={{ zIndex: 99999 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <button 
               className="mobile-menu-btn" 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', display: 'none' }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#fff', display: 'none' }}
             >
               <Menu size={24} />
             </button>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0, color: '#fff' }}>
               {allNavItems.find(item => location.pathname.startsWith(item.path))?.name || (
                 <span style={{ color: 'var(--primary)', letterSpacing: '-0.3px' }}>VyaparSync</span>
               )}
@@ -506,12 +507,12 @@ const Layout = ({ children }) => {
                 >
                   <div style={{ textAlign: 'right' }}>
                     <div style={{ fontWeight: 700, fontSize: '0.88rem', lineHeight: 1.2, color: 'var(--text-main)' }}>{user?.name || 'Admin'}</div>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 500 }}>{user?.is_super_admin ? 'Super Admin' : (user?.role === 'staff' ? 'Cashier / Staff' : 'Business Manager')}</div>
+                    <div style={{ fontSize: '0.7rem', color: '#cbd5e1', fontWeight: 500 }}>{user?.is_super_admin ? 'Super Admin' : (user?.role === 'staff' ? 'Cashier / Staff' : 'Business Manager')}</div>
                   </div>
                   <div style={{ width: 38, height: 38, borderRadius: '50%', background: 'linear-gradient(135deg, var(--primary), #059669)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1rem', boxShadow: '0 2px 8px rgba(0,168,255,0.4)', flexShrink: 0 }}>
                     {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
                   </div>
-                  <ChevronDown size={15} color="var(--text-muted)" style={{ transition: 'transform 0.2s', transform: showProfileMenu ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+                  <ChevronDown size={15} color="#fff" style={{ transition: 'transform 0.2s', transform: showProfileMenu ? 'rotate(180deg)' : 'rotate(0deg)' }} />
                 </div>
 
                 {/* Mobile trigger: avatar only */}
@@ -534,7 +535,7 @@ const Layout = ({ children }) => {
                     border: '1px solid var(--border)',
                     borderRadius: 16,
                     boxShadow: '0 20px 50px rgba(0,0,0,0.18)',
-                    zIndex: 500,
+                    zIndex: 9999,
                     overflow: 'hidden',
                     animation: 'slideUp 0.18s cubic-bezier(0.16,1,0.3,1)'
                   }}>
@@ -674,7 +675,7 @@ const Layout = ({ children }) => {
           
           {settings && !settings.is_expired && settings.trial_days_remaining !== undefined && settings.subscription_plan !== 'full_time' && (
             (settings.subscription_plan === 'monthly' || settings.subscription_plan === 'yearly') ? (
-              settings.trial_days_remaining <= 10 && (
+              settings.trial_days_remaining <= 30 && (
                 <div style={{ 
                   background: 'rgba(245, 158, 11, 0.15)', 
                   color: 'var(--warning)', 
@@ -693,22 +694,24 @@ const Layout = ({ children }) => {
                 </div>
               )
             ) : (
-              <div style={{ 
-                background: 'rgba(245, 158, 11, 0.15)', 
-                color: 'var(--warning)', 
-                padding: '12px 20px', 
-                borderRadius: 8, 
-                marginBottom: 24, 
-                fontWeight: 600, 
-                border: '1px solid rgba(245, 158, 11, 0.3)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10
-              }}>
-                <AlertTriangle size={20} />
-                <div style={{ flex: 1 }}>Demo Plan: You have {settings.trial_days_remaining} days remaining on your trial.</div>
-                {user?.role !== 'staff' && <button onClick={() => navigate('/settings')} className="btn" style={{ background: 'var(--warning)', color: '#fff', padding: '6px 12px', fontSize: '0.85rem', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>Renew Now</button>}
-              </div>
+              settings.trial_days_remaining <= 30 && (
+                <div style={{ 
+                  background: 'rgba(245, 158, 11, 0.15)', 
+                  color: 'var(--warning)', 
+                  padding: '12px 20px', 
+                  borderRadius: 8, 
+                  marginBottom: 24, 
+                  fontWeight: 600, 
+                  border: '1px solid rgba(245, 158, 11, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10
+                }}>
+                  <AlertTriangle size={20} />
+                  <div style={{ flex: 1 }}>Demo Plan: You have {settings.trial_days_remaining} days remaining on your trial.</div>
+                  {user?.role !== 'staff' && <button onClick={() => navigate('/settings')} className="btn" style={{ background: 'var(--warning)', color: '#fff', padding: '6px 12px', fontSize: '0.85rem', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>Renew Now</button>}
+                </div>
+              )
             )
           )}
           {user?.role === 'staff' && attendanceStatus !== 'clocked_in' && !(

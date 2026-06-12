@@ -21,7 +21,7 @@ const Notification = ({ show, title, message, type = 'success', onClose }) => {
   };
 
   const colors = {
-    success: '#10b981',
+    success: '#d4af37',
     error: '#ef4444',
     warning: '#f59e0b',
     info: '#3b82f6'

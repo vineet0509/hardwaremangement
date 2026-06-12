@@ -523,7 +523,7 @@ const Billing = () => {
                     {p.sku && <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>SKU: {p.sku}</span>}
                   </div>
                 </div>
-                <div style={{ fontWeight: 800, color: '#10b981', fontSize: '1.1rem', textAlign: 'right' }}>₹{p.selling_price}</div>
+                <div style={{ fontWeight: 800, color: '#d4af37', fontSize: '1.1rem', textAlign: 'right' }}>₹{p.selling_price}</div>
               </div>
             ))}
           </div>
@@ -650,8 +650,8 @@ const Billing = () => {
             <div style={{ marginBottom: '12px', display: 'flex', flexDirection: 'column', gap: '8px', paddingLeft: '16px' }}>
               {payment.other_charges_details.map((charge, index) => (
                 <div key={index} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <input type="text" placeholder="Charge Name" value={charge.name} onChange={e => updateOtherCharge(index, 'name', e.target.value)} style={{ flex: 1, border: 'none', borderBottom: '1px dashed #cbd5e1', outline: 'none', fontSize: '0.85rem' }} />
-                  <input type="number" placeholder="0" value={charge.amount} onChange={e => updateOtherCharge(index, 'amount', e.target.value)} style={{ width: '80px', textAlign: 'right', border: 'none', borderBottom: '1px dashed #cbd5e1', outline: 'none', fontSize: '0.85rem' }} />
+                  <input type="text" placeholder="Charge Name" value={charge.name} onChange={e => updateOtherCharge(index, 'name', e.target.value)} style={{ flex: 1, minWidth: 0, border: 'none', borderBottom: '1px dashed #cbd5e1', outline: 'none', fontSize: '0.85rem' }} />
+                  <input type="number" placeholder="0" value={charge.amount} onChange={e => updateOtherCharge(index, 'amount', e.target.value)} style={{ width: '60px', flexShrink: 0, textAlign: 'right', border: 'none', borderBottom: '1px dashed #cbd5e1', outline: 'none', fontSize: '0.85rem' }} />
                   <Trash2 size={14} color="#ef4444" style={{ cursor: 'pointer' }} onClick={() => removeOtherCharge(index)} />
                 </div>
               ))}
@@ -674,7 +674,7 @@ const Billing = () => {
           <div style={{ borderTop: '2px solid #0f172a', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <span style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a' }}>Grand Total</span>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#10b981' }}>₹{total.toFixed(2)}</div>
+              <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#d4af37' }}>₹{total.toFixed(2)}</div>
               {total !== rawTotal && <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748b' }}>(Round Off: {(total - rawTotal).toFixed(2)})</div>}
             </div>
           </div>
@@ -682,7 +682,7 @@ const Billing = () => {
           <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
               <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#475569' }}>Amount Received</span>
-              <input type="number" value={payment.paid} onChange={e => setPayment({...payment, paid: e.target.value})} style={{ width: '120px', textAlign: 'right', padding: '8px', border: '2px solid #cbd5e1', borderRadius: '4px', outline: 'none', fontWeight: 800, color: '#10b981' }} />
+              <input type="number" value={payment.paid} onChange={e => setPayment({...payment, paid: e.target.value})} style={{ width: '120px', textAlign: 'right', padding: '8px', border: '2px solid #cbd5e1', borderRadius: '4px', outline: 'none', fontWeight: 800, color: '#d4af37' }} />
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#475569' }}>Balance Due</span>
@@ -697,7 +697,7 @@ const Billing = () => {
         <button onClick={() => { setCart([]); localStorage.removeItem('billing_draft'); }} style={{ padding: '14px 24px', background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
           <XCircle size={18} /> Clear
         </button>
-        <button onClick={handleCheckout} style={{ padding: '14px 32px', background: '#10b981', color: '#ffffff', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.2)' }}>
+        <button onClick={handleCheckout} style={{ padding: '14px 32px', background: '#d4af37', color: '#ffffff', border: 'none', borderRadius: '8px', fontWeight: 800, cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.2)' }}>
           <Save size={18} /> {editBillId ? 'Update Voucher' : 'Save & Print Voucher'}
         </button>
       </div>

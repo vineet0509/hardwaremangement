@@ -59,7 +59,7 @@ const QuotationsList = () => {
   };
 
   const convertToBill = (quotation) => {
-    Swal.fire({ title: 'Convert to Bill?', text: `Create a POS bill from Quotation ${quotation.quotation_number}?`, icon: 'question', showCancelButton: true, confirmButtonColor: '#4f46e5', confirmButtonText: 'Yes, Convert' })
+    Swal.fire({ title: 'Convert to Bill?', text: `Create a POS bill from Quotation ${quotation.quotation_number}?`, icon: 'question', showCancelButton: true, confirmButtonColor: '#d4af37', confirmButtonText: 'Yes, Convert' })
       .then(result => {
         if (result.isConfirmed) {
           navigate('/billing', { state: { fromQuotation: quotation } });
@@ -258,7 +258,7 @@ const QuotationsList = () => {
                     <button className="btn btn-outline" style={{ padding: '4px 8px', gap: 5, fontSize: '0.75rem' }} onClick={() => printQuotation(q.id)} title="Print">
                       <Printer size={14} color="var(--primary)" /> Print
                     </button>
-                    <button className="btn btn-outline" style={{ padding: '4px 8px', gap: 5, fontSize: '0.75rem', borderColor: '#4f46e5', color: '#4f46e5' }} onClick={() => convertToBill(q)} title="Convert to Bill">
+                    <button className="btn btn-outline" style={{ padding: '4px 8px', gap: 5, fontSize: '0.75rem', borderColor: '#d4af37', color: '#d4af37' }} onClick={() => convertToBill(q)} title="Convert to Bill">
                       <ArrowRightCircle size={14} /> To Bill
                     </button>
                     {q.customer_phone && (

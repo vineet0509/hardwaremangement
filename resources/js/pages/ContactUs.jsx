@@ -29,7 +29,7 @@ const ContactUs = () => {
   return (
     <div className="card" style={{ padding: '40px', maxWidth: '1000px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 80, height: 80, borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: 'white', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
+          <div style={{ background: 'linear-gradient(135deg, var(--primary), #b8962d)', width: 80, height: 80, borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: 'white', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
             <HelpCircle size={40} />
           </div>
           <h1 style={{ fontSize: '2.5rem', color: 'var(--text-main)', marginBottom: 12 }}>Contact Us</h1>
@@ -42,7 +42,7 @@ const ContactUs = () => {
             <h3 style={{ marginBottom: 24, fontSize: '1.5rem', fontWeight: 700 }}>Get In Touch</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20, color: 'var(--text-muted)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                <div style={{ background: 'rgba(79, 70, 229, 0.1)', padding: 12, borderRadius: 12 }}>
+                <div style={{ background: 'rgba(212, 175, 55, 0.1)', padding: 12, borderRadius: 12 }}>
                   <Phone size={24} color="var(--primary)" />
                 </div>
                 <div>
@@ -51,7 +51,7 @@ const ContactUs = () => {
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                <div style={{ background: 'rgba(79, 70, 229, 0.1)', padding: 12, borderRadius: 12 }}>
+                <div style={{ background: 'rgba(212, 175, 55, 0.1)', padding: 12, borderRadius: 12 }}>
                   <Mail size={24} color="var(--primary)" />
                 </div>
                 <div>
@@ -60,7 +60,7 @@ const ContactUs = () => {
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                <div style={{ background: 'rgba(79, 70, 229, 0.1)', padding: 12, borderRadius: 12 }}>
+                <div style={{ background: 'rgba(212, 175, 55, 0.1)', padding: 12, borderRadius: 12 }}>
                   <MapPin size={24} color="var(--primary)" />
                 </div>
                 <div>
@@ -93,7 +93,7 @@ const ContactUs = () => {
                   fontSize: '0.9rem', 
                   textAlign: 'center', 
                   background: status.success ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                  color: status.success ? '#10b981' : '#fca5a5',
+                  color: status.success ? '#d4af37' : '#fca5a5',
                   border: `1px solid ${status.success ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`,
                   fontWeight: 600
                 }}>

@@ -106,10 +106,10 @@ const STEPS = [
   {
     id: 'done',
     icon: BadgeCheck,
-    iconColor: '#10b981',
+    iconColor: '#d4af37',
     iconBg: 'rgba(16, 185, 129, 0.12)',
     badge: '✅ All Set!',
-    badgeColor: '#10b981',
+    badgeColor: '#d4af37',
     title: "You're Ready to Go!",
     description: "You now know all the key features of your VyaparSync. Start by adding your products, then create your first bill. Your dashboard will fill up with live business data as you go.",
     tips: [
@@ -387,8 +387,8 @@ const OnboardingTour = ({ onComplete, user }) => {
                 padding: '12px',
                 borderRadius: 12,
                 background: isLast
-                  ? 'linear-gradient(135deg, #10b981, #059669)'
-                  : 'linear-gradient(135deg, var(--primary, #4f46e5), #6366f1)',
+                  ? 'linear-gradient(135deg, #d4af37, #b8962d)'
+                  : 'linear-gradient(135deg, var(--primary, #4f46e5), #b8962d)',
                 color: '#fff',
                 border: 'none',
                 fontWeight: 700,
@@ -398,7 +398,7 @@ const OnboardingTour = ({ onComplete, user }) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 8,
-                boxShadow: isLast ? '0 4px 15px rgba(16,185,129,0.3)' : '0 4px 15px rgba(79,70,229,0.3)',
+                boxShadow: isLast ? '0 4px 15px rgba(16,185,129,0.3)' : '0 4px 15px rgba(212, 175, 55,0.3)',
                 transition: 'opacity 0.2s',
               }}
               onMouseOver={e => e.currentTarget.style.opacity = '0.9'}

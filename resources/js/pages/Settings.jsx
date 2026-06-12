@@ -378,7 +378,7 @@ const Settings = () => {
                   fontSize: '0.8rem', 
                   background: gstResult.valid ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)',
                   border: gstResult.valid ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(239, 68, 68, 0.2)',
-                  color: gstResult.valid ? '#10b981' : '#ef4444'
+                  color: gstResult.valid ? '#d4af37' : '#ef4444'
                 }}>
                   {gstResult.valid ? (
                     <div>

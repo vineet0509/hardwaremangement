@@ -36,7 +36,7 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="VyaparSync – Free Billing, POS & Inventory Software for Indian Shops">
     <meta property="og:description" content="Free billing & POS software for Indian hardware shops, kirana stores & small businesses. GST invoices, khata book, stock management, staff payroll — all in one place.">
-    <meta property="og:image" content="{{ asset('logo.png') }}">
+    <meta property="og:image" content="{{ asset('logo.jpg') }}">
     <meta property="og:image:alt" content="VyaparSync — Billing & Inventory Software">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -49,7 +49,7 @@
     <meta name="twitter:creator" content="@@VynkraTech">
     <meta name="twitter:title" content="VyaparSync – Free Billing & POS for Indian Shops">
     <meta name="twitter:description" content="GST invoices, khata book, stock control, staff payroll — all free for Indian small businesses.">
-    <meta name="twitter:image" content="{{ asset('logo.png') }}">
+    <meta name="twitter:image" content="{{ asset('logo.jpg') }}">
 
     <!-- ═══════════════════════════════════════════════════════
          SCHEMA.ORG JSON-LD — Structured Data for Google Rich Results
@@ -61,7 +61,7 @@
       "@type": "SoftwareApplication",
       "name": "VyaparSync",
       "url": "https://vyaparsync.vynkra.in/",
-      "logo": "https://vyaparsync.vynkra.in/logo.png",
+      "logo": "https://vyaparsync.vynkra.in/logo.jpg",
       "description": "VyaparSync is a free billing, POS and inventory management software designed for Indian hardware shops, kirana stores and small businesses. Features include GST invoicing, digital khata book, stock management, staff payroll, and multi-branch support.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web, Android, iOS",
@@ -104,8 +104,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
     <!-- Favicon & App Icons -->
-    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('logo.jpg') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('logo.jpg') }}">
     <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('icon-192x192.png') }}">
     <link rel="icon" type="image/png" sizes="512x512" href="{{ asset('icon-512x512.png') }}">
 

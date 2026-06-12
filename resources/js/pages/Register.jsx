@@ -66,17 +66,17 @@ const Register = () => {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
         <div className="login-card" style={{ maxWidth: 500, width: '100%', padding: '40px', background: 'var(--surface)', borderRadius: 20, marginTop: 40, marginBottom: 40, boxShadow: '0 20px 25px -5px rgba(0,0,0,0.05), 0 10px 10px -5px rgba(0,0,0,0.02)' }}>
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
-            <img src="/logo.png" alt="Logo" style={{ height: '64px', width: '64px', objectFit: 'contain', margin: '0 auto 16px', borderRadius: '50%' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'flex'; }} />
-            <div style={{ display: 'none', background: 'linear-gradient(135deg, var(--primary), #059669)', width: 64, height: 64, borderRadius: 16, alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: 'white', boxShadow: '0 10px 15px -3px rgba(79, 70, 229, 0.3)' }}>
+            <img src="/logo.jpg" alt="Logo" style={{ height: '64px', width: '64px', objectFit: 'contain', margin: '0 auto 16px', borderRadius: '50%' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'flex'; }} />
+            <div style={{ display: 'none', background: 'linear-gradient(135deg, var(--primary), #b8962d)', width: 64, height: 64, borderRadius: 16, alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: 'white', boxShadow: '0 10px 15px -3px rgba(212, 175, 55, 0.3)' }}>
                <Package size={36} strokeWidth={2.5} />
             </div>
              <h2 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: 8, letterSpacing: '-0.02em' }}>
                 <span style={{ color: '#111827' }}>Vyapar</span>
-                <span style={{ color: '#00a8ff' }}>Sync</span>
+                <span style={{ color: 'var(--primary)' }}>Sync</span>
              </h2>
              <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Start managing your business today.</p>
 
-             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#ecfdf5', color: '#059669', padding: '6px 14px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold', marginTop: '16px', border: '1px solid #d1fae5' }}>
+             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#ecfdf5', color: '#b8962d', padding: '6px 14px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold', marginTop: '16px', border: '1px solid #d1fae5' }}>
                <BadgeCheck size={16} /> 30-Day Trial Period Included
              </div>
           </div>

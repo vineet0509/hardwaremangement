@@ -38,8 +38,8 @@ const ForgotPassword = () => {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 400 }}>
         <div className="login-card" style={{ width: '100%', padding: '40px', background: 'var(--surface)', borderRadius: 16 }}>
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
-            <img src="/logo.png" alt="Logo" style={{ height: '60px', width: '60px', objectFit: 'contain', margin: '0 auto 16px', borderRadius: '50%' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'flex'; }} />
-            <div style={{ display: 'none', background: 'linear-gradient(135deg, var(--primary), #059669)', width: 60, height: 60, borderRadius: 16, alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: 'white' }}>
+            <img src="/logo.jpg" alt="Logo" style={{ height: '60px', width: '60px', objectFit: 'contain', margin: '0 auto 16px', borderRadius: '50%' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'flex'; }} />
+            <div style={{ display: 'none', background: 'linear-gradient(135deg, var(--primary), #b8962d)', width: 60, height: 60, borderRadius: 16, alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: 'white' }}>
                <Package size={32} strokeWidth={2.5} />
             </div>
              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: 4 }}>

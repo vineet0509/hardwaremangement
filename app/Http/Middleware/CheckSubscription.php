@@ -16,14 +16,34 @@ class CheckSubscription
     public function handle(Request $request, Closure $next): Response
     {
         $user = auth('sanctum')->user();
-        if ($user && !$user->is_super_admin) {
+        if ($user) {
             $business = \App\Models\Business::find($user->business_id);
             if ($business && $business->trial_ends_at) {
                 $isExpired = \Carbon\Carbon::now()->greaterThan($business->trial_ends_at);
                 if ($isExpired) {
-                    if ($request->isMethod('post') || $request->isMethod('put') || $request->isMethod('patch') || $request->isMethod('delete')) {
+                    // Exempt routes so users can logout and renew
+                    $exemptPaths = [
+                        'api/logout',
+                        'api/settings/subscription/order',
+                        'api/settings/subscription/verify',
+                    ];
+                    
+                    $isExempt = false;
+                    foreach ($exemptPaths as $path) {
+                        if ($request->is($path)) {
+                            $isExempt = true;
+                            break;
+                        }
+                    }
+
+                    // Super Admins are exempt only for super-admin panel routes
+                    if ($user->is_super_admin && $request->is('api/super-admin*')) {
+                        $isExempt = true;
+                    }
+
+                    if (!$isExempt && ($request->isMethod('post') || $request->isMethod('put') || $request->isMethod('patch') || $request->isMethod('delete'))) {
                         return response()->json([
-                            'message' => 'Action Restricted: Your 30-Day Trial or active plan has expired. Please reach out to Super Admin.'
+                            'message' => 'Action Restricted: Your active plan has expired. Please renew your plan.'
                         ], 403);
                     }
                 }

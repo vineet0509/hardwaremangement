@@ -5,7 +5,7 @@ const AboutUs = () => {
   return (
     <div className="card" style={{ padding: '40px', maxWidth: '1000px', margin: '0 auto' }}>
       <div style={{ textAlign: 'center', marginBottom: 50 }}>
-        <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 80, height: 80, borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: 'white', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
+        <div style={{ background: 'linear-gradient(135deg, var(--primary), #b8962d)', width: 80, height: 80, borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: 'white', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
           <Info size={40} />
         </div>
         <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: 12 }}>About Us</h1>
@@ -52,7 +52,7 @@ const AboutUs = () => {
         </div>
       </section>
 
-      <section style={{ padding: '40px', background: 'rgba(79, 70, 229, 0.05)', borderRadius: 20, border: '1px dashed var(--primary)' }}>
+      <section style={{ padding: '40px', background: 'rgba(212, 175, 55, 0.05)', borderRadius: 20, border: '1px dashed var(--primary)' }}>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: 16 }}>Why Choose Our Platform?</h2>
         <p style={{ color: 'var(--text-muted)', lineHeight: 1.8 }}>
           Built by a team of dedicated developers and retail experts, our VyaparSync is more than just a billing software. It's a complete ecosystem that handles GST compliance, staff advances, supplier relationships, and real-time stock alerts. With a mobile-responsive design and robust multi-tenant architecture, your data is always safe, isolated, and accessible whenever you need it.

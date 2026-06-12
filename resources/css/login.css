@@ -79,7 +79,7 @@
   width: 64px;
   height: 64px;
   border-radius: 16px;
-  background: linear-gradient(135deg, var(--primary) 0%, #047857 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, #b8962d 100%);
   color: white;
   margin-bottom: 24px;
   box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
@@ -193,7 +193,7 @@
 .login-btn {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(to right, var(--primary), #059669);
+  background: linear-gradient(to right, var(--primary), #b8962d);
   color: white;
   border: none;
   border-radius: 12px;

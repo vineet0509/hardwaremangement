@@ -207,25 +207,25 @@ const Landing = () => {
         }}>
           {/* Logo & Brand Name */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }} onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
-            <img src="/logo.png" alt="Logo" style={{ height: '36px', width: '36px', objectFit: 'contain', borderRadius: '50%' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'flex'; }} />
+            <img src="/logo.jpg" alt="Logo" style={{ height: '36px', width: '36px', objectFit: 'contain', borderRadius: '50%' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'flex'; }} />
             <div style={{ 
               display: 'none',
-              background: 'linear-gradient(135deg, var(--primary), #6366f1)', 
+              background: 'linear-gradient(135deg, var(--primary), #b8962d)', 
               color: 'white', 
               padding: '8px', 
               borderRadius: '12px', 
               alignItems: 'center', 
               justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)'
+              boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)'
             }}>
               <Package size={22} strokeWidth={2.5} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <span style={{ fontSize: '1.25rem', fontWeight: 900, letterSpacing: '-0.02em' }}>
                 <span style={{ color: '#ffffff' }}>Vyapar</span>
-                <span style={{ color: '#00a8ff' }}>Sync</span>
+                <span style={{ color: 'var(--primary)' }}>Sync</span>
               </span>
-              <span style={{ fontSize: '0.6rem', color: '#10b981', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: '0.6rem', color: '#d4af37', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                 BY VYNKRA
               </span>
             </div>
@@ -337,7 +337,7 @@ const Landing = () => {
       {/* 2. Hero Section */}
       <section style={{
         padding: '160px 24px 80px',
-        background: 'radial-gradient(ellipse at top, rgba(79, 70, 229, 0.15), transparent 60%)',
+        background: 'radial-gradient(ellipse at top, rgba(212, 175, 55, 0.15), transparent 60%)',
         position: 'relative'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
@@ -347,8 +347,8 @@ const Landing = () => {
             display: 'inline-flex', 
             alignItems: 'center', 
             gap: 8, 
-            background: 'rgba(79, 70, 229, 0.12)', 
-            border: '1px solid rgba(79, 70, 229, 0.3)', 
+            background: 'rgba(212, 175, 55, 0.12)', 
+            border: '1px solid rgba(212, 175, 55, 0.3)', 
             color: '#818cf8', 
             padding: '8px 16px', 
             borderRadius: '50px', 
@@ -370,7 +370,7 @@ const Landing = () => {
             margin: '0 auto 24px',
             color: '#fff'
           }}>
-            Simplifying retail operations with <span style={{ background: 'linear-gradient(95deg, var(--primary) 10%, #10b981 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Modern Automation</span>
+            Simplifying retail operations with <span style={{ background: 'linear-gradient(95deg, var(--primary) 10%, #d4af37 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Modern Automation</span>
           </h1>
 
           {/* Subtitle */}
@@ -465,8 +465,8 @@ const Landing = () => {
                   <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.85rem' }}>Management Dashboard Overview</p>
                 </div>
                 <div style={{ display: 'flex', gap: 12 }}>
-                  <div style={{ background: '#ecfdf5', color: '#059669', fontSize: '0.75rem', fontWeight: 'bold', padding: '6px 12px', borderRadius: '30px', display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981' }}></div> Active trial: 28 days left
+                  <div style={{ background: '#ecfdf5', color: '#b8962d', fontSize: '0.75rem', fontWeight: 'bold', padding: '6px 12px', borderRadius: '30px', display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#d4af37' }}></div> Active trial: 28 days left
                   </div>
                 </div>
               </div>
@@ -481,11 +481,11 @@ const Landing = () => {
                 <div style={{ background: '#151c2c', padding: '20px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', position: 'relative' }}>
                   <div style={{ color: '#9ca3af', fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>Today's Revenue</div>
                   <div style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: 4 }}>₹48,950</div>
-                  <span style={{ color: '#10b981', fontSize: '0.75rem', fontWeight: 600 }}>↑ 18.2% from yesterday</span>
+                  <span style={{ color: '#d4af37', fontSize: '0.75rem', fontWeight: 600 }}>↑ 18.2% from yesterday</span>
                 </div>
                 <div style={{ background: '#151c2c', padding: '20px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', position: 'relative' }}>
                   <div style={{ color: '#9ca3af', fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>Estimated Profit</div>
-                  <div style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: 4, color: '#10b981' }}>₹11,480</div>
+                  <div style={{ fontSize: '1.75rem', fontWeight: 800, marginTop: 4, color: '#d4af37' }}>₹11,480</div>
                   <span style={{ color: '#9ca3af', fontSize: '0.75rem' }}>Margin: ~23.4%</span>
                 </div>
                 <div style={{ background: '#151c2c', padding: '20px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', position: 'relative' }}>
@@ -542,7 +542,7 @@ const Landing = () => {
                       <span style={{ color: '#9ca3af' }}>GST (18%):</span>
                       <span>₹3,096.00</span>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: 800, color: '#10b981' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: 800, color: '#d4af37' }}>
                       <span>Net Payable:</span>
                       <span>₹20,296.00</span>
                     </div>
@@ -604,7 +604,7 @@ const Landing = () => {
             <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 600, marginTop: 4 }}>Cloud Server Uptime SLA</div>
           </div>
           <div>
-            <div style={{ fontSize: '2.5rem', fontWeight: 900, color: '#10b981' }}>45%+</div>
+            <div style={{ fontSize: '2.5rem', fontWeight: 900, color: '#d4af37' }}>45%+</div>
             <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 600, marginTop: 4 }}>Reduction in Credit (Udhar) Leakage</div>
           </div>
           <div>
@@ -647,7 +647,7 @@ const Landing = () => {
               flexDirection: 'column',
               gap: 20
             }}>
-              <div style={{ width: 48, height: 48, borderRadius: '12px', background: 'rgba(79, 70, 229, 0.1)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ width: 48, height: 48, borderRadius: '12px', background: 'rgba(212, 175, 55, 0.1)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <ShoppingCart size={24} />
               </div>
               <div>
@@ -668,7 +668,7 @@ const Landing = () => {
               flexDirection: 'column',
               gap: 20
             }}>
-              <div style={{ width: 48, height: 48, borderRadius: '12px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ width: 48, height: 48, borderRadius: '12px', background: 'rgba(16, 185, 129, 0.1)', color: '#d4af37', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Package size={24} />
               </div>
               <div>
@@ -820,11 +820,11 @@ const Landing = () => {
                     fontSize: '0.95rem',
                     fontWeight: 700,
                     cursor: 'pointer',
-                    background: isActive ? 'linear-gradient(135deg, var(--primary), #059669)' : 'rgba(255, 255, 255, 0.04)',
+                    background: isActive ? 'linear-gradient(135deg, var(--primary), #b8962d)' : 'rgba(255, 255, 255, 0.04)',
                     color: isActive ? '#ffffff' : '#cbd5e1',
                     border: isActive ? 'none' : '1px solid rgba(255, 255, 255, 0.08)',
                     transition: 'all 0.3s ease',
-                    boxShadow: isActive ? '0 10px 20px rgba(79, 70, 229, 0.25)' : 'none'
+                    boxShadow: isActive ? '0 10px 20px rgba(212, 175, 55, 0.25)' : 'none'
                   }}
                   onMouseOver={(e) => {
                     if (!isActive) {
@@ -852,7 +852,7 @@ const Landing = () => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               {activeTab === 'billing' && (
                 <>
-                  <div style={{ background: 'rgba(79, 70, 229, 0.1)', color: '#818cf8', padding: '6px 12px', borderRadius: '30px', fontSize: '0.75rem', fontWeight: 700, width: 'fit-content' }}>POINT OF SALE TERMINAL</div>
+                  <div style={{ background: 'rgba(212, 175, 55, 0.1)', color: '#818cf8', padding: '6px 12px', borderRadius: '30px', fontSize: '0.75rem', fontWeight: 700, width: 'fit-content' }}>POINT OF SALE TERMINAL</div>
                   <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#fff', margin: 0 }}>High Speed Billing & Quotations</h3>
                   <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.95rem', margin: 0 }}>
                     Our POS module is optimized for keyboard or barcode scanning speeds. Instantly parse cement, wiring, piping and fittings catalog items, calculate exact local GST (CGST/SGST), and apply discounts on the fly.
@@ -954,7 +954,7 @@ const Landing = () => {
               transition: 'all 0.3s'
             }}>
               <div>
-                <span style={{ fontSize: '0.75rem', color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>30-Day Trial</span>
+                <span style={{ fontSize: '0.75rem', color: '#d4af37', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>30-Day Trial</span>
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Evaluation</h3>
                 
                 <div style={{ margin: '16px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
@@ -963,9 +963,9 @@ const Landing = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#10b981" /> 1 Shop & 1 User</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Billing, Inventory & Customers</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#10b981" /> Maximum 100 invoices/mo</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 'bold' }}><Store size={16} color="#d4af37" /> 1 Shop & 1 User</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#d4af37" /> Billing, Inventory & Customers</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.85rem', color: '#cbd5e1' }}><CheckCircle2 size={16} color="#d4af37" /> Maximum 100 invoices/mo</div>
                 </div>
               </div>
 
@@ -1026,13 +1026,13 @@ const Landing = () => {
               flexDirection: 'column',
               justifyContent: 'space-between',
               position: 'relative',
-              boxShadow: '0 20px 40px rgba(79, 70, 229, 0.15)',
+              boxShadow: '0 20px 40px rgba(212, 175, 55, 0.15)',
               color: '#ffffff',
               transition: 'all 0.3s'
             }}>
               <div style={{ position: 'absolute', top: -12, right: 20, background: 'var(--primary)', color: '#fff', fontSize: '0.7rem', fontWeight: 800, padding: '4px 10px', borderRadius: '20px', textTransform: 'uppercase' }}>Recommended</div>
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--primary)', background: 'rgba(79, 70, 229, 0.1)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Business</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--primary)', background: 'rgba(212, 175, 55, 0.1)', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold', textTransform: 'uppercase' }}>Business</span>
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: 16, marginBottom: 8, color: '#fff' }}>Growing Team</h3>
                 
                 <div style={{ margin: '16px 0', display: 'flex', alignItems: 'baseline', gap: 4 }}>
@@ -1101,7 +1101,7 @@ const Landing = () => {
       {/* 6. About Us Segment */}
       <section id="about" style={{ padding: '100px 24px' }}>
         <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 64, height: 64, borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: '#fff', boxShadow: '0 8px 20px rgba(79, 70, 229, 0.2)' }}>
+          <div style={{ background: 'linear-gradient(135deg, var(--primary), #b8962d)', width: 64, height: 64, borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: '#fff', boxShadow: '0 8px 20px rgba(212, 175, 55, 0.2)' }}>
             <ShieldCheck size={32} />
           </div>
           <h2 style={{ fontSize: '2.25rem', fontWeight: 800, marginBottom: 16 }}>Our Commitment & Vision</h2>
@@ -1139,7 +1139,7 @@ const Landing = () => {
               <h3 style={{ marginBottom: 24, fontSize: '1.5rem', fontWeight: 700 }}>Direct Help Channels</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 20, color: 'var(--text-muted)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                  <div style={{ background: 'rgba(79, 70, 229, 0.1)', padding: 12, borderRadius: 12 }}>
+                  <div style={{ background: 'rgba(212, 175, 55, 0.1)', padding: 12, borderRadius: 12 }}>
                     <Phone size={24} color="var(--primary)" />
                   </div>
                   <div>
@@ -1148,7 +1148,7 @@ const Landing = () => {
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                  <div style={{ background: 'rgba(79, 70, 229, 0.1)', padding: 12, borderRadius: 12 }}>
+                  <div style={{ background: 'rgba(212, 175, 55, 0.1)', padding: 12, borderRadius: 12 }}>
                     <Mail size={24} color="var(--primary)" />
                   </div>
                   <div>
@@ -1157,7 +1157,7 @@ const Landing = () => {
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                  <div style={{ background: 'rgba(79, 70, 229, 0.1)', padding: 12, borderRadius: 12 }}>
+                  <div style={{ background: 'rgba(212, 175, 55, 0.1)', padding: 12, borderRadius: 12 }}>
                     <MapPin size={24} color="var(--primary)" />
                   </div>
                   <div>
@@ -1211,7 +1211,7 @@ const Landing = () => {
                     fontSize: '0.9rem', 
                     textAlign: 'center', 
                     background: contactStatus.success ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                    color: contactStatus.success ? '#10b981' : '#fca5a5',
+                    color: contactStatus.success ? '#d4af37' : '#fca5a5',
                     border: `1px solid ${contactStatus.success ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`,
                     fontWeight: 600
                   }}>
@@ -1248,10 +1248,10 @@ const Landing = () => {
             {/* Column 1: Brand Info */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', color: 'white', padding: '6px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ background: 'linear-gradient(135deg, var(--primary), #b8962d)', color: 'white', padding: '6px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Package size={18} strokeWidth={2.5} />
                 </div>
-                <span style={{ fontSize: '1.1rem', fontWeight: 900, color: '#fff' }}>VyaparSync</span>
+                <span style={{ fontSize: '1.1rem', fontWeight: 900, color: '#fff' }}><span style={{color: '#ffffff'}}>Vyapar</span><span style={{color: 'var(--primary)'}}>Sync</span></span>
               </div>
               <p style={{ fontSize: '0.85rem', lineHeight: 1.6 }}>
                 Advanced Multi-Tenant SaaS solution tailored for retail businesses, wholesalers, and retail building materials counters.
@@ -1362,10 +1362,10 @@ const Landing = () => {
 
             {/* Header */}
             <div style={{ textAlign: 'center', marginBottom: 28 }}>
-              <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 54, height: 54, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', color: 'white', boxShadow: '0 8px 16px rgba(79,70,229,0.2)' }}>
+              <div style={{ background: 'linear-gradient(135deg, var(--primary), #b8962d)', width: 54, height: 54, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', color: 'white', boxShadow: '0 8px 16px rgba(212, 175, 55,0.2)' }}>
                 <Package size={28} strokeWidth={2.5} />
               </div>
-              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)', margin: '0 0 4px' }}>VyaparSync</h3>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)', margin: '0 0 4px' }}><span style={{color: '#ffffff'}}>Vyapar</span><span style={{color: 'var(--primary)'}}>Sync</span></h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>Management Dashboard Login</p>
             </div>
 
@@ -1477,13 +1477,13 @@ const Landing = () => {
 
             {/* Header */}
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
-              <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 54, height: 54, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: 'white', boxShadow: '0 8px 16px rgba(79,70,229,0.2)' }}>
+              <div style={{ background: 'linear-gradient(135deg, var(--primary), #b8962d)', width: 54, height: 54, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: 'white', boxShadow: '0 8px 16px rgba(212, 175, 55,0.2)' }}>
                 <Package size={28} strokeWidth={2.5} />
               </div>
               <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)', margin: '0 0 4px' }}>Register Store</h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>Start managing your business today.</p>
               
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold', marginTop: '10px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(16, 185, 129, 0.1)', color: '#d4af37', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold', marginTop: '10px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
                 <BadgeCheck size={14} /> 30-Day Trial Period Included
               </div>
             </div>

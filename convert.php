@@ -1,0 +1,1 @@
+<?php $img = imagecreatefromjpeg("C:\\Users\\OldSchool\\.gemini\\antigravity-ide\\brain\\9f35ed5a-380f-4465-b2a2-6caa4a3a046e\\media__1781279327127.jpg"); imagepng($img, "logo.png"); imagepng($img, "favicon.png"); imagedestroy($img); ?>

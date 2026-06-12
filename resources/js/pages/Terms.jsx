@@ -5,7 +5,7 @@ const Terms = () => {
   return (
     <div className="card" style={{ padding: '40px', maxWidth: '1000px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 80, height: 80, borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: 'white', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
+          <div style={{ background: 'linear-gradient(135deg, var(--primary), #b8962d)', width: 80, height: 80, borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: 'white', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
             <FileText size={40} />
           </div>
           <h1 className="responsive-h1" style={{ fontSize: '2.5rem', color: 'var(--text-main)', marginBottom: 12 }}>Terms & Conditions</h1>

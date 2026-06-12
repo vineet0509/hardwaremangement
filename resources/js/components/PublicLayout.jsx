@@ -168,16 +168,16 @@ const PublicLayout = ({ children }) => {
         }}>
           {/* Logo */}
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-            <img src="/logo.png" alt="Logo" style={{ height: '36px', width: '36px', objectFit: 'contain', borderRadius: '50%' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'flex'; }} />
+            <img src="/logo.jpg" alt="Logo" style={{ height: '36px', width: '36px', objectFit: 'contain', borderRadius: '50%' }} onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'flex'; }} />
             <div style={{
               display: 'none',
-              background: 'linear-gradient(135deg, var(--primary), #059669)',
+              background: 'linear-gradient(135deg, var(--primary), #b8962d)',
               color: 'white',
               padding: '8px',
               borderRadius: '10px',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)'
+              boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)'
             }}>
               <Package size={22} strokeWidth={2.5} />
             </div>
@@ -187,7 +187,7 @@ const PublicLayout = ({ children }) => {
               letterSpacing: '-0.02em',
             }}>
               <span style={{ color: '#ffffff' }}>Vyapar</span>
-              <span style={{ color: '#00a8ff' }}>Sync</span>
+              <span style={{ color: 'var(--primary)' }}>Sync</span>
             </span>
           </Link>
 
@@ -326,10 +326,10 @@ const PublicLayout = ({ children }) => {
             {/* Column 1: Brand Info */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', color: 'white', padding: '6px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ background: 'linear-gradient(135deg, var(--primary), #b8962d)', color: 'white', padding: '6px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Package size={18} strokeWidth={2.5} />
                 </div>
-                <span style={{ fontSize: '1.1rem', fontWeight: 900, color: '#fff' }}>VyaparSync</span>
+                <span style={{ fontSize: '1.1rem', fontWeight: 900, color: '#fff' }}><span style={{color: '#ffffff'}}>Vyapar</span><span style={{color: 'var(--primary)'}}>Sync</span></span>
               </div>
               <p style={{ fontSize: '0.85rem', lineHeight: 1.6 }}>
                 Advanced Multi-Tenant SaaS solution tailored for retail businesses, wholesalers, and retail building materials counters.
@@ -438,10 +438,10 @@ const PublicLayout = ({ children }) => {
             </button>
 
             <div style={{ textAlign: 'center', marginBottom: 28 }}>
-              <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 54, height: 54, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', color: 'white', boxShadow: '0 8px 16px rgba(79,70,229,0.2)' }}>
+              <div style={{ background: 'linear-gradient(135deg, var(--primary), #b8962d)', width: 54, height: 54, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', color: 'white', boxShadow: '0 8px 16px rgba(212, 175, 55,0.2)' }}>
                 <Package size={28} strokeWidth={2.5} />
               </div>
-              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)', margin: '0 0 4px' }}>VyaparSync</h3>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)', margin: '0 0 4px' }}><span style={{color: '#ffffff'}}>Vyapar</span><span style={{color: 'var(--primary)'}}>Sync</span></h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>Management Dashboard Login</p>
             </div>
 
@@ -549,13 +549,13 @@ const PublicLayout = ({ children }) => {
             </button>
 
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
-              <div style={{ background: 'linear-gradient(135deg, var(--primary), #059669)', width: 54, height: 54, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: 'white', boxShadow: '0 8px 16px rgba(79,70,229,0.2)' }}>
+              <div style={{ background: 'linear-gradient(135deg, var(--primary), #b8962d)', width: 54, height: 54, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: 'white', boxShadow: '0 8px 16px rgba(212, 175, 55,0.2)' }}>
                 <Package size={28} strokeWidth={2.5} />
               </div>
               <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary)', margin: '0 0 4px' }}>Register Store</h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>Start managing your business today.</p>
               
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold', marginTop: '10px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(16, 185, 129, 0.1)', color: '#d4af37', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold', marginTop: '10px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
                 <BadgeCheck size={14} /> 30-Day Trial Period Included
               </div>
             </div>

@@ -522,7 +522,7 @@ const BillsList = () => {
                             setReturnItemsState({});
                             setShowReturnModal(true);
                         }} title="Return Items / Refund">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline><path d="M10 16l-3 3 3 3"></path><path d="M7 19h10"></path></svg>
+                          <img src="/logo.jpg" alt="Return" width="16" height="16" style={{ borderRadius: '50%', objectFit: 'cover' }} />
                           <span className="btn-label">Return</span>
                         </button>
                     )}
