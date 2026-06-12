@@ -294,7 +294,7 @@ const Layout = ({ children }) => {
         <div 
           className="sidebar-overlay"
           onClick={() => setIsMobileMenuOpen(false)}
-          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 40 }}
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1040 }}
         />
       )}
 
@@ -419,7 +419,7 @@ const Layout = ({ children }) => {
 
       {/* Main Content Area */}
       <main className="main-content">
-        <header className="topbar d-flex justify-content-between align-items-center" style={{ zIndex: 99999 }}>
+        <header className="topbar d-flex justify-content-between align-items-center" style={{ zIndex: 1000 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <button 
               className="mobile-menu-btn" 

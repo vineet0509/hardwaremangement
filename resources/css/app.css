@@ -569,7 +569,7 @@ tr:hover td { background: var(--surface-hover); }
     padding: 0;
     border-right: 1px solid var(--border);
     border-bottom: none;
-    z-index: 50;
+    z-index: 1050;
     transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
