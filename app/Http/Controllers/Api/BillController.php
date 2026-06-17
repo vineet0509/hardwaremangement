@@ -652,7 +652,24 @@ class BillController extends Controller
         }
         $business = \App\Models\Business::find($bill->business_id);
         
+        if (request()->query('format') === 'html') {
+            return view('pdf.bill', compact('bill', 'settings', 'business'));
+        }
+
         $pdf = Pdf::setOptions(['isRemoteEnabled' => true])->loadView('pdf.bill', compact('bill', 'settings', 'business'));
+        
+        if (request()->query('format') === 'base64') {
+            return response()->json([
+                'base64' => base64_encode($pdf->output()),
+                'filename' => "bill_{$bill->bill_number}.pdf",
+                'mime_type' => 'application/pdf'
+            ]);
+        }
+
+        if (request()->query('action') === 'stream' || request()->query('action') === 'view') {
+            return $pdf->stream("bill_{$bill->bill_number}.pdf");
+        }
+
         return $pdf->download("bill_{$bill->bill_number}.pdf");
     }
 

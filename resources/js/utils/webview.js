@@ -84,6 +84,34 @@ export const downloadFile = async (url, filename = 'download', mimeType = 'appli
 };
 
 /**
+ * Handle printing/downloading PDF bills robustly across platforms.
+ * Android WebViews without a custom JS bridge cannot download or view PDFs natively.
+ * So we fetch the HTML version of the bill and use window.print() inside an iframe.
+ */
+export const printPDF = async (pdfUrl, htmlUrl, filename) => {
+  if (!isAndroidWebView()) {
+    // Normal browser -> just download the PDF
+    window.open(pdfUrl, '_blank');
+    return;
+  }
+
+  // WebView -> Fetch HTML and print
+  try {
+    const token = localStorage.getItem('auth_token');
+    const response = await fetch(htmlUrl, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('HTML fetch failed');
+    const htmlContent = await response.text();
+    printHtml(htmlContent);
+  } catch (e) {
+    console.error('WebView print error', e);
+    // Fallback
+    window.location.href = pdfUrl;
+  }
+};
+
+/**
  * Download a client-side generated blob (e.g. CSV string).
  * - In browser  → standard blob URL + link.click()
  * - In WebView  → convert to base64 and use Android bridge or fallback

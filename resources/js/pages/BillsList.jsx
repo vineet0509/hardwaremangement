@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
-import { printHtml, downloadFile, openWhatsApp } from '../utils/webview';
+import { printHtml, downloadFile, openWhatsApp, printPDF } from '../utils/webview';
 import { getTermsAndConditions } from '../utils/terms';
 import { Search, Receipt, Printer, Trash2, Banknote, X, Edit2, MessageSquare, FileText } from 'lucide-react';
 import Pagination from '../components/Pagination';
@@ -535,7 +535,7 @@ const BillsList = () => {
                     <button className="btn btn-outline" onClick={() => printBill(b.id)} title="View/Print Invoice">
                       <Printer size={16} color="var(--primary)" /><span className="btn-label">Print</span>
                     </button>
-                    <button className="btn btn-outline" style={{ display: 'flex', alignItems: 'center' }} onClick={() => downloadFile(`${window.location.origin}/api/bills/${b.id}/pdf?token=${localStorage.getItem('auth_token')}`, `bill_${b.bill_number}.pdf`, 'application/pdf')} title="Download Official PDF">
+                    <button className="btn btn-outline" style={{ display: 'flex', alignItems: 'center' }} onClick={() => printPDF(`${window.location.origin}/api/bills/${b.id}/pdf?token=${localStorage.getItem('auth_token')}`, `${window.location.origin}/api/bills/${b.id}/pdf?format=html&token=${localStorage.getItem('auth_token')}`, `bill_${b.bill_number}.pdf`)} title="Download Official PDF">
                       <FileText size={16} color="var(--primary)" /><span className="btn-label">PDF</span>
                     </button>
                     {b.customer_phone && settings?.plan_limits?.features?.includes('whatsapp_sharing') && (
