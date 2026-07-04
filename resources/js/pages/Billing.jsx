@@ -477,7 +477,7 @@ const Billing = () => {
 
         <div className="tally-top-row">
           {/* Party Details */}
-          <div className="tally-panel-party" style={{ position: 'relative', zIndex: 1050 }}>
+          <div className="tally-panel-party" style={{ position: 'relative', zIndex: 20 }}>
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#64748b', marginBottom: '6px' }}>Party A/c Name *</label>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <input type="text" placeholder="Customer Name" value={customerInfo.name} onChange={e => setCustomerInfo({...customerInfo, name: e.target.value, selected: false})} style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.95rem', outline: 'none' }} />
@@ -501,7 +501,7 @@ const Billing = () => {
       </div>
 
       {/* PRODUCT SEARCH & QUICK ADD SECTION */}
-      <div style={{ marginBottom: '16px', position: 'relative', zIndex: 1000 }}>
+      <div style={{ marginBottom: '16px', position: 'relative', zIndex: 10 }}>
         <input 
           type="text" 
           placeholder="🔍 Search products by name or SKU..." 
