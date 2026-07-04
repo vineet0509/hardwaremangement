@@ -482,7 +482,7 @@ const Billing = () => {
             {customerResults.length > 0 && (
               <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 100, background: '#fff', border: '1px solid #cbd5e1', borderRadius: '6px', marginTop: '4px', maxHeight: '200px', overflowY: 'auto', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
                 {customerResults.map((c, i) => (
-                  <div key={i} style={{ padding: '10px 12px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9' }} onClick={() => { setCustomerInfo({ name: c.customer_name, phone: c.customer_phone || '', address: c.customer_address || '', selected: true }); setCustomerResults([]); }}>
+                  <div key={i} style={{ padding: '10px 12px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9' }} onMouseDown={(e) => { e.preventDefault(); setCustomerInfo({ name: c.customer_name, phone: c.customer_phone || '', address: c.customer_address || '', selected: true }); setCustomerResults([]); }}>
                     <div style={{ fontWeight: 600, color: '#0f172a' }}>{c.customer_name}</div>
                     <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{c.customer_phone}</div>
                   </div>
@@ -515,7 +515,7 @@ const Billing = () => {
         {search && products.length > 0 && (
           <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', border: '1px solid #cbd5e1', borderRadius: '8px', maxHeight: '300px', overflowY: 'auto', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)', marginTop: '8px' }}>
             {products.map(p => (
-              <div key={p.id} onClick={() => { addToCart(p); setSearch(''); }} style={{ padding: '14px 16px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div key={p.id} onMouseDown={(e) => { e.preventDefault(); addToCart(p); setSearch(''); }} style={{ padding: '14px 16px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '1.05rem', marginBottom: '4px' }}>{p.name}</div>
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -610,7 +610,7 @@ const Billing = () => {
                   <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748b' }}>Quick Select Udhar Customer:</span>
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px' }}>
                     {udharCustomers.map((cust, i) => (
-                      <span key={i} onClick={() => setCustomerInfo({ name: cust.customer_name, phone: cust.customer_phone || '', address: customerInfo.address, selected: true })} style={{ fontSize: '0.75rem', padding: '4px 8px', background: '#f1f5f9', border: '1px solid #e2e8f0', borderRadius: '4px', cursor: 'pointer', color: '#0f172a' }}>{cust.customer_name}</span>
+                      <span key={i} onMouseDown={(e) => { e.preventDefault(); setCustomerInfo({ name: cust.customer_name, phone: cust.customer_phone || '', address: customerInfo.address, selected: true }); }} style={{ fontSize: '0.75rem', padding: '4px 8px', background: '#f1f5f9', border: '1px solid #e2e8f0', borderRadius: '4px', cursor: 'pointer', color: '#0f172a' }}>{cust.customer_name}</span>
                     ))}
                   </div>
                 </div>

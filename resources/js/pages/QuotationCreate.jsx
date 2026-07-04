@@ -392,7 +392,7 @@ const QuotationCreate = () => {
             {customerResults.length > 0 && (
               <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 100, background: '#fff', border: '1px solid #cbd5e1', borderRadius: '6px', marginTop: '4px', maxHeight: '200px', overflowY: 'auto', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
                 {customerResults.map((c, i) => (
-                  <div key={i} style={{ padding: '10px 12px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9' }} onClick={() => { setCustomerInfo({ name: c.customer_name, phone: c.customer_phone || '', address: c.customer_address || '', selected: true }); setCustomerResults([]); }}>
+                  <div key={i} style={{ padding: '10px 12px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9' }} onMouseDown={(e) => { e.preventDefault(); setCustomerInfo({ name: c.customer_name, phone: c.customer_phone || '', address: c.customer_address || '', selected: true }); setCustomerResults([]); }}>
                     <div style={{ fontWeight: 600, color: '#0f172a' }}>{c.customer_name}</div>
                     <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{c.customer_phone}</div>
                   </div>
@@ -425,7 +425,7 @@ const QuotationCreate = () => {
         {search && products.length > 0 && (
           <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', border: '1px solid #cbd5e1', borderRadius: '8px', maxHeight: '300px', overflowY: 'auto', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)', marginTop: '8px' }}>
             {products.map(p => (
-              <div key={p.id} onClick={() => { addToCart(p); setSearch(''); }} style={{ padding: '14px 16px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div key={p.id} onMouseDown={(e) => { e.preventDefault(); addToCart(p); setSearch(''); }} style={{ padding: '14px 16px', cursor: 'pointer', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '1.05rem', marginBottom: '4px' }}>{p.name}</div>
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
