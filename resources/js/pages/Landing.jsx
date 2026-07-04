@@ -1614,9 +1614,7 @@ const Landing = () => {
             </form>
           </div>
         </div>
-    </div>
       )}
-
       {/* Floating WhatsApp Button */}
       <a 
         href="https://wa.me/918924074096?text=Hello%20VyaparSync!%20I%20would%20like%20to%20know%20more." 
