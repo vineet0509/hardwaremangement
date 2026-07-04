@@ -109,16 +109,8 @@ class AuthController extends Controller
             }
         }
 
-        if (!$request->has('force_login') && $user->tokens()->count() > 0) {
-            return response()->json([
-                'message' => 'You are already logged in on another device or browser. Do you want to log out from all other devices and log in here?',
-                'requires_force_login' => true
-            ], 409);
-        }
-
-        if ($request->has('force_login') && $request->force_login) {
-            $user->tokens()->delete(); // Wipe out all other sessions
-        }
+        // Wipe out all other sessions to enforce single device login silently
+        $user->tokens()->delete();
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
