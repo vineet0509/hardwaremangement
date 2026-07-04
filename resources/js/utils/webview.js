@@ -17,6 +17,17 @@ export const isAndroidWebView = () => {
 };
 
 /**
+ * Open a URL in an external browser using Android Intents.
+ * This is crucial for generic WebView wrappers that don't support downloads or printing natively.
+ */
+export const openExternalBrowser = (url) => {
+  const cleanUrl = url.replace(/^https?:\/\//, '');
+  const scheme = url.startsWith('https') ? 'https' : 'http';
+  const intentUrl = `intent://${cleanUrl}#Intent;scheme=${scheme};package=com.android.chrome;S.browser_fallback_url=${encodeURIComponent(url)};end`;
+  window.location.href = intentUrl;
+};
+
+/**
  * Open a URL safely:
  *  - In WebView → use location.href (opens in same view, then Android app can intercept)
  *  - In browser → use window.open with _blank
@@ -72,8 +83,8 @@ export const downloadFile = async (url, filename = 'download', mimeType = 'appli
         // Android JS Bridge — the app must implement this
         window.Android.downloadFile(base64, filename, mimeType);
       } else {
-        // Fallback: try to navigate to the URL directly and hope Android handles it
-        window.location.href = url;
+        // Fallback: Generic WebView without JS bridge. Force external Chrome browser.
+        openExternalBrowser(url);
       }
     };
     reader.readAsDataURL(blob);
@@ -95,19 +106,25 @@ export const printPDF = async (pdfUrl, htmlUrl, filename) => {
     return;
   }
 
-  // WebView -> Fetch HTML and print
-  try {
-    const token = localStorage.getItem('auth_token');
-    const response = await fetch(htmlUrl, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (!response.ok) throw new Error('HTML fetch failed');
-    const htmlContent = await response.text();
-    printHtml(htmlContent);
-  } catch (e) {
-    console.error('WebView print error', e);
-    // Fallback
-    window.location.href = pdfUrl;
+  // WebView path
+  if (window.Android && typeof window.Android.printPage === 'function') {
+    // App has custom JS bridge for printing
+    try {
+      const token = localStorage.getItem('auth_token');
+      const response = await fetch(htmlUrl, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!response.ok) throw new Error('HTML fetch failed');
+      const htmlContent = await response.text();
+      printHtml(htmlContent);
+    } catch (e) {
+      console.error('WebView print error', e);
+      openExternalBrowser(pdfUrl);
+    }
+  } else {
+    // Generic WebView (URL wrapper) without print support.
+    // Force open the PDF in external Chrome so the user can use Chrome's native print/download.
+    openExternalBrowser(pdfUrl);
   }
 };
 
