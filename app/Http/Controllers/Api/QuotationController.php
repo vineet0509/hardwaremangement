@@ -36,6 +36,11 @@ class QuotationController extends Controller
             'other_charges_details' => 'nullable|array',
         ]);
 
+        $settings = \App\Models\Setting::where('business_id', auth()->user()->business_id)->first();
+        if ($settings && !\App\Helpers\PlanHelper::checkLimit($settings->subscription_plan, 'quotations_per_month', Quotation::whereMonth('created_at', \Carbon\Carbon::now()->month)->count())) {
+            return response()->json(['message' => 'Monthly quotation limit reached for your plan. Please upgrade to create more quotations.'], 403);
+        }
+
         try {
             DB::beginTransaction();
 

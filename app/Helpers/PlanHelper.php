@@ -16,6 +16,15 @@ class PlanHelper
                 'invoices_per_month' => 100,
                 'features' => ['billing', 'inventory', 'customers', 'suppliers']
             ],
+            'trial' => [
+                'shops' => 2, // 1 branch means up to 2 shops (1 parent + 1 child)
+                'users' => -1, // Unlimited users or enough for 1 admin + 1 staff? We'll use -1 for users or 2? Let's just limit staff.
+                'staff' => 1,
+                'products' => 25,
+                'quotations_per_month' => 100,
+                'invoices_per_month' => 100,
+                'features' => ['billing', 'inventory', 'customers', 'suppliers', 'gst_reports', 'whatsapp_sharing', 'staff_management', 'attendance', 'salary', 'expense_tracking', 'damaged_goods', 'role_permission', 'branch_transfer'] // All access
+            ],
             'starter' => [
                 'shops' => 1,
                 'users' => 2,

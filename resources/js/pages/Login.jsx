@@ -18,8 +18,8 @@ const Login = () => {
   const [resendLoading, setResendLoading] = useState(false);
   const [resendMessage, setResendMessage] = useState(null);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+  const handleLogin = (e, forceLogin = false) => {
+    if (e) e.preventDefault();
 
     if (formData.login.trim().length < 3) {
       return setError("Invalid email or mobile number.");
@@ -34,6 +34,9 @@ const Login = () => {
     // Fetch CSRF cookie before login
     axios.get(`${window.location.origin}/sanctum/csrf-cookie`).then(() => {
         const payload = { ...formData };
+        if (forceLogin) {
+            payload.force_login = true;
+        }
         payload.device_type = typeof window !== 'undefined' && window.Capacitor && window.Capacitor.isNativePlatform() ? 'mobile' : 'browser';
 
         api.post('/login', payload)
@@ -48,6 +51,23 @@ const Login = () => {
          navigate('/dashboard');
       })
       .catch(err => {
+         if (err.response?.status === 409 && err.response?.data?.requires_force_login) {
+             Swal.fire({
+                 title: 'Already Logged In',
+                 text: err.response.data.message,
+                 icon: 'warning',
+                 showCancelButton: true,
+                 confirmButtonColor: 'var(--primary)',
+                 cancelButtonColor: '#d33',
+                 confirmButtonText: 'Yes, log me in here'
+             }).then((result) => {
+                 if (result.isConfirmed) {
+                     handleLogin(null, true);
+                 }
+             });
+             return;
+         }
+
          if (err.response?.status === 403 && err.response?.data?.unverified_email) {
             setUnverifiedEmail(err.response.data.unverified_email);
             setError(err.response.data.message);

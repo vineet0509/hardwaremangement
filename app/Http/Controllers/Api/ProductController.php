@@ -44,6 +44,11 @@ class ProductController extends Controller
             return response()->json(['message' => 'Child shops cannot create products.'], 403);
         }
 
+        $settings = \App\Models\Setting::where('business_id', auth()->user()->business_id)->first();
+        if ($settings && !\App\Helpers\PlanHelper::checkLimit($settings->subscription_plan, 'products', Product::count())) {
+            return response()->json(['message' => 'Product limit reached for your plan. Please upgrade to add more products.'], 403);
+        }
+
         $data = $request->validate([
             'category_id'     => [
                 'required',

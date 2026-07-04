@@ -290,6 +290,7 @@ class BillController extends Controller
             'type'             => 'nullable|in:sale,return',
             'parent_bill_id'   => 'nullable|exists:bills,id',
             'other_charges_details' => 'nullable|array',
+            'converted_from_quotation_id' => 'nullable|exists:quotations,id',
         ]);
 
         if (!empty($data['customer_phone']) && !empty($data['customer_name'])) {
@@ -388,6 +389,10 @@ class BillController extends Controller
                 $item['bill_id'] = $bill->id;
                 $item['business_id'] = $bill->business_id;
                 BillItem::create($item);
+            }
+
+            if (!empty($data['converted_from_quotation_id'])) {
+                \App\Models\Quotation::where('id', $data['converted_from_quotation_id'])->delete();
             }
 
             return $bill;

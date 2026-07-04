@@ -403,6 +403,10 @@ const Billing = () => {
       items: cart.map(i => ({ product_id: i.product_id, quantity: i.quantity, price: parseFloat(i.price) || 0 }))
     };
 
+    if (location.state?.fromQuotation?.id && !editBillId) {
+      payload.converted_from_quotation_id = location.state.fromQuotation.id;
+    }
+
     const action = editBillId ? api.put(`/bills/${editBillId}`, payload) : api.post('/bills', payload);
 
     action.then(res => {

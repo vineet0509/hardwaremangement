@@ -92,7 +92,7 @@ class ChildBusinessController extends Controller
         Setting::withoutGlobalScopes()->create([
             'business_id'                 => $childBusiness->id,
             'company_name'            => $parentShopName,
-            'subscription_plan'       => 'monthly',
+            'subscription_plan'       => 'trial',
             'subscription_expires_at' => now()->addDays(30),
         ]);
 

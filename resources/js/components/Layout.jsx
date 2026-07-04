@@ -675,7 +675,7 @@ const Layout = ({ children }) => {
           
           {settings && !settings.is_expired && settings.trial_days_remaining !== undefined && settings.subscription_plan !== 'full_time' && (
             (settings.subscription_plan === 'monthly' || settings.subscription_plan === 'yearly') ? (
-              settings.trial_days_remaining <= 30 && (
+              settings.trial_days_remaining <= 7 && (
                 <div style={{ 
                   background: 'rgba(245, 158, 11, 0.15)', 
                   color: 'var(--warning)', 
@@ -694,22 +694,39 @@ const Layout = ({ children }) => {
                 </div>
               )
             ) : (
-              settings.trial_days_remaining <= 30 && (
+              settings.trial_days_remaining <= 7 ? (
                 <div style={{ 
-                  background: 'rgba(245, 158, 11, 0.15)', 
-                  color: 'var(--warning)', 
+                  background: 'rgba(239, 68, 68, 0.15)', 
+                  color: 'var(--danger)', 
                   padding: '12px 20px', 
                   borderRadius: 8, 
                   marginBottom: 24, 
                   fontWeight: 600, 
-                  border: '1px solid rgba(245, 158, 11, 0.3)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
                   display: 'flex',
                   alignItems: 'center',
                   gap: 10
                 }}>
                   <AlertTriangle size={20} />
-                  <div style={{ flex: 1 }}>Demo Plan: You have {settings.trial_days_remaining} days remaining on your trial.</div>
-                  {user?.role !== 'staff' && <button onClick={() => navigate('/settings')} className="btn" style={{ background: 'var(--warning)', color: '#fff', padding: '6px 12px', fontSize: '0.85rem', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>Renew Now</button>}
+                  <div style={{ flex: 1 }}>Trial Expiring Soon: You have only {settings.trial_days_remaining} days left in your trial. Upgrade now to avoid interruption.</div>
+                  {user?.role !== 'staff' && <button onClick={() => navigate('/settings')} className="btn" style={{ background: 'var(--danger)', color: '#fff', padding: '6px 12px', fontSize: '0.85rem', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>Upgrade Now</button>}
+                </div>
+              ) : settings.trial_days_remaining <= 30 && (
+                <div style={{ 
+                  background: 'rgba(59, 130, 246, 0.15)', 
+                  color: 'var(--primary)', 
+                  padding: '12px 20px', 
+                  borderRadius: 8, 
+                  marginBottom: 24, 
+                  fontWeight: 600, 
+                  border: '1px solid rgba(59, 130, 246, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10
+                }}>
+                  <AlertTriangle size={20} />
+                  <div style={{ flex: 1 }}>Trial Active: You have {settings.trial_days_remaining} days remaining on your free trial.</div>
+                  {user?.role !== 'staff' && <button onClick={() => navigate('/settings')} className="btn btn-primary" style={{ padding: '6px 12px', fontSize: '0.85rem', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 'bold' }}>View Plans</button>}
                 </div>
               )
             )

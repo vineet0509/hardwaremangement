@@ -42,7 +42,7 @@ class AuthController extends Controller
         Setting::withoutGlobalScopes()->create([
             'business_id' => $business->id,
             'company_name' => $request->shop_name,
-            'subscription_plan' => 'monthly', // Default 30 day trial
+            'subscription_plan' => 'trial', // Default 30 day trial
             'subscription_expires_at' => now()->addDays(30)
         ]);
 
@@ -107,6 +107,17 @@ class AuthController extends Controller
             if ($staffRecord && $staffRecord->status === 'inactive') {
                 return response()->json(['message' => 'Your staff account has been deactivated. Please contact your administrator.'], 403);
             }
+        }
+
+        if (!$request->has('force_login') && $user->tokens()->count() > 0) {
+            return response()->json([
+                'message' => 'You are already logged in on another device or browser. Do you want to log out from all other devices and log in here?',
+                'requires_force_login' => true
+            ], 409);
+        }
+
+        if ($request->has('force_login') && $request->force_login) {
+            $user->tokens()->delete(); // Wipe out all other sessions
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
