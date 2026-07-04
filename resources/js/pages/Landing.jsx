@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { openWhatsApp } from '../utils/webview';
+import { safeOpen, openWhatsApp } from '../utils/webview';
 import api from '../utils/api';
 import Swal from 'sweetalert2';
 import {
@@ -1308,7 +1308,7 @@ const Landing = () => {
           }}>
             <span>&copy; {new Date().getFullYear()} VyaparSync. All rights reserved.</span>
             <span>
-              Powered by <a href="https://vynkra.in" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none' }}>Vynkra Technologies</a>
+              Powered by <span onClick={() => safeOpen('https://vynkra.in')} style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none', cursor: 'pointer' }}>Vynkra Technologies</span>
             </span>
           </div>
 

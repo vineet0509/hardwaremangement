@@ -3,6 +3,7 @@ import axios from 'axios';
 import api from '../utils/api';
 import { Settings as SettingsIcon, AlertTriangle, Save, CheckCircle, Languages } from 'lucide-react';
 import Swal from 'sweetalert2';
+import { safeOpen } from '../utils/webview';
 
 const Settings = () => {
   const [formData, setFormData] = useState({
@@ -386,14 +387,12 @@ const Settings = () => {
                       <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: 2 }}>
                         State: <b>{gstResult.details?.state_name}</b> ({gstResult.details?.state_code}) | PAN: <b>{gstResult.details?.pan}</b>
                       </div>
-                      <a 
-                        href={`https://services.gst.gov.in/services/searchtp`} 
-                        target="_blank" 
-                        rel="noreferrer" 
-                        style={{ display: 'inline-block', marginTop: 4, color: 'var(--primary)', textDecoration: 'underline', fontSize: '0.75rem' }}
+                      <span 
+                        onClick={() => safeOpen(`https://services.gst.gov.in/services/searchtp`)} 
+                        style={{ display: 'inline-block', marginTop: 4, color: 'var(--primary)', textDecoration: 'underline', fontSize: '0.75rem', cursor: 'pointer' }}
                       >
                         Verify Taxpayer Details on Official GST Portal ↗
-                      </a>
+                      </span>
                     </div>
                   ) : (
                     <div>

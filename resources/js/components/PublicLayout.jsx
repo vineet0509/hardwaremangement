@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { safeOpen } from '../utils/webview';
 import axios from 'axios';
 import api from '../utils/api';
 import Swal from 'sweetalert2';
@@ -372,7 +373,7 @@ const PublicLayout = ({ children }) => {
           }}>
             <span>&copy; {new Date().getFullYear()} VyaparSync. All rights reserved.</span>
             <span>
-              Powered by <a href="https://vynkra.in" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none' }}>Vynkra Technologies</a>
+              Powered by <span onClick={() => safeOpen('https://vynkra.in')} style={{ color: 'var(--primary)', fontWeight: 700, textDecoration: 'none', cursor: 'pointer' }}>Vynkra Technologies</span>
             </span>
           </div>
 
@@ -656,7 +657,7 @@ const PublicLayout = ({ children }) => {
                   style={{ marginTop: 4, cursor: 'pointer' }}
                 />
                 <label htmlFor="termsCheck" style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.5, cursor: 'pointer', margin: 0 }}>
-                  I have read and agree to the <a href="/terms" target="_blank" style={{ color: 'var(--primary)', textDecoration: 'underline' }}>Terms and Conditions</a>, including the strict no-refund policy.
+                  I have read and agree to the <span onClick={() => safeOpen('/terms')} style={{ color: 'var(--primary)', textDecoration: 'underline', cursor: 'pointer' }}>Terms and Conditions</span>, including the strict no-refund policy.
                 </label>
               </div>
 
