@@ -293,12 +293,12 @@ class BillController extends Controller
         ]);
 
         if (!empty($data['customer_phone']) && !empty($data['customer_name'])) {
-            $existing = Bill::where('customer_phone', $data['customer_phone'])
-                            ->where('customer_name', '!=', $data['customer_name'])
-                            ->first();
-            if ($existing) {
-                return response()->json(['message' => "Mobile {$data['customer_phone']} is already registered under the name: {$existing->customer_name}. Please use matching details."], 422);
-            }
+            // Automatically override customer name and address for all previous bills with this phone number
+            Bill::where('customer_phone', $data['customer_phone'])
+                ->update([
+                    'customer_name' => $data['customer_name'],
+                    'customer_address' => $data['customer_address'] ?? ''
+                ]);
         }
 
         $bill = DB::transaction(function () use ($data) {
@@ -429,13 +429,12 @@ class BillController extends Controller
         ]);
 
         if (!empty($data['customer_phone']) && !empty($data['customer_name'])) {
-            $existing = Bill::where('customer_phone', $data['customer_phone'])
-                            ->where('customer_name', '!=', $data['customer_name'])
-                            ->where('id', '!=', $bill->id)
-                            ->first();
-            if ($existing) {
-                return response()->json(['message' => "Mobile {$data['customer_phone']} is already registered under the name: {$existing->customer_name}. Please use matching details."], 422);
-            }
+            // Automatically override customer name and address for all previous bills with this phone number
+            Bill::where('customer_phone', $data['customer_phone'])
+                ->update([
+                    'customer_name' => $data['customer_name'],
+                    'customer_address' => $data['customer_address'] ?? ''
+                ]);
         }
 
         $updatedBill = DB::transaction(function () use ($data, $bill) {
