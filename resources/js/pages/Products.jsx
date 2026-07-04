@@ -237,7 +237,7 @@ const Products = () => {
                       <tr key={p.id}>
                 <td>
                   <span className="badge" style={{ background: 'var(--surface-hover)' }}>{p.sku}</span>
-                  <div className="d-flex gap-2" style={{ marginTop: 12 }}>
+                  <div className="d-flex gap-2" style={{ marginTop: 12, flexWrap: 'wrap' }}>
                     <button className="btn btn-outline" style={{ padding: '4px 8px', borderColor: 'var(--primary)', color: 'var(--primary)' }} title="Edit Product"
                       onClick={() => {
                         setEditProductId(p.id);
