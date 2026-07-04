@@ -181,7 +181,7 @@ const Attendance = ({ user }) => {
                 allowFullScreen>
               </iframe>
               <div style={{ padding: '12px', textAlign: 'center', background: '#f8fafc', borderTop: '1px solid var(--border)' }}>
-                <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapLocation)}`} target="_blank" rel="noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 600 }}>
+                <a href="#" onClick={(e) => { e.preventDefault(); import('../utils/webview').then(m => m.safeOpen(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapLocation)}`)); }} style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 600 }}>
                   Open in Google Maps ↗
                 </a>
               </div>
