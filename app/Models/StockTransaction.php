@@ -11,7 +11,7 @@ class StockTransaction extends Model
     use BelongsToBusiness;
 
     protected $fillable = [
-        'product_id', 'type', 'quantity', 'price', 'reference', 'notes',
+        'product_id', 'type', 'quantity', 'remaining_quantity', 'price', 'expiry_date', 'reference', 'notes',
     ];
 
     protected $casts = [

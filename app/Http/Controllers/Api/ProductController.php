@@ -19,7 +19,15 @@ class ProductController extends Controller
     use RestrictsChildBusinesses;
     public function index(Request $request): JsonResponse
     {
-        $query = Product::with('category');
+        $query = Product::with('category')
+            ->addSelect(['*', 'nearest_expiry_date' => StockTransaction::select('expiry_date')
+                ->whereColumn('product_id', 'products.id')
+                ->where('type', 'purchase')
+                ->where('remaining_quantity', '>', 0)
+                ->whereNotNull('expiry_date')
+                ->orderBy('expiry_date', 'asc')
+                ->limit(1)
+            ]);
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
@@ -32,6 +40,9 @@ class ProductController extends Controller
         }
         if ($request->filled('low_stock') && $request->low_stock == 1) {
             $query->whereColumn('quantity', '<=', 'min_stock_alert');
+        }
+        if ($request->filled('expired') && $request->expired == 1) {
+            $query->having('nearest_expiry_date', '<', now());
         }
 
         $products = $query->orderBy('name')->get();
@@ -65,6 +76,7 @@ class ProductController extends Controller
             'quantity'        => 'required|integer|min:0',
             'min_stock_alert' => 'required|integer|min:0',
             'unit'            => 'required|string|max:50',
+            'expiry_date'     => 'nullable|date',
         ]);
 
         $data['sku'] = 'SKU-' . strtoupper(Str::random(8));
@@ -73,11 +85,13 @@ class ProductController extends Controller
             $product = Product::create($data);
             if ($product->quantity > 0) {
                 StockTransaction::create([
-                    'product_id' => $product->id,
-                    'type'       => 'purchase',
-                    'quantity'   => $product->quantity,
-                    'price'      => $product->purchase_price,
-                    'reference'  => 'Initial Stock',
+                    'product_id'         => $product->id,
+                    'type'               => 'purchase',
+                    'quantity'           => $product->quantity,
+                    'remaining_quantity' => $product->quantity,
+                    'expiry_date'        => $data['expiry_date'] ?? null,
+                    'price'              => $product->purchase_price,
+                    'reference'          => 'Initial Stock',
                 ]);
             }
 
@@ -123,6 +137,7 @@ class ProductController extends Controller
             'gst_slab'        => 'nullable|integer|in:0,5,12,18,28',
             'min_stock_alert' => 'sometimes|integer|min:0',
             'unit'            => 'sometimes|string|max:50',
+            'expiry_date'     => 'nullable|date',
         ]);
 
         $product->update($data);
@@ -147,20 +162,23 @@ class ProductController extends Controller
 
         $data = $request->validate([
             'quantity'  => 'required|integer|min:1',
-            'price'     => 'nullable|numeric|min:0',
-            'reference' => 'nullable|string|max:255',
-            'notes'     => 'nullable|string',
+            'price'       => 'nullable|numeric|min:0',
+            'reference'   => 'nullable|string|max:255',
+            'notes'       => 'nullable|string',
+            'expiry_date' => 'nullable|date',
         ]);
 
         DB::transaction(function () use ($data, $product) {
             $product->increment('quantity', $data['quantity']);
             StockTransaction::create([
-                'product_id' => $product->id,
-                'type'       => 'purchase',
-                'quantity'   => $data['quantity'],
-                'price'      => $data['price'] ?? $product->purchase_price,
-                'reference'  => $data['reference'] ?? null,
-                'notes'      => $data['notes'] ?? null,
+                'product_id'         => $product->id,
+                'type'               => 'purchase',
+                'quantity'           => $data['quantity'],
+                'remaining_quantity' => $data['quantity'],
+                'expiry_date'        => $data['expiry_date'] ?? null,
+                'price'              => $data['price'] ?? $product->purchase_price,
+                'reference'          => $data['reference'] ?? null,
+                'notes'              => $data['notes'] ?? null,
             ]);
 
             if ($product->supplier_id) {

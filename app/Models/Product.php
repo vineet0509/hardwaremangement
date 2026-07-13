@@ -15,7 +15,7 @@ class Product extends Model
     protected $fillable = [
         'category_id', 'supplier_id', 'name', 'sku', 'description',
         'purchase_price', 'selling_price', 'gst_slab', 'quantity',
-        'min_stock_alert', 'unit',
+        'min_stock_alert', 'unit', 'expiry_date'
     ];
 
     public function supplier(): BelongsTo

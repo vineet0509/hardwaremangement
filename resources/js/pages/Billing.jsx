@@ -525,6 +525,7 @@ const Billing = () => {
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                     <span style={{ fontSize: '0.8rem', color: '#64748b', background: '#f1f5f9', padding: '2px 8px', borderRadius: '12px', fontWeight: 600 }}>Stock: {p.quantity} {p.unit}</span>
                     {p.sku && <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>SKU: {p.sku}</span>}
+                    {p.nearest_expiry_date && new Date(p.nearest_expiry_date) < new Date() && <span style={{ fontSize: '0.75rem', color: '#fff', background: '#ef4444', padding: '2px 8px', borderRadius: '12px', fontWeight: 600 }}>Expired</span>}
                   </div>
                 </div>
                 <div style={{ fontWeight: 800, color: '#d4af37', fontSize: '1.1rem', textAlign: 'right' }}>₹{p.selling_price}</div>

@@ -21,13 +21,15 @@ const Products = () => {
   const [showCatModal, setShowCatModal] = useState(false);
   const [editProductId, setEditProductId] = useState(null);
   const [newCatName, setNewCatName] = useState('');
+  const [showExpired, setShowExpired] = useState(false);
   const [formData, setFormData] = useState({
-    name: '', category_id: '', supplier_id: '', purchase_price: 0, selling_price: 0, gst_slab: 18, quantity: 0, min_stock_alert: 5, unit: 'piece'
+    name: '', category_id: '', supplier_id: '', purchase_price: 0, selling_price: 0, gst_slab: 18, quantity: 0, min_stock_alert: 5, unit: 'piece', expiry_date: ''
   });
 
   const [stockModal, setStockModal] = useState({ show: false, type: 'add', product: null });
   const [stockQty, setStockQty] = useState('');
   const [stockPrice, setStockPrice] = useState('');
+  const [stockExpiry, setStockExpiry] = useState('');
 
   const [damageModal, setDamageModal] = useState({ show: false, product: null });
   const [damageQty, setDamageQty] = useState('');
@@ -60,12 +62,14 @@ const Products = () => {
     api.post(url, { 
       quantity: parseInt(stockQty), 
       price: stockPrice ? parseFloat(stockPrice) : null,
+      expiry_date: stockExpiry || null,
       reason: stockModal.type === 'add' ? 'Stock Restock' : 'Manual Adjustment' 
     })
       .then(() => {
         setStockModal({ show: false, type: 'add', product: null });
         setStockQty('');
         setStockPrice('');
+        setStockExpiry('');
         fetchData();
       })
       .catch(err => Swal.fire(err.response?.data?.message || 'Error updating stock'));
@@ -101,7 +105,9 @@ const Products = () => {
 
   const fetchData = () => {
     setLoading(true);
-    api.get(`/products?search=${search}`)
+    let url = `/products?search=${search}`;
+    if (showExpired) url += '&expired=1';
+    api.get(url)
       .then(res => {
         setProducts(res.data.data || res.data);
         setCurrentPage(1);
@@ -123,7 +129,7 @@ const Products = () => {
     api.get('/settings')
        .then(res => setSettings(res.data))
        .catch(console.error);
-  }, [search]);
+  }, [search, showExpired]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -135,10 +141,10 @@ const Products = () => {
       ? api.put(`/products/${editProductId}`, payload)
       : api.post('/products', payload);
       
-    req.then(() => {
+      req.then(() => {
         setShowModal(false);
         fetchData();
-        setFormData({ name: '', category_id: '', purchase_price: 0, selling_price: 0, quantity: 0, min_stock_alert: 5, unit: 'piece' });
+        setFormData({ name: '', category_id: '', purchase_price: 0, selling_price: 0, quantity: 0, min_stock_alert: 5, unit: 'piece', expiry_date: '' });
         setEditProductId(null);
       })
       .catch(err => Swal.fire(err.response?.data?.message || 'Error occurred while saving product.'));
@@ -187,6 +193,13 @@ const Products = () => {
               style={{ background: 'transparent', border: 'none', color: 'inherit', outline: 'none', width: '100%' }}
             />
           </div>
+          <button 
+            className={`btn ${showExpired ? 'btn-danger' : 'btn-outline'}`}
+            onClick={() => setShowExpired(!showExpired)}
+            style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: 8 }}
+          >
+            <AlertTriangle size={16} /> {showExpired ? 'Showing Expired' : 'Show Expired'}
+          </button>
         </div>
         <div className="products-buttons-grid" style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
           <button className="btn btn-secondary" onClick={handleDownloadSampleCSV}>
@@ -201,7 +214,7 @@ const Products = () => {
           </label>
           <button className="btn btn-primary" onClick={() => {
             setEditProductId(null);
-            setFormData({ name: '', category_id: '', purchase_price: 0, selling_price: 0, gst_slab: 18, quantity: 0, min_stock_alert: 5, unit: 'piece' });
+            setFormData({ name: '', category_id: '', purchase_price: 0, selling_price: 0, gst_slab: 18, quantity: 0, min_stock_alert: 5, unit: 'piece', expiry_date: '' });
             setShowModal(true);
           }}>
             <Plus size={18} /> Add Product
@@ -226,6 +239,7 @@ const Products = () => {
                       <th>Cost Price</th>
                       <th>Sell Price</th>
                       <th>Stock</th>
+                      <th>Expiry</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -244,7 +258,7 @@ const Products = () => {
                         setFormData({
                           name: p.name, category_id: p.category_id, supplier_id: p.supplier_id || '', purchase_price: p.purchase_price,
                           selling_price: p.selling_price, gst_slab: p.gst_slab || 0, quantity: p.quantity,
-                          min_stock_alert: p.min_stock_alert, unit: p.unit
+                          min_stock_alert: p.min_stock_alert, unit: p.unit, expiry_date: p.expiry_date || ''
                         });
                         setShowModal(true);
                       }}>
@@ -288,6 +302,17 @@ const Products = () => {
                   <span className={`badge ${p.quantity > p.min_stock_alert ? 'badge-success' : 'badge-danger'}`}>
                     {p.quantity} {p.unit}
                   </span>
+                </td>
+                <td className="tally-cell-status" style={{ padding: '12px' }}>
+                  {p.nearest_expiry_date ? (
+                    new Date(p.nearest_expiry_date) < new Date() ? (
+                      <span className="badge badge-danger">Expired</span>
+                    ) : (
+                      <span className="badge badge-warning">Expires: {new Date(p.nearest_expiry_date).toLocaleDateString()}</span>
+                    )
+                  ) : (
+                    <span className="badge badge-secondary">N/A</span>
+                  )}
                 </td>
               </tr>
             ))}
@@ -384,6 +409,11 @@ const Products = () => {
                     </select>
                   </div>
                 </div>
+                <div className="form-group" style={{ marginTop: 16 }}>
+                  <label className="form-label">Expiry Date (Optional)</label>
+                  <input type="date" className="form-control" 
+                    value={formData.expiry_date || ''} onChange={e => setFormData({...formData, expiry_date: e.target.value})} />
+                </div>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-outline" onClick={() => setShowModal(false)}>Cancel</button>
@@ -409,11 +439,18 @@ const Products = () => {
                     value={stockQty} onChange={e => setStockQty(e.target.value)} />
                 </div>
                 {stockModal.type === 'add' && (
-                  <div className="form-group" style={{ marginTop: 16 }}>
-                    <label className="form-label">Purchase Price (Per {stockModal.product?.unit})</label>
-                    <input type="number" step="0.01" className="form-control" required
-                      value={stockPrice} onChange={e => setStockPrice(e.target.value)} />
-                  </div>
+                  <>
+                    <div className="form-group" style={{ marginTop: 16 }}>
+                      <label className="form-label">Purchase Price (Per {stockModal.product?.unit})</label>
+                      <input type="number" step="0.01" className="form-control" required
+                        value={stockPrice} onChange={e => setStockPrice(e.target.value)} />
+                    </div>
+                    <div className="form-group" style={{ marginTop: 16 }}>
+                      <label className="form-label">Batch Expiry Date (Optional)</label>
+                      <input type="date" className="form-control"
+                        value={stockExpiry} onChange={e => setStockExpiry(e.target.value)} />
+                    </div>
+                  </>
                 )}
                 <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                   Current Stock: <strong style={{ color: 'var(--text-main)' }}>{stockModal.product?.quantity} {stockModal.product?.unit}</strong>

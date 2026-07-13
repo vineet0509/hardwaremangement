@@ -347,6 +347,27 @@ class BillController extends Controller
                         'quantity'   => -$item['quantity'],
                         'price'      => $item['price'],
                     ]);
+
+                    // FIFO Batch Deduction
+                    $remainingToDeduct = $item['quantity'];
+                    $batches = StockTransaction::where('product_id', $product->id)
+                        ->where('type', 'purchase')
+                        ->where('remaining_quantity', '>', 0)
+                        ->orderByRaw('expiry_date IS NULL, expiry_date ASC')
+                        ->orderBy('created_at', 'ASC')
+                        ->get();
+
+                    foreach ($batches as $batch) {
+                        if ($remainingToDeduct <= 0) break;
+
+                        if ($batch->remaining_quantity <= $remainingToDeduct) {
+                            $remainingToDeduct -= $batch->remaining_quantity;
+                            $batch->update(['remaining_quantity' => 0]);
+                        } else {
+                            $batch->decrement('remaining_quantity', $remainingToDeduct);
+                            $remainingToDeduct = 0;
+                        }
+                    }
                 }
             }
 
