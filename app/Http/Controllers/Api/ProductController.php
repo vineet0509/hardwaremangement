@@ -140,6 +140,14 @@ class ProductController extends Controller
             'expiry_date'     => 'nullable|date',
         ]);
 
+        if (array_key_exists('expiry_date', $data) && $data['expiry_date'] !== $product->expiry_date) {
+            if (!empty($product->expiry_date)) {
+                if ($product->created_at->diffInDays(now()) > 5) {
+                    return response()->json(['message' => 'Expiry date cannot be modified more than 5 days after product creation.'], 422);
+                }
+            }
+        }
+
         $product->update($data);
         return response()->json($product->load('category'));
     }
